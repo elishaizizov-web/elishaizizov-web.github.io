@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול מאמרים — הרב אלישי זיזוב</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1b2a3b;
+  --navy-light: #2c3e52;
+  --gold: #b8952a;
+  --gold-light: #d4aa40;
+  --off-white: #f8f6f2;
+  --rule: #dcd8d0;
+  --text: #2a2420;
+  --text-soft: #4a4440;
+  --red: #c0392b;
+  --green: #27ae60;
+}
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--off-white);
+  color: var(--text);
+  direction: rtl;
+  min-height: 100vh;
+}
+a { color: inherit; }
+
+/* ---- LOGIN ---- */
+#login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.login-box {
+  background: #fff;
+  border: 1px solid var(--rule);
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+}
+.login-box h1 { font-size: 22px; margin-bottom: 6px; color: var(--navy); }
+.login-box p { font-size: 13px; color: var(--text-soft); margin-bottom: 28px; line-height: 1.6; }
+label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; color: var(--text-soft); margin-bottom: 6px; margin-top: 16px; }
+input[type=text], input[type=password], textarea, select {
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: #fdfcfa;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--navy); }
+textarea { resize: vertical; min-height: 200px; line-height: 1.7; }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 10px 22px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, opacity 0.2s;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--navy-light); }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold:hover:not(:disabled) { background: var(--gold-light); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #e74c3c; }
+.btn-outline { background: transparent; border: 1px solid var(--rule); color: var(--text); }
+.btn-outline:hover:not(:disabled) { border-color: var(--navy); color: var(--navy); }
+.btn-sm { padding: 6px 14px; font-size: 11px; }
+
+/* ---- MAIN APP ---- */
+#app { display: none; }
+.top-bar {
+  background: var(--navy);
+  color: #fff;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.top-bar h1 { font-size: 15px; font-weight: 600; }
+.top-bar button { background: none; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); padding: 6px 14px; font-size: 11px; cursor: pointer; }
+.top-bar button:hover { background: rgba(255,255,255,0.1); }
+
+.main-content { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+/* ---- ARTICLE LIST ---- */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.section-head h2 { font-size: 18px; color: var(--navy); }
+
+.article-row {
+  background: #fff;
+  border: 1px solid var(--rule);
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.article-row-info { flex: 1; }
+.article-row-info h3 { font-size: 15px; margin-bottom: 4px; }
+.article-row-info small { font-size: 12px; color: var(--text-soft); }
+.article-row-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* ---- FORM ---- */
+.form-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+.form-card h2 { font-size: 18px; color: var(--navy); margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { margin-top: 0; }
+.lang-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--rule); margin-bottom: 0; }
+.lang-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  color: var(--text-soft);
+  transition: color 0.2s;
+}
+.lang-tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+.trans-panel { display: none; padding: 20px 0; }
+.trans-panel.active { display: block; }
+.trans-status {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+.trans-status.done { background: #d4edda; color: #155724; }
+.trans-status.empty { background: #f8d7da; color: #721c24; }
+
+/* ---- STATUS BAR ---- */
+#status-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 32px;
+  font-size: 13px;
+  font-weight: 600;
+  display: none;
+  z-index: 100;
+  direction: rtl;
+}
+#status-bar.info { background: var(--navy); color: #fff; display: block; }
+#status-bar.ok { background: var(--green); color: #fff; display: block; }
+#status-bar.err { background: var(--red); color: #fff; display: block; }
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-left: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .top-bar { padding: 0 16px; }
+  .main-content { padding: 20px 16px; }
+  .form-card { padding: 20px; }
+  .article-row { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>ניהול מאמרים</h1>
+    <p>כדי להעלות מאמרים לאתר צריך להזין את פרטי הגישה שלך.</p>
+
+    <label>GitHub Personal Access Token</label>
+    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+    <p style="font-size:11px;color:var(--text-soft);margin-top:6px">
+      צור token ב-<a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--gold)">github.com/settings/tokens</a>
+      עם הרשאת <strong>repo</strong>.
+    </p>
+
+    <label>Anthropic API Key (לתרגום אוטומטי)</label>
+    <input type="password" id="ai-key" placeholder="sk-ant-xxxxxxxxxxxx" autocomplete="off">
+    <p style="font-size:11px;color:var(--text-soft);margin-top:6px">
+      מפתח Claude API — משמש לתרגום מאמרים אוטומטי ל-6 שפות.
+    </p>
+
+    <div style="margin-top:28px;display:flex;gap:12px;align-items:center">
+      <button class="btn btn-primary" onclick="doLogin()">כניסה</button>
+      <label style="margin:0;font-size:12px;cursor:pointer">
+        <input type="checkbox" id="remember-me" style="width:auto;margin-left:6px"> זכור אותי
+      </label>
+    </div>
+    <p id="login-err" style="color:var(--red);font-size:13px;margin-top:12px;display:none"></p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="top-bar">
+    <h1>ניהול מאמרים — הרב אלישי זיזוב</h1>
+    <div style="display:flex;gap:8px">
+      <a href="/" target="_blank"><button>צפה באתר</button></a>
+      <button onclick="doLogout()">יציאה</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- NEW / EDIT FORM -->
+    <div class="form-card" id="article-form-section">
+      <h2 id="form-title-lbl">מאמר חדש</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>קטגוריה *</label>
+          <select id="f-category" onchange="onCatChange()">
+            <option value="">-- בחר קטגוריה --</option>
+            <option value="parasha">פרשה</option>
+            <option value="hag">חג / מועד</option>
+          </select>
+        </div>
+        <div class="form-group" id="parasha-group" style="display:none">
+          <label>ספר תורה</label>
+          <select id="f-book" onchange="onBookChange()">
+            <option value="">-- בחר ספר --</option>
+            <option value="bereshit">בראשית</option>
+            <option value="shemot">שמות</option>
+            <option value="vayikra">ויקרא</option>
+            <option value="bamidbar">במדבר</option>
+            <option value="devarim">דברים</option>
+          </select>
+        </div>
+        <div class="form-group" id="hag-group" style="display:none">
+          <label>חג / מועד</label>
+          <select id="f-hag">
+            <option value="">-- בחר חג --</option>
+            <option value="Rosh Hashana">ראש השנה</option>
+            <option value="Yom Kippur">יום כיפור</option>
+            <option value="Sukkot">סוכות</option>
+            <option value="Shmini Atzeret">שמיני עצרת</option>
+            <option value="Chanuka">חנוכה</option>
+            <option value="Asara BeTevet">עשרה בטבת</option>
+            <option value="Tu BiShvat">ט"ו בשבט</option>
+            <option value="Purim">פורים</option>
+            <option value="Pesach">פסח</option>
+            <option value="Sefirat HaOmer">ספירת העומר</option>
+            <option value="Yom HaShoah">יום השואה</option>
+            <option value="Yom HaZikaron">יום הזיכרון</option>
+            <option value="Yom HaAtzmaut">יום העצמאות</option>
+            <option value="Lag BaOmer">ל"ג בעומר</option>
+            <option value="Yom Yerushalayim">יום ירושלים</option>
+            <option value="Shavuot">שבועות</option>
+            <option value="Shiva Asar BeTammuz">שבעה עשר בתמוז</option>
+            <option value="Tisha BAv">תשעה באב</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" id="parasha-select-group" style="display:none">
+        <label>פרשה</label>
+        <select id="f-parasha"></select>
+      </div>
+
+      <div class="form-group">
+        <label>תאריך פרסום *</label>
+        <input type="text" id="f-date" placeholder="לדוגמה: 15.03.2025">
+      </div>
+
+      <div class="form-group">
+        <label>תמונה (URL — רשות)</label>
+        <input type="text" id="f-image" placeholder="https://...">
+      </div>
+
+      <!-- Language tabs for translations -->
+      <div class="form-group" style="margin-top:24px">
+        <label style="margin-bottom:12px">תוכן המאמר — כל שפה</label>
+        <div class="lang-tabs">
+          <button class="lang-tab active" onclick="switchLangTab('he')">עברית</button>
+          <button class="lang-tab" onclick="switchLangTab('de')">DE</button>
+          <button class="lang-tab" onclick="switchLangTab('en')">EN</button>
+          <button class="lang-tab" onclick="switchLangTab('fr')">FR</button>
+          <button class="lang-tab" onclick="switchLangTab('es')">ES</button>
+          <button class="lang-tab" onclick="switchLangTab('ru')">RU</button>
+        </div>
+
+        <div id="trans-he" class="trans-panel active">
+          <div class="form-group"><label>כותרת (עברית)</label><input type="text" id="title-he" placeholder="כותרת המאמר בעברית"></div>
+          <div class="form-group"><label>תוכן (עברית)</label><textarea id="text-he" placeholder="כתוב כאן את המאמר בעברית..."></textarea></div>
+        </div>
+        <div id="trans-de" class="trans-panel">
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="trans-status empty" id="st-de">ריק</span>
+            <button class="btn btn-gold btn-sm" onclick="translateLang('de')">תרגם לגרמנית</button>
+          </div>
+          <div class="form-group"><label>Titel (Deutsch)</label><input type="text" id="title-de" placeholder="Titel des Beitrags"></div>
+          <div class="form-group"><label>Text (Deutsch)</label><textarea id="text-de" placeholder="Inhalt auf Deutsch..."></textarea></div>
+        </div>
+        <div id="trans-en" class="trans-panel">
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="trans-status empty" id="st-en">ריק</span>
+            <button class="btn btn-gold btn-sm" onclick="translateLang('en')">תרגם לאנגלית</button>
+          </div>
+          <div class="form-group"><label>Title (English)</label><input type="text" id="title-en" placeholder="Article title"></div>
+          <div class="form-group"><label>Text (English)</label><textarea id="text-en" placeholder="Content in English..."></textarea></div>
+        </div>
+        <div id="trans-fr" class="trans-panel">
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="trans-status empty" id="st-fr">ריק</span>
+            <button class="btn btn-gold btn-sm" onclick="translateLang('fr')">תרגם לצרפתית</button>
+          </div>
+          <div class="form-group"><label>Titre (Français)</label><input type="text" id="title-fr" placeholder="Titre de l'article"></div>
+          <div class="form-group"><label>Texte (Français)</label><textarea id="text-fr" placeholder="Contenu en français..."></textarea></div>
+        </div>
+        <div id="trans-es" class="trans-panel">
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="trans-status empty" id="st-es">ריק</span>
+            <button class="btn btn-gold btn-sm" onclick="translateLang('es')">תרגם לספרדית</button>
+          </div>
+          <div class="form-group"><label>Título (Español)</label><input type="text" id="title-es" placeholder="Título del artículo"></div>
+          <div class="form-group"><label>Texto (Español)</label><textarea id="text-es" placeholder="Contenido en español..."></textarea></div>
+        </div>
+        <div id="trans-ru" class="trans-panel">
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="trans-status empty" id="st-ru">ריק</span>
+            <button class="btn btn-gold btn-sm" onclick="translateLang('ru')">תרגם לרוסית</button>
+          </div>
+          <div class="form-group"><label>Заголовок (Русский)</label><input type="text" id="title-ru" placeholder="Заголовок статьи"></div>
+          <div class="form-group"><label>Текст (Русский)</label><textarea id="text-ru" placeholder="Содержание на русском..."></textarea></div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="translateAll()">✨ תרגם הכל אוטומטית</button>
+        <button class="btn btn-primary" onclick="saveArticle()" id="save-btn">שמור מאמר</button>
+        <button class="btn btn-outline" onclick="cancelEdit()">ביטול</button>
+        <button class="btn btn-danger" id="delete-btn" style="display:none" onclick="deleteCurrentArticle()">מחק מאמר</button>
+      </div>
+    </div>
+
+    <!-- ARTICLE LIST -->
+    <div class="section-head">
+      <h2>מאמרים פורסמו (<span id="art-count">0</span>)</h2>
+      <button class="btn btn-primary" onclick="newArticle()">+ מאמר חדש</button>
+    </div>
+    <div id="articles-list-admin">
+      <p style="color:var(--text-soft);font-size:14px">טוען מאמרים...</p>
+    </div>
+
+  </div>
+</div>
+
+<div id="status-bar"></div>
+
+<script>
+const REPO = 'elishaizizov-web/elishaizizov-web.github.io';
+const FILE = 'articles.json';
+const LANGS = { de: 'German', en: 'English', fr: 'French', es: 'Spanish', ru: 'Russian' };
+
+let ghToken = '';
+let aiKey = '';
+let articles = [];
+let currentFileSha = '';
+let editingId = null;
+
+const PARASHIOT = {
+  bereshit: ['Bereshit','Noach','Lech Lecha','Vayera','Chayei Sara','Toldot','Vayetze','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi'],
+  shemot:   ['Shemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Teruma','Tetzave','Ki Tisa','Vayakhel','Pekudei'],
+  vayikra:  ['Vayikra','Tzav','Shemini','Tazria','Metzora','Acharei Mot','Kedoshim','Emor','Behar','Bechukotai'],
+  bamidbar: ['Bamidbar','Naso','Behaalotcha','Shelach','Korach','Chukat','Balak','Pinchas','Matot','Masei'],
+  devarim:  ['Devarim','Vaetchanan','Ekev','Reeh','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','VeZot HaBracha']
+};
+
+// ---- LOGIN ----
+function doLogin() {
+  const token = document.getElementById('gh-token').value.trim();
+  const key   = document.getElementById('ai-key').value.trim();
+  const err   = document.getElementById('login-err');
+  err.style.display = 'none';
+  if (!token) { err.textContent = 'נא להזין GitHub Token'; err.style.display='block'; return; }
+  ghToken = token;
+  aiKey   = key;
+  if (document.getElementById('remember-me').checked) {
+    localStorage.setItem('admin_gh_token', token);
+    localStorage.setItem('admin_ai_key',   key);
+  }
+  loadArticles();
+}
+
+function doLogout() {
+  localStorage.removeItem('admin_gh_token');
+  localStorage.removeItem('admin_ai_key');
+  location.reload();
+}
+
+// Auto-fill from localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  const t = localStorage.getItem('admin_gh_token');
+  const k = localStorage.getItem('admin_ai_key');
+  if (t) document.getElementById('gh-token').value = t;
+  if (k) document.getElementById('ai-key').value   = k;
+  if (t) { ghToken = t; aiKey = k || ''; loadArticles(); }
+});
+
+// ---- GITHUB API ----
+async function ghGet(path) {
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) throw new Error(`GitHub ${res.status}`);
+  return res.json();
+}
+
+async function ghPut(path, content, sha, message) {
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))), sha };
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${ghToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) { const d = await res.json(); throw new Error(d.message || `GitHub ${res.status}`); }
+  return res.json();
+}
+
+async function loadArticles() {
+  showStatus('טוען מאמרים...', 'info');
+  try {
+    const data = await ghGet(FILE);
+    currentFileSha = data.sha;
+    const json = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    articles = Array.isArray(json.articles) ? json.articles : [];
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderList();
+    showStatus('מאמרים נטענו בהצלחה ✓', 'ok');
+  } catch(e) {
+    if (e.message.includes('404')) {
+      // File not found, start fresh
+      articles = [];
+      currentFileSha = '';
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      renderList();
+      showStatus('קובץ המאמרים ריק — מוכן להוספת מאמרים', 'ok');
+    } else {
+      document.getElementById('login-err').textContent = 'שגיאת גישה: ' + e.message + ' — בדוק את ה-Token';
+      document.getElementById('login-err').style.display = 'block';
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('app').style.display = 'none';
+      hideStatus();
+    }
+  }
+}
+
+async function saveToGithub(commitMsg) {
+  const json = JSON.stringify({ articles }, null, 2);
+  const result = await ghPut(FILE, json, currentFileSha, commitMsg);
+  currentFileSha = result.content.sha;
+}
+
+// ---- ARTICLE LIST ----
+function renderList() {
+  const list = document.getElementById('articles-list-admin');
+  document.getElementById('art-count').textContent = articles.length;
+  if (!articles.length) { list.innerHTML = '<p style="color:var(--text-soft);font-size:14px">אין מאמרים עדיין. הוסף את המאמר הראשון!</p>'; return; }
+  const sorted = [...articles].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  list.innerHTML = sorted.map(a => {
+    const title = (a.translations && a.translations.he && a.translations.he.title) || a.title || '(ללא כותרת)';
+    const cat = a.hag ? `חג: ${a.hag}` : (a.book && a.parasha ? `${a.book} / ${a.parasha}` : a.category || '');
+    const langs = ['he','de','en','fr','es','ru'].filter(l => a.translations && a.translations[l] && a.translations[l].title).join(', ');
+    return `<div class="article-row">
+      <div class="article-row-info">
+        <h3>${title}</h3>
+        <small>${a.date || ''} · ${cat} · שפות: ${langs || '—'}</small>
+      </div>
+      <div class="article-row-actions">
+        <button class="btn btn-outline btn-sm" onclick="editArticle(${a.id})">עריכה</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete(${a.id})">מחק</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- FORM ----
+function newArticle() {
+  editingId = null;
+  document.getElementById('form-title-lbl').textContent = 'מאמר חדש';
+  document.getElementById('delete-btn').style.display = 'none';
+  clearForm();
+  scrollToForm();
+}
+
+function clearForm() {
+  ['he','de','en','fr','es','ru'].forEach(l => {
+    setVal(`title-${l}`, '');
+    setVal(`text-${l}`, '');
+    updateTransStatus(l);
+  });
+  setVal('f-category','');
+  setVal('f-book','');
+  setVal('f-parasha','');
+  setVal('f-hag','');
+  setVal('f-date', todayDate());
+  setVal('f-image','');
+  onCatChange();
+  switchLangTab('he');
+}
+
+function editArticle(id) {
+  const a = articles.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+  document.getElementById('form-title-lbl').textContent = 'עריכת מאמר';
+  document.getElementById('delete-btn').style.display = 'inline-block';
+  setVal('f-date', a.date || '');
+  setVal('f-image', a.image || '');
+  if (a.hag) {
+    setVal('f-category','hag'); onCatChange();
+    setVal('f-hag', a.hag);
+  } else {
+    setVal('f-category','parasha'); onCatChange();
+    setVal('f-book', a.book || ''); onBookChange();
+    setVal('f-parasha', a.parasha || '');
+  }
+  ['he','de','en','fr','es','ru'].forEach(l => {
+    const t = (a.translations && a.translations[l]) || {};
+    setVal(`title-${l}`, t.title || '');
+    setVal(`text-${l}`, t.text || '');
+    updateTransStatus(l);
+  });
+  switchLangTab('he');
+  scrollToForm();
+}
+
+function cancelEdit() {
+  editingId = null;
+  clearForm();
+  document.getElementById('form-title-lbl').textContent = 'מאמר חדש';
+  document.getElementById('delete-btn').style.display = 'none';
+}
+
+async function saveArticle() {
+  const cat = getVal('f-category');
+  const date = getVal('f-date').trim();
+  if (!cat) { alert('נא לבחור קטגוריה'); return; }
+  if (!date) { alert('נא להזין תאריך'); return; }
+  const titleHe = getVal('title-he').trim();
+  const textHe  = getVal('text-he').trim();
+  if (!titleHe) { alert('נא להזין כותרת בעברית'); return; }
+
+  const translations = {};
+  ['he','de','en','fr','es','ru'].forEach(l => {
+    const tl = getVal(`title-${l}`).trim();
+    const tx = getVal(`text-${l}`).trim();
+    if (tl || tx) translations[l] = { title: tl, text: tx };
+  });
+
+  const article = {
+    id: editingId !== null ? editingId : (articles.length ? Math.max(...articles.map(a=>a.id)) + 1 : 1),
+    date,
+    image: getVal('f-image').trim() || null,
+    category: cat,
+    book: cat === 'parasha' ? getVal('f-book') : null,
+    parasha: cat === 'parasha' ? getVal('f-parasha') : null,
+    hag: cat === 'hag' ? getVal('f-hag') : null,
+    translations
+  };
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  showStatus('שומר מאמר...', 'info');
+  try {
+    if (editingId !== null) {
+      const idx = articles.findIndex(a => a.id === editingId);
+      if (idx >= 0) articles[idx] = article; else articles.push(article);
+    } else {
+      articles.push(article);
+    }
+    await saveToGithub(editingId !== null ? `Update article: ${titleHe}` : `Add article: ${titleHe}`);
+    editingId = null;
+    renderList();
+    clearForm();
+    document.getElementById('form-title-lbl').textContent = 'מאמר חדש';
+    document.getElementById('delete-btn').style.display = 'none';
+    showStatus('המאמר נשמר בהצלחה ✓ האתר יתעדכן תוך כמה דקות', 'ok');
+  } catch(e) {
+    articles = articles.filter(a => a.id !== article.id || editingId !== null); // rollback if new
+    showStatus('שגיאה בשמירה: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+function deleteCurrentArticle() {
+  if (editingId === null) return;
+  confirmDelete(editingId);
+}
+
+async function confirmDelete(id) {
+  const a = articles.find(x => x.id === id);
+  const title = (a && a.translations && a.translations.he && a.translations.he.title) || 'מאמר זה';
+  if (!confirm(`למחוק את "${title}"?`)) return;
+  articles = articles.filter(x => x.id !== id);
+  showStatus('מוחק מאמר...', 'info');
+  try {
+    await saveToGithub(`Delete article id ${id}`);
+    if (editingId === id) cancelEdit();
+    renderList();
+    showStatus('המאמר נמחק ✓', 'ok');
+  } catch(e) {
+    showStatus('שגיאה במחיקה: ' + e.message, 'err');
+  }
+}
+
+// ---- TRANSLATION ----
+async function translateLang(lang) {
+  if (!aiKey) { alert('נא להזין Anthropic API Key בכניסה'); return; }
+  const srcTitle = getVal('title-he').trim();
+  const srcText  = getVal('text-he').trim();
+  if (!srcTitle && !srcText) { alert('נא למלא כותרת ותוכן בעברית תחילה'); return; }
+
+  const langName = LANGS[lang];
+  const st = document.getElementById(`st-${lang}`);
+  const btn = st.nextElementSibling;
+  btn.disabled = true;
+  st.className = 'trans-status empty';
+  st.textContent = 'מתרגם...';
+  showStatus(`מתרגם ל-${langName}...`, 'info');
+
+  try {
+    const prompt = `You are a professional translator specializing in Jewish religious texts.
+Translate the following Hebrew article to ${langName}.
+Preserve the religious terminology, tone, and style.
+Return ONLY a JSON object with keys "title" and "text", no other text.
+
+Title: ${srcTitle}
+
+Text:
+${srcText}`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': aiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) { const d = await res.json(); throw new Error(d.error?.message || `API ${res.status}`); }
+    const data = await res.json();
+    const raw = data.content[0].text.trim();
+    // Extract JSON from response
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('לא התקבל JSON תקני');
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    setVal(`title-${lang}`, parsed.title || '');
+    setVal(`text-${lang}`,  parsed.text  || '');
+    updateTransStatus(lang);
+    showStatus(`תורגם ל-${langName} ✓`, 'ok');
+  } catch(e) {
+    st.textContent = 'שגיאה';
+    showStatus('שגיאת תרגום: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function translateAll() {
+  if (!aiKey) { alert('נא להזין Anthropic API Key בכניסה'); return; }
+  const srcTitle = getVal('title-he').trim();
+  const srcText  = getVal('text-he').trim();
+  if (!srcTitle && !srcText) { alert('נא למלא כותרת ותוכן בעברית תחילה'); return; }
+  for (const lang of ['de','en','fr','es','ru']) {
+    await translateLang(lang);
+  }
+  showStatus('כל התרגומים הושלמו ✓', 'ok');
+}
+
+// ---- HELPERS ----
+function getVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v; }
+
+function todayDate() {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+}
+
+function onCatChange() {
+  const cat = getVal('f-category');
+  document.getElementById('parasha-group').style.display = cat === 'parasha' ? 'block' : 'none';
+  document.getElementById('hag-group').style.display     = cat === 'hag'     ? 'block' : 'none';
+  document.getElementById('parasha-select-group').style.display = 'none';
+  setVal('f-book',''); setVal('f-parasha','');
+}
+
+function onBookChange() {
+  const book = getVal('f-book');
+  const group = document.getElementById('parasha-select-group');
+  const sel   = document.getElementById('f-parasha');
+  if (!book || !PARASHIOT[book]) { group.style.display = 'none'; return; }
+  sel.innerHTML = '<option value="">-- בחר פרשה --</option>' + PARASHIOT[book].map(p => `<option value="${p}">${p}</option>`).join('');
+  group.style.display = 'block';
+}
+
+function switchLangTab(lang) {
+  document.querySelectorAll('.lang-tab').forEach((b,i) => {
+    const l = ['he','de','en','fr','es','ru'][i];
+    b.classList.toggle('active', l === lang);
+  });
+  document.querySelectorAll('.trans-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`trans-${lang}`);
+  if (panel) panel.classList.add('active');
+}
+
+function updateTransStatus(lang) {
+  const st = document.getElementById(`st-${lang}`);
+  if (!st) return;
+  const hasContent = getVal(`title-${lang}`).trim() || getVal(`text-${lang}`).trim();
+  if (hasContent) { st.className = 'trans-status done'; st.textContent = 'קיים'; }
+  else            { st.className = 'trans-status empty'; st.textContent = 'ריק'; }
+}
+
+function scrollToForm() {
+  document.getElementById('article-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+let statusTimer = null;
+function showStatus(msg, type) {
+  const bar = document.getElementById('status-bar');
+  bar.textContent = msg;
+  bar.className = type;
+  if (statusTimer) clearTimeout(statusTimer);
+  if (type !== 'info') statusTimer = setTimeout(hideStatus, 4000);
+}
+function hideStatus() {
+  document.getElementById('status-bar').className = '';
+  document.getElementById('status-bar').style.display = 'none';
+}
+</script>
+</body>
+</html>

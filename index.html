@@ -253,6 +253,94 @@ body {
 .articles-section { margin-bottom: 56px; padding-bottom: 56px; border-bottom: 1px solid var(--rule); }
 .articles-title { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 30px); font-weight: 400; color: var(--text); margin-bottom: 28px; }
 
+/* FEATURED ARTICLE */
+.featured-article {
+  display: none;
+  margin-bottom: 36px;
+  border: 1px solid var(--gold);
+  background: #fdfcfa;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.22s;
+}
+.featured-article:hover { border-color: var(--gold-light); }
+.featured-article.visible { display: flex; }
+.featured-label {
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: block;
+}
+.featured-img {
+  width: 280px;
+  min-height: 200px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.featured-img-placeholder {
+  width: 280px;
+  min-height: 200px;
+  background: var(--navy);
+  flex-shrink: 0;
+}
+.featured-body {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.featured-date {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--text-soft);
+  margin-bottom: 10px;
+  display: block;
+}
+.featured-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.featured-excerpt {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 600px) {
+  .featured-article.visible { flex-direction: column; }
+  .featured-img, .featured-img-placeholder { width: 100%; min-height: 180px; }
+  .featured-body { padding: 20px; }
+}
+
+/* PDF download button */
+.share-btn-pdf {
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  padding: 9px 18px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+.share-btn-pdf:hover { background: var(--navy-light); }
+
 .torah-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .book-btn {
   background: var(--navy);
@@ -810,6 +898,17 @@ body {
   <section class="articles-section" id="articles-section">
     <span class="section-label" data-t="art-label">Beiträge</span>
 
+    <!-- Featured Article -->
+    <div class="featured-article" id="featured-article" onclick="openFeatured()">
+      <div class="featured-img-placeholder" id="featured-img-wrap"></div>
+      <div class="featured-body">
+        <span class="featured-label" id="featured-label" data-t="feat-label">Neuester Beitrag</span>
+        <span class="featured-date" id="featured-date"></span>
+        <h2 class="featured-title" id="featured-title"></h2>
+        <p class="featured-excerpt" id="featured-excerpt"></p>
+      </div>
+    </div>
+
     <!-- Tabs -->
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-parasha" onclick="switchTab('parasha')" data-t="tab-p">Parashiot</button>
@@ -927,6 +1026,9 @@ body {
       <img class="article-full-img" id="af-img" src="" alt="" style="display:none">
       <div class="article-full-text" id="af-text"></div>
       <div class="article-full-share" id="af-share"></div>
+      <div style="margin-top:10px">
+        <button class="share-btn-pdf" id="af-pdf-btn" onclick="downloadArticlePDF()">⬇ PDF</button>
+      </div>
     </div>
   </div>
 </main>
@@ -946,7 +1048,7 @@ const T = {
     y3: '2020 bis 2023',  s3h: 'Basel',                      s3d: 'Rabbiner und Vortragsredner, Schomre Tora Institut Basel',
     y4: 'Ordination',      s4h: 'Rabbinatsordination, Alter 24', s4d: 'Talmud, Halacha und jüdisches Denken',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.',
+    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'feat-label': 'Neuester Beitrag', 'pdf-btn': 'PDF herunterladen',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.',
   },
   en: {
@@ -962,7 +1064,7 @@ const T = {
     y3: '2020 to 2023',   s3h: 'Basel',                      s3d: 'Rabbi and Lecturer, Schomre Tora Institut Basel',
     y4: 'Ordination',       s4h: 'Rabbinical Ordination, age 24', s4d: 'Talmud, Halacha and Jewish Thought',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.',
+    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'feat-label': 'Latest Article', 'pdf-btn': 'Download PDF',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.',
   },
   fr: {
@@ -978,7 +1080,7 @@ const T = {
     y3: '2020 à 2023',    s3h: 'Bâle',                       s3d: 'Rabbin et Conférencier, Schomre Tora Bâle',
     y4: 'Ordination',       s4h: 'Ordination rabbinique, 24 ans', s4d: 'Talmud, Halacha et pensée juive',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles à venir.',
+    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'feat-label': 'Dernier article', 'pdf-btn': 'Télécharger PDF',
     'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.',
   },
   he: {
@@ -994,7 +1096,7 @@ const T = {
     y3: '2020 עד 2023',   s3h: 'באזל',                      s3d: 'רב ומרצה, מכון שומרי תורה באזל',
     y4: 'Ordination',         s4h: 'הסמכה לרבנות בגיל 24',       s4d: 'תלמוד, הלכה ומחשבת ישראל',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'חפש', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.',
+    'nav-search': 'חפש', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'feat-label': 'הכתבה האחרונה', 'pdf-btn': 'הורדת PDF',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.',
   },
   es: {
@@ -1010,7 +1112,7 @@ const T = {
     y3: '2020 a 2023',           s3h: 'Basilea',               s3d: 'Rabino y Conferencista, Schomre Tora Institut Basel',
     y4: 'Ordination',            s4h: 'Ordenación rabínica, 24 años', s4d: 'Talmud, Halacha y pensamiento judío',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'Buscar', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.',
+    'nav-search': 'Buscar', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'feat-label': 'Último artículo', 'pdf-btn': 'Descargar PDF',
     'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.',
   },
   ru: {
@@ -1026,7 +1128,7 @@ const T = {
     y3: '2020 до 2023',   s3h: 'Базель',                    s3d: 'Раввин и лектор, Schomre Tora Базель',
     y4: 'Ordination',         s4h: 'Раввинская ординация, 24 года', s4d: 'Талмуд, Halacha и еврейская мысль',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'Поиск', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.',
+    'nav-search': 'Поиск', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'feat-label': 'Последняя статья', 'pdf-btn': 'Скачать PDF',
     'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.',
   }
 };
@@ -1069,6 +1171,7 @@ function setLang(l) {
   });
   renderBooks();
   renderHagim();
+  renderFeatured();
 }
 
 // Form submit via Formspree
@@ -1155,11 +1258,67 @@ const HAGIM_NAMES = {
 
 let currentBook = null;
 let currentLang = 'de';
+let articlesData = [];
+let currentArticleId = null;
 
-function getArticles() {
-  return JSON.parse(localStorage.getItem('elishai_articles') || '[]');
-}
+function getArticles() { return articlesData; }
 function getLang() { return currentLang; }
+
+function renderFeatured() {
+  const articles = getArticles();
+  const box = document.getElementById('featured-article');
+  if (!articles.length) { box.classList.remove('visible'); return; }
+  // Sort by date descending, take latest
+  const sorted = [...articles].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const a = sorted[0];
+  const l = currentLang;
+  const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
+  const wrap = document.getElementById('featured-img-wrap');
+  if (a.image) {
+    wrap.outerHTML = `<img class="featured-img" id="featured-img-wrap" src="${a.image}" alt="${t.title}">`;
+  } else {
+    const el = document.getElementById('featured-img-wrap');
+    if (el) el.className = 'featured-img-placeholder';
+  }
+  document.getElementById('featured-date').textContent = a.date || '';
+  document.getElementById('featured-title').textContent = t.title || '';
+  document.getElementById('featured-excerpt').textContent = (t.text || '').replace(/<[^>]+>/g,'').substring(0,220);
+  box._articleId = a.id;
+  box.classList.add('visible');
+}
+
+function openFeatured() {
+  const box = document.getElementById('featured-article');
+  if (box._articleId !== undefined) openArticle(box._articleId);
+}
+
+function downloadArticlePDF() {
+  const articles = getArticles();
+  const a = articles.find(x => x.id === currentArticleId);
+  if (!a) return;
+  const l = currentLang;
+  const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
+  const copyright = '\n\n© הרב אלישי זיזוב | Rabbi Elishai Zizov | כל הזכויות שמורות | All rights reserved';
+  const content = (t.title || '') + '\n' + (a.date || '') + '\n\n' + (t.text || '').replace(/<[^>]+>/g,'') + copyright;
+  // Use print method for PDF
+  const w = window.open('', '_blank');
+  const dir = l === 'he' ? 'rtl' : 'ltr';
+  w.document.write(`<!DOCTYPE html><html dir="${dir}"><head><meta charset="UTF-8"><title>${t.title||''}</title><style>
+    body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:20px;line-height:1.8;color:#222;direction:${dir}}
+    h1{font-size:24px;margin-bottom:8px}
+    .meta{font-size:12px;color:#666;margin-bottom:24px}
+    .text{font-size:15px;white-space:pre-wrap}
+    .copy{margin-top:32px;font-size:11px;color:#888;border-top:1px solid #ddd;padding-top:12px}
+  </style></head><body>
+    <h1>${t.title||''}</h1>
+    <p class="meta">${a.date||''} · הרב אלישי זיזוב | Rabbi Elishai Zizov</p>
+    <div class="text">${(t.text||'').replace(/<[^>]+>/g,'')}</div>
+    <p class="copy">© הרב אלישי זיזוב | Rabbi Elishai Zizov · כל הזכויות שמורות · All rights reserved</p>
+  </body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(() => { w.print(); }, 300);
+}
 function getTN() { return TORAH_NAMES[currentLang] || TORAH_NAMES.de; }
 
 function updateNavLabels() {
@@ -1295,20 +1454,23 @@ function openArticle(id) {
   const articles = getArticles();
   const a = articles.find(x => x.id === id);
   if (!a) return;
+  currentArticleId = id;
   const l = currentLang;
-  const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
-  document.getElementById('af-date').textContent = a.date;
-  document.getElementById('af-title').textContent = t.title;
-  document.getElementById('af-text').textContent = t.text;
+  const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
+  document.getElementById('af-date').textContent = a.date || '';
+  document.getElementById('af-title').textContent = t.title || '';
+  const textEl = document.getElementById('af-text');
+  textEl.innerHTML = (t.text || '').replace(/\n/g, '<br>');
   const img = document.getElementById('af-img');
   if (a.image) { img.src = a.image; img.alt = t.title; img.style.display = 'block'; }
   else { img.style.display = 'none'; }
-  // Share buttons
+  // Share buttons — WhatsApp with author attribution
   const url = encodeURIComponent(window.location.href);
-  const text = encodeURIComponent(t.title + ' — ');
+  const waText = encodeURIComponent((t.title || '') + '\n✍️ הרב אלישי זיזוב | Rabbi Elishai Zizov\n© כל הזכויות שמורות\n\n');
+  const tgText = encodeURIComponent((t.title || '') + ' — הרב אלישי זיזוב');
   document.getElementById('af-share').innerHTML = `
-    <a class="share-btn share-wa" href="https://wa.me/?text=${text}${url}" target="_blank" rel="noopener">WhatsApp</a>
-    <a class="share-btn" href="https://t.me/share/url?url=${url}&text=${text}" target="_blank" rel="noopener">Telegram</a>
+    <a class="share-btn share-wa" href="https://wa.me/?text=${waText}${url}" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="share-btn" href="https://t.me/share/url?url=${url}&text=${tgText}" target="_blank" rel="noopener">Telegram</a>
     <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='✓ Kopiert')">Link kopieren</button>
   `;
   document.getElementById('article-overlay').classList.add('open');
@@ -1350,7 +1512,12 @@ function toggleSearch() {
   }
 }
 
-setLang('de');
+// Load articles from articles.json, then initialise
+fetch('articles.json?_=' + Date.now())
+  .then(r => r.ok ? r.json() : { articles: [] })
+  .then(data => { articlesData = Array.isArray(data.articles) ? data.articles : []; })
+  .catch(() => { articlesData = []; })
+  .finally(() => { setLang('de'); });
 </script>
 
 <div class="social-bar">
