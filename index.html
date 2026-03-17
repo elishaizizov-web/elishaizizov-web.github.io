@@ -1268,8 +1268,13 @@ function renderFeatured() {
   const articles = getArticles();
   const box = document.getElementById('featured-article');
   if (!articles.length) { box.classList.remove('visible'); return; }
-  // Sort by date descending, take latest
-  const sorted = [...articles].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  // Sort by date descending — parse DD.MM.YYYY for correct ordering
+  function parseDate(s) {
+    const p = (s||'').split('.');
+    if (p.length === 3) return new Date(+p[2], +p[1]-1, +p[0]);
+    return new Date(s||0);
+  }
+  const sorted = [...articles].sort((a, b) => parseDate(b.date) - parseDate(a.date));
   const a = sorted[0];
   const l = currentLang;
   const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };

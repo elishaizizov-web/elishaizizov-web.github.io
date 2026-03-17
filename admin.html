@@ -434,7 +434,8 @@ async function ghGet(path) {
 }
 
 async function ghPut(path, content, sha, message) {
-  const body = { message, content: btoa(unescape(encodeURIComponent(content))), sha };
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
+  if (sha) body.sha = sha; // omit sha when creating file for the first time
   const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
     method: 'PUT',
     headers: { Authorization: `token ${ghToken}`, 'Content-Type': 'application/json' },
