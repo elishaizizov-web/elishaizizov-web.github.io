@@ -188,8 +188,23 @@ textarea { resize: vertical; min-height: 200px; line-height: 1.7; }
 </head>
 <body>
 
+<!-- PASSWORD SCREEN -->
+<div id="password-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px">
+  <div class="login-box">
+    <h1>ניהול מאמרים</h1>
+    <p>הזן סיסמה כדי להמשיך.</p>
+    <label>סיסמה</label>
+    <input type="password" id="admin-password" placeholder="••••••••" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') checkPassword()">
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" onclick="checkPassword()">כניסה</button>
+    </div>
+    <p id="pw-err" style="color:var(--red);font-size:13px;margin-top:12px;display:none">סיסמה שגויה</p>
+  </div>
+</div>
+
 <!-- LOGIN SCREEN -->
-<div id="login-screen">
+<div id="login-screen" style="display:none">
   <div class="login-box">
     <h1>ניהול מאמרים</h1>
     <p>כדי להעלות מאמרים לאתר צריך להזין את פרטי הגישה שלך.</p>
@@ -393,6 +408,36 @@ const PARASHIOT = {
   devarim:  ['Devarim','Vaetchanan','Ekev','Reeh','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','VeZot HaBracha']
 };
 
+// ---- PASSWORD CHECK ----
+const PW_HASH = 'fd301da2b811e168ad2e96a71925be81a33283dc469a86ac51019fbcbb7cca8c';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPassword() {
+  const pw = document.getElementById('admin-password').value;
+  const hash = await sha256(pw);
+  if (hash === PW_HASH) {
+    sessionStorage.setItem('admin_auth', '1');
+    document.getElementById('password-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    // auto-login if token remembered
+    const t = localStorage.getItem('admin_gh_token');
+    const k = localStorage.getItem('admin_ai_key');
+    if (t) { document.getElementById('gh-token').value = t; }
+    if (k) { document.getElementById('ai-key').value   = k; }
+    if (t) { ghToken = t; aiKey = k || ''; loadArticles(); }
+  } else {
+    const err = document.getElementById('pw-err');
+    err.style.display = 'block';
+    document.getElementById('admin-password').value = '';
+    document.getElementById('admin-password').focus();
+    setTimeout(() => { err.style.display = 'none'; }, 3000);
+  }
+}
+
 // ---- LOGIN ----
 function doLogin() {
   const token = document.getElementById('gh-token').value.trim();
@@ -415,13 +460,17 @@ function doLogout() {
   location.reload();
 }
 
-// Auto-fill from localStorage
+// On load: if session already authenticated, skip password screen
 window.addEventListener('DOMContentLoaded', () => {
-  const t = localStorage.getItem('admin_gh_token');
-  const k = localStorage.getItem('admin_ai_key');
-  if (t) document.getElementById('gh-token').value = t;
-  if (k) document.getElementById('ai-key').value   = k;
-  if (t) { ghToken = t; aiKey = k || ''; loadArticles(); }
+  if (sessionStorage.getItem('admin_auth') === '1') {
+    document.getElementById('password-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    const t = localStorage.getItem('admin_gh_token');
+    const k = localStorage.getItem('admin_ai_key');
+    if (t) document.getElementById('gh-token').value = t;
+    if (k) document.getElementById('ai-key').value   = k;
+    if (t) { ghToken = t; aiKey = k || ''; loadArticles(); }
+  }
 });
 
 // ---- GITHUB API ----
