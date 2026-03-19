@@ -5,12 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rabbiner Elishai Zizov</title>
 
-  <!-- Firebase (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-
-
 <meta name="description" content="Rabbiner Elishai Zizov — Rabbiner, Vortragsredner und jüdischer Pädagoge in Frankfurt am Main. Jüdische Philosophie, Bildung und Content.">
 <meta property="og:title" content="Rabbiner Elishai Zizov">
 <meta property="og:description" content="Rabbiner, Vortragsredner und jüdischer Pädagoge in Frankfurt am Main.">
@@ -1213,14 +1207,15 @@ body {
 
     <!-- PASSWORD SCREEN -->
     
+    
     <!-- LOGIN SCREEN -->
     <div id="admin-login-screen" style="text-align:center; padding:20px 0;">
       <p style="font-family:'Playfair Display',serif; font-size:18px; margin-bottom:16px;">Admin Login</p>
-      <input type="email" id="admin-email" placeholder="Email" style="padding:10px; margin-bottom:10px; width:220px; outline:none; font-size:15px; border:1px solid var(--rule); display:block; margin:0 auto 10px;">
-      <input type="password" id="admin-pw" placeholder="Password" style="padding:10px; width:220px; outline:none; font-size:15px; border:1px solid var(--rule); display:block; margin:0 auto 16px;" onkeyup="if(event.key==='Enter')adminLogin()">
+      <input type="password" id="admin-pw" placeholder="Enter Password" style="padding:10px; width:220px; outline:none; font-size:15px; border:1px solid var(--rule); display:block; margin:0 auto 16px;" onkeyup="if(event.key==='Enter')adminLogin()">
       <button class="admin-save-btn" style="padding:10px 24px;" onclick="adminLogin()">Login</button>
       <p id="admin-login-err" style="display:none; color:#8b0000; margin-top:12px; font-size:13px;"></p>
     </div>
+
 
 
     <!-- ADMIN CONTENT -->
@@ -1818,8 +1813,16 @@ const firebaseConfig = {
   appId: "1:336975073982:web:b4d9f466b7dc476531c4ef",
   measurementId: "G-R4DL0C3PFW"
 };
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+// Initialize Firebase only once
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// Global Firebase references
 const db = firebase.firestore();
+
+
 
 window._articles       = [];
 window._currentArticle = null;
@@ -1863,50 +1866,61 @@ const PARASHA_MAP = {
 };
 let quillEditors = {};
 
-// Listen for auth state changes
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    // User is signed in
-    document.getElementById('admin-login-screen').style.display = 'none';
-    document.getElementById('admin-content').style.display = 'block';
-    initQuillEditors();
-    adminUpdateParasha();
-    renderAdminList();
-  } else {
-    // User is signed out
-    document.getElementById('admin-login-screen').style.display = 'block';
-    document.getElementById('admin-content').style.display = 'none';
+
+// ════════════════════════════════════════════════════════
+// ADMIN LOGIN (Hardcoded Password, No Auth)
+// ════════════════════════════════════════════════════════
+const btoa = window.btoa || function(str) { return str; };
+// The encoded password (base64 of "ElishaiAdmin2026!") is "RWxpc2hhaUFkbWluMjAyNiE="
+
+const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
+function checkToken(input) {
+  try {
+    const scrambled = input.split('').reverse().join('');
+    return window.btoa(scrambled) === HASH_VAL;
+  } catch(e) {
+    return false;
   }
-});
+}
+
 
 function toggleAdmin() {
   document.getElementById('admin-overlay').classList.toggle('open');
 }
 
-async function adminLogin() {
-  const email = document.getElementById('admin-email').value.trim();
+
+function adminLogin() {
   const pw = document.getElementById('admin-pw').value;
   const err = document.getElementById('admin-login-err');
   err.style.display = 'none';
 
-  if (!email || !pw) { err.textContent = 'Please enter email and password.'; err.style.display = 'block'; return; }
+  if (!pw) { 
+    err.textContent = 'Please enter password.'; 
+    err.style.display = 'block'; 
+    return; 
+  }
 
-  try {
-    await firebase.auth().signInWithEmailAndPassword(email, pw);
+  if (checkToken(pw)) {
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+    initQuillEditors();
+    adminUpdateParasha();
+    renderAdminList();
     document.getElementById('admin-pw').value = '';
-  } catch(e) {
-    err.textContent = 'Login failed: ' + e.message;
+  } else {
+    err.textContent = 'Incorrect password.';
     err.style.display = 'block';
   }
 }
 
-async function adminLogout() {
-  try {
-    await firebase.auth().signOut();
-    document.getElementById('admin-email').value = '';
-    document.getElementById('admin-pw').value = '';
-  } catch(e) { console.error(e); }
+
+
+function adminLogout() {
+  document.getElementById('admin-login-screen').style.display = 'block';
+  document.getElementById('admin-content').style.display = 'none';
+  document.getElementById('admin-pw').value = '';
 }
+
 
 
 function initQuillEditors() {
