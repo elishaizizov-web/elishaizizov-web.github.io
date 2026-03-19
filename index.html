@@ -974,6 +974,7 @@ body {
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
   <!-- Quill Rich Text Editor -->
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -1821,6 +1822,7 @@ if (!firebase.apps.length) {
 
 // Global Firebase references
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 
 
@@ -1922,6 +1924,35 @@ function adminLogout() {
 }
 
 
+
+
+// ════════════════════════════════════════════════════════
+// IMAGE UPLOAD
+// ════════════════════════════════════════════════════════
+async function uploadImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('upload-status');
+  const urlInput = document.getElementById('af-image');
+
+  status.style.display = 'block';
+  status.textContent = 'Uploading... Please wait.';
+  status.style.color = '#b8952a';
+
+  try {
+    const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
+    const snapshot = await storageRef.put(file);
+    const downloadURL = await snapshot.ref.getDownloadURL();
+
+    urlInput.value = downloadURL;
+    status.textContent = '✓ Image uploaded successfully!';
+    status.style.color = 'green';
+  } catch (err) {
+    console.error(err);
+    status.textContent = '❌ Upload failed: ' + err.message;
+    status.style.color = 'red';
+  }
+}
 
 function initQuillEditors() {
   if (quillEditors.de) return;
