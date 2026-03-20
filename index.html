@@ -2350,8 +2350,8 @@ function adminUpdateParasha() {
 async function adminSave() {
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
-  if (!titleDE) { msg.textContent = '⚠ German title required.'; return; }
-  msg.textContent = 'Saving…';
+  if (!titleDE) { msg.textContent = '⚠ Deutscher Titel erforderlich.'; return; }
+  msg.textContent = 'Speichern...';
   const isHag = document.getElementById('af-cat').value === 'hag';
   const dv    = document.getElementById('af-date-input').value;
   const docData = {
@@ -2363,35 +2363,35 @@ async function adminSave() {
     image: document.getElementById('af-image').value.trim(),
     title: titleDE,
     text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
-    translations: {
-      de: { title: titleDE,                                              text: quillEditors.de?.root.innerHTML||'' },
-      he: { title: document.getElementById('af-title-he').value.trim(), text: quillEditors.he?.root.innerHTML||'' },
-      en: { title: document.getElementById('af-title-en').value.trim(), text: quillEditors.en?.root.innerHTML||'' },
-      fr: { title: document.getElementById('af-title-fr').value.trim(), text: quillEditors.fr?.root.innerHTML||'' },
-      es: { title: document.getElementById('af-title-es').value.trim(), text: quillEditors.es?.root.innerHTML||'' },
-      ru: { title: document.getElementById('af-title-ru').value.trim(), text: quillEditors.ru?.root.innerHTML||'' }
-    }
+    translations: { de: { title: titleDE, text: quillEditors.de ? quillEditors.de.root.innerHTML : '' } }
   };
   try {
     if (window._editingId) {
       await db.collection('articles').doc(window._editingId).update(docData);
-      msg.textContent = '✓ Updated!';
+      msg.textContent = '✓ Aktualisiert!';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
     } else {
       await db.collection('articles').add(docData);
-      msg.textContent = '✓ Saved!';
+      msg.textContent = '✓ Gespeichert!';
     }
     adminClearForm();
     await loadArticles();
     renderAdminList();
-  } catch(e) { msg.textContent = '✗ Error: '+e.message; console.error(e); }
+  } catch(e) { msg.textContent = '✗ Fehler: '+e.message; console.error(e); }
 }
 
 function adminClearForm() {
-  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
-    .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
+  ['af-title-de','af-image','af-hag-name','af-date-input'].forEach(id => {
+    const el = document.getElementById(id); 
+    if(el) el.value=''; 
+  });
+  if(quillEditors.de) quillEditors.de.setText('');
+
+  const pv = document.getElementById('admin-img-preview');
+  if(pv) pv.parentNode.removeChild(pv);
+  const st = document.getElementById('upload-status');
+  if(st) st.style.display = 'none';
 }
 
 function adminCancelEdit() {
@@ -2405,15 +2405,16 @@ async function adminEdit(id) {
   window._editingId = id;
   const a = window._articles.find(x => x.id === id);
   if (!a) return;
-  document.getElementById('admin-msg').textContent = '✏ Editing: ' + (a.title||id);
+  document.getElementById('admin-msg').textContent = '✏ Bearbeiten: ' + (a.title||id);
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
-  if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
-  ['de','he','en','fr','es','ru'].forEach(l => {
-    const tr = (a.translations&&a.translations[l]) ? a.translations[l] : {};
-    const el = document.getElementById('af-title-'+l);
-    if (el) el.value = tr.title||(l==='de'?a.title:'')||'';
-    if (quillEditors[l]) quillEditors[l].root.innerHTML = tr.text||(l==='de'?a.text:'')||'';
-  });
+  if (!window._quillInited) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
+
+  const el = document.getElementById('af-title-de');
+  if (el) el.value = (a.translations && a.translations.de && a.translations.de.title) ? a.translations.de.title : (a.title || '');
+  if (quillEditors.de) {
+    quillEditors.de.root.innerHTML = (a.translations && a.translations.de && a.translations.de.text) ? a.translations.de.text : (a.text || '');
+  }
+
   document.getElementById('af-image').value = a.image||'';
   if (a.book) {
     document.getElementById('af-cat').value = 'parasha'; adminToggleCat();
@@ -2423,7 +2424,13 @@ async function adminEdit(id) {
     document.getElementById('af-cat').value = 'hag'; adminToggleCat();
     document.getElementById('af-hag-name').value = a.hag;
   }
-  document.querySelector('.admin-box').scrollTo(0,0);
+  if (a.date) {
+    const parts = a.date.split('.');
+    if (parts.length === 3) {
+      document.getElementById('af-date-input').value = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+    }
+  }
+  document.querySelector('.admin-body').scrollTo(0,0);
 }
 
 async function adminDelete(id) {
@@ -2472,71 +2479,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ════════════════════════════════════════════════════════
 // FREE AUTO TRANSLATE (Google Translate API)
 // ════════════════════════════════════════════════════════
-async function autoTranslateFree() {
-  const deTitle = document.getElementById('af-title-de').value.trim();
-  const deText = quillEditors.de ? quillEditors.de.root.innerHTML : '';
-
-  if (!deTitle && (!deText || deText === '<p><br></p>')) {
-    alert("אנא כתוב קודם את המאמר בגרמנית כדי שהמערכת תוכל לתרגם אותו.");
-    return;
-  }
-
-  const msg = document.getElementById('admin-msg');
-  msg.textContent = 'מתרגם בחינם... אנא המתן (זה עשוי לקחת מספר שניות)...';
-
-  // Google Translate language codes ('iw' is used for Hebrew instead of 'he')
-  const langs = [
-    { id: 'he', code: 'iw', name: 'עברית' },
-    { id: 'en', code: 'en', name: 'אנגלית' },
-    { id: 'fr', code: 'fr', name: 'צרפתית' },
-    { id: 'es', code: 'es', name: 'ספרדית' },
-    { id: 'ru', code: 'ru', name: 'רוסית' }
-  ];
-
-  async function translateChunk(text, targetCode) {
-    if (!text) return "";
-    try {
-      const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=${targetCode}&dt=t`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ q: text })
-      });
-      const data = await res.json();
-      let translated = data[0].map(x => x[0]).join('');
-
-      // Fix broken HTML tags caused by Google Translate spacing
-      translated = translated.replace(/<\s+\/\s+/g, '</')
-                             .replace(/<\s+/g, '<')
-                             .replace(/\s+>/g, '>')
-                             .replace(/<\/\s+/g, '</');
-      return translated;
-    } catch (e) {
-      console.error(e);
-      return text;
-    }
-  }
-
-  try {
-    for (const l of langs) {
-      msg.textContent = `מתרגם ל-${l.name}...`;
-
-      if (deTitle) {
-        document.getElementById('af-title-' + l.id).value = await translateChunk(deTitle, l.code);
-      }
-
-      if (deText && deText !== '<p><br></p>') {
-        const translatedHtml = await translateChunk(deText, l.code);
-        if (quillEditors[l.id]) {
-          quillEditors[l.id].root.innerHTML = translatedHtml;
-        }
-      }
-    }
-    msg.textContent = '✨ התרגום הסתיים בהצלחה בחינם! אנא עבור על התוצאות (ולעיתים תקן מעט עיצוב אם תגיות זזו), ולאחר מכן לחץ Save.';
-  } catch (error) {
-    console.error(error);
-    msg.textContent = '❌ שגיאה בתרגום.';
-  }
-}
 </script>
 
 <div class="social-bar">
