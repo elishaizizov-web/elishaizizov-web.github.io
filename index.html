@@ -1546,14 +1546,7 @@ body {
 <div id="article-page">
   <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--rule); padding-bottom:16px; margin-bottom:28px; flex-wrap:wrap; gap:12px;">
     <button class="ap-back" onclick="closeArticlePage()">&#8592; <span id="ap-back-label">Zurück</span></button>
-    <div class="ap-lang-bar" id="ap-lang-bar">
-      <button class="ap-lang-btn active" data-l="de" onclick="switchArticleLang('de')">DE</button>
-      <button class="ap-lang-btn" data-l="en" onclick="switchArticleLang('en')">EN</button>
-      <button class="ap-lang-btn" data-l="fr" onclick="switchArticleLang('fr')">FR</button>
-      <button class="ap-lang-btn" data-l="es" onclick="switchArticleLang('es')">ES</button>
-      <button class="ap-lang-btn" data-l="ru" onclick="switchArticleLang('ru')">RU</button>
-      <button class="ap-lang-btn" data-l="he" onclick="switchArticleLang('he')">עב</button>
-    </div>
+    
   </div>
   <span id="ap-date"></span>
   <h1 id="ap-title"></h1>
@@ -1602,26 +1595,11 @@ body {
             <label>Title (DE) - German</label>
             <input type="text" id="af-title-de" placeholder="Deutscher Titel...">
           </div>
-          <div class="aform-group">
-            <label>Title (HE) - עברית</label>
-            <input type="text" id="af-title-he" placeholder="כותרת בעברית..." dir="rtl">
-          </div>
-          <div class="aform-group">
-            <label>Title (EN) - English</label>
-            <input type="text" id="af-title-en" placeholder="English Title...">
-          </div>
-          <div class="aform-group">
-            <label>Title (FR) - French</label>
-            <input type="text" id="af-title-fr" placeholder="Titre en français...">
-          </div>
-          <div class="aform-group">
-            <label>Title (ES) - Spanish</label>
-            <input type="text" id="af-title-es" placeholder="Título en español...">
-          </div>
-          <div class="aform-group">
-            <label>Title (RU) - Russian</label>
-            <input type="text" id="af-title-ru" placeholder="Русский заголовок...">
-          </div>
+          
+          
+          
+          
+          
         </div>
 
         <div class="aform-grid">
@@ -1671,7 +1649,7 @@ body {
         <div class="aform-group">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <label style="margin:0;">Content (DE) - German</label>
-            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Auto-Translate All</button>
+            
           </div>
           <div class="quill-wrapper"><div id="q-de"></div></div>
         </div>
@@ -2041,20 +2019,31 @@ window.addEventListener('scroll', () => {
 // Search
 function searchArticles(q) {
   const articles = getArticles();
-  const l = currentLang;
   const results = document.getElementById('search-results');
   const noRes = document.getElementById('search-no-results');
-  if (!q.trim()) { results.innerHTML = ''; noRes.style.display = 'none'; return; }
+
+  if (!q.trim()) {
+    results.innerHTML = '';
+    noRes.style.display = 'none';
+    return;
+  }
+
   const filtered = articles.filter(a => {
-    const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
-    return t.title.toLowerCase().includes(q.toLowerCase()) || t.text.toLowerCase().includes(q.toLowerCase());
+    const title = a.title || '';
+    const textContent = a.text || '';
+    return title.toLowerCase().includes(q.toLowerCase()) || 
+           textContent.toLowerCase().includes(q.toLowerCase());
   });
-  if (filtered.length === 0) { results.innerHTML = ''; noRes.style.display = 'block'; return; }
+
+  if (filtered.length === 0) {
+    results.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+
   noRes.style.display = 'none';
   results.innerHTML = filtered.map(a => renderCard(a, true)).join('');
 }
-
-// Article full view
 function openArticle(id) {
   const a = getArticles().find(x => x.id === id);
   if (!a) { console.warn('Article not found:', id); return; }
@@ -2228,7 +2217,7 @@ let quillEditors = {};
 const btoa = window.btoa || function(str) { return str; };
 // The encoded password (base64 of "ElishaiAdmin2026!") is "RWxpc2hhaUFkbWluMjAyNiE="
 
-const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
+const HASH_VAL = 'dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==';
 function checkToken(input) {
   try {
     const scrambled = input.split('').reverse().join('');
@@ -2287,49 +2276,31 @@ async function uploadImage(e) {
   if (!file) return;
   const status = document.getElementById('upload-status');
   const urlInput = document.getElementById('af-image');
-
   status.style.display = 'block';
   status.textContent = 'Uploading... Please wait.';
   status.style.color = '#b8952a';
-
   try {
-    const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
-    const snapshot = await storageRef.put(file);
-    const downloadURL = await snapshot.ref.getDownloadURL();
-
-    urlInput.value = downloadURL;
-    status.textContent = '✓ Image uploaded successfully!';
-    status.style.color = 'green';
-  } catch (err) {
-    console.error(err);
-    status.textContent = '❌ Upload failed: ' + err.message;
-    status.style.color = 'red';
-  }
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
+        let width = img.width; let height = img.height;
+        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
+        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+        canvas.width = width; canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        urlInput.value = canvas.toDataURL('image/jpeg', 0.85);
+        status.textContent = 'Image uploaded successfully!';
+        status.style.color = 'green';
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  } catch (err) { status.textContent = 'Upload failed: ' + err.message; status.style.color = 'red'; }
 }
-
-function initQuillEditors() {
-  if (quillEditors.de) return;
-  const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
-  ['de','he','en','fr','es','ru'].forEach(l => {
-    quillEditors[l] = new Quill('#q-'+l, { theme:'snow', modules:{toolbar} });
-  });
-  const heEditor = document.querySelector('#q-he .ql-editor');
-  if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
-}
-
-function adminToggleCat() {
-  const isHag = document.getElementById('af-cat').value === 'hag';
-  document.getElementById('af-book-wrap').style.display    = isHag ? 'none' : '';
-  document.getElementById('af-parasha-wrap').style.display = isHag ? 'none' : '';
-  document.getElementById('af-hag-wrap').style.display     = isHag ? '' : 'none';
-}
-
-function adminUpdateParasha() {
-  const book = document.getElementById('af-book') ? document.getElementById('af-book').value : 'Bereshit';
-  document.getElementById('af-parasha').innerHTML =
-    (PARASHA_MAP[book]||[]).map(p=>`<option value="${p}">${p}</option>`).join('');
-}
-
 async function adminSave() {
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
@@ -2338,23 +2309,15 @@ async function adminSave() {
   const isHag = document.getElementById('af-cat').value === 'hag';
   const dv    = document.getElementById('af-date-input').value;
   const docData = {
-    book: isHag ? '' : document.getElementById('af-book').value,
-    parasha: isHag ? '' : document.getElementById('af-parasha').value,
-    hag: isHag ? document.getElementById('af-hag-name').value.trim() : '',
-    date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    image: document.getElementById('af-image').value.trim(),
-    title: titleDE,
-    text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
-    translations: {
-      de: { title: titleDE,                                              text: quillEditors.de?.root.innerHTML||'' },
-      he: { title: document.getElementById('af-title-he').value.trim(), text: quillEditors.he?.root.innerHTML||'' },
-      en: { title: document.getElementById('af-title-en').value.trim(), text: quillEditors.en?.root.innerHTML||'' },
-      fr: { title: document.getElementById('af-title-fr').value.trim(), text: quillEditors.fr?.root.innerHTML||'' },
-      es: { title: document.getElementById('af-title-es').value.trim(), text: quillEditors.es?.root.innerHTML||'' },
-      ru: { title: document.getElementById('af-title-ru').value.trim(), text: quillEditors.ru?.root.innerHTML||'' }
-    }
-  };
+      book: isHag ? '' : (document.getElementById('af-book').value || ''),
+      parasha: isHag ? '' : (document.getElementById('af-parasha').value || ''),
+      hag: isHag ? document.getElementById('af-hag-name').value.trim() : '',
+      date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      image: document.getElementById('af-image').value.trim(),
+      title: titleDE,
+      text: quillEditors.de ? quillEditors.de.root.innerHTML : ''
+    };
   try {
     if (window._editingId) {
       await db.collection('articles').doc(window._editingId).update(docData);
@@ -2372,9 +2335,15 @@ async function adminSave() {
 }
 
 function adminClearForm() {
-  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
+  ['af-title-de','af-image','af-hag-name','af-date-input']
     .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
+  
+    const el = document.getElementById('af-title-de');
+    if (el) el.value = a.title || '';
+    if (quillEditors.de) {
+      quillEditors.de.root.innerHTML = a.text || '';
+    }
+
 }
 
 function adminCancelEdit() {
@@ -2391,12 +2360,13 @@ async function adminEdit(id) {
   document.getElementById('admin-msg').textContent = '✏ Editing: ' + (a.title||id);
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
   if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
-  ['de','he','en','fr','es','ru'].forEach(l => {
-    const tr = (a.translations&&a.translations[l]) ? a.translations[l] : {};
-    const el = document.getElementById('af-title-'+l);
-    if (el) el.value = tr.title||(l==='de'?a.title:'')||'';
-    if (quillEditors[l]) quillEditors[l].root.innerHTML = tr.text||(l==='de'?a.text:'')||'';
-  });
+  
+    const el = document.getElementById('af-title-de');
+    if (el) el.value = a.title || '';
+    if (quillEditors.de) {
+      quillEditors.de.root.innerHTML = a.text || '';
+    }
+
   document.getElementById('af-image').value = a.image||'';
   if (a.book) {
     document.getElementById('af-cat').value = 'parasha'; adminToggleCat();
