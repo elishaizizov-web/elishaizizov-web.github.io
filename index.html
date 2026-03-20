@@ -1591,50 +1591,33 @@ body {
       </div>
 
       <!-- ADMIN CONTENT -->
-      <!-- ADMIN CONTENT -->
       <div id="admin-content" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Publish New Article</span>
+          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Artikel veröffentlichen</span>
           <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Logout</button>
         </div>
 
         <div class="aform-grid">
           <div class="aform-group">
-            <label>Title (DE) - German</label>
-            <input type="text" id="af-title-de" placeholder="Deutscher Titel...">
+            <label>Titel des Artikels</label>
+            <input type="text" id="af-title-de" placeholder="Titel eingeben...">
           </div>
           <div class="aform-group">
-            <label>Title (HE) - עברית</label>
-            <input type="text" id="af-title-he" placeholder="כותרת בעברית..." dir="rtl">
-          </div>
-          <div class="aform-group">
-            <label>Title (EN) - English</label>
-            <input type="text" id="af-title-en" placeholder="English Title...">
-          </div>
-          <div class="aform-group">
-            <label>Title (FR) - French</label>
-            <input type="text" id="af-title-fr" placeholder="Titre en français...">
-          </div>
-          <div class="aform-group">
-            <label>Title (ES) - Spanish</label>
-            <input type="text" id="af-title-es" placeholder="Título en español...">
-          </div>
-          <div class="aform-group">
-            <label>Title (RU) - Russian</label>
-            <input type="text" id="af-title-ru" placeholder="Русский заголовок...">
+            <label>Datum</label>
+            <input type="date" id="af-date-input">
           </div>
         </div>
 
         <div class="aform-grid">
           <div class="aform-group">
-            <label>Category</label>
+            <label>Kategorie</label>
             <select id="af-cat" onchange="adminToggleCat()">
               <option value="parasha">Parasha / Torah</option>
               <option value="hag">Hag / Holiday</option>
             </select>
           </div>
           <div class="aform-group" id="af-book-wrap">
-            <label>Book</label>
+            <label>Buch</label>
             <select id="af-book" onchange="adminUpdateParasha()">
               <option value="Bereschit">Bereschit</option>
               <option value="Schemot">Schemot</option>
@@ -1648,50 +1631,40 @@ body {
             <select id="af-parasha"></select>
           </div>
           <div class="aform-group" id="af-hag-wrap" style="display:none;">
-            <label>Holiday Name</label>
-            <input type="text" id="af-hag-name" placeholder="e.g. Sukkot, Pessach">
-          </div>
-          <div class="aform-group">
-            <label>Publish Date</label>
-            <input type="date" id="af-date-input">
+            <label>Feiertag</label>
+            <input type="text" id="af-hag-name" placeholder="z.B. Sukkot, Pessach">
           </div>
         </div>
 
-        <div class="aform-group" style="margin-bottom:30px;">
-          <label>📸 Article Image (Click box to select from Photos)</label>
-          <div class="premium-upload-box" onclick="document.getElementById('af-image-file').click()">
-            <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
+        <div class="aform-group">
+          <label>📸 Artikelbild (Hier klicken, um ein Bild auszuwählen)</label>
+          <div class="premium-upload-box" style="position:relative; cursor:pointer;">
+            <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10;">
             <div class="premium-upload-icon">📁</div>
-            <div class="premium-upload-text">Tap to upload image from your device</div>
-            <div class="premium-upload-subtext">JPEG, PNG, JPG accepted</div>
+            <div class="premium-upload-text">Bild auswählen (Upload)</div>
+            <div class="premium-upload-subtext">JPEG, PNG, JPG akzeptiert</div>
             <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
           </div>
           <input type="hidden" id="af-image">
         </div>
 
         <div class="aform-group">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <label style="margin:0;">Content (DE) - German</label>
-            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Auto-Translate All</button>
-          </div>
-          <div class="quill-wrapper"><div id="q-de"></div></div>
+          <label style="margin-bottom:8px; display:block;">Artikelinhalt (Text mit Design)</label>
+          <div class="quill-wrapper"><div id="q-de" style="min-height:300px;"></div></div>
         </div>
-        <div class="aform-group"><label>Content (HE) - עברית</label><div class="quill-wrapper"><div id="q-he"></div></div></div>
-        <div class="aform-group"><label>Content (EN) - English</label><div class="quill-wrapper"><div id="q-en"></div></div></div>
-        <div class="aform-group"><label>Content (FR) - French</label><div class="quill-wrapper"><div id="q-fr"></div></div></div>
-        <div class="aform-group"><label>Content (ES) - Spanish</label><div class="quill-wrapper"><div id="q-es"></div></div></div>
-        <div class="aform-group"><label>Content (RU) - Russian</label><div class="quill-wrapper"><div id="q-ru"></div></div></div>
 
         <div style="text-align:center;">
-          <button class="admin-save-btn" onclick="adminSave()">PUBLISH ARTICLE</button>
+          <button class="admin-save-btn" id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:#888; margin-right:10px;">ABBRECHEN</button>
+          <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
           <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy);"></p>
-          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ccc; padding:8px 24px; border-radius:6px; margin-top:10px; cursor:pointer;">Cancel Edit</button>
         </div>
 
         <div style="margin-top:60px;">
-          <span class="admin-section-title">Manage Existing Articles</span>
+          <span class="admin-section-title">Veröffentlichte Artikel</span>
           <div id="admin-art-list" class="admin-art-list"></div>
         </div>
+<div>
+      </div>
 
       </div>
     </div>
@@ -2058,17 +2031,15 @@ function searchArticles(q) {
 // Article full view
 function openArticle(id) {
   const a = getArticles().find(x => x.id === id);
-  if (!a) { console.warn('Article not found:', id); return; }
+  if (!a) { return; }
   window._currentArticle = a;
   _renderArticlePage(a, currentLang);
-  // URL
   const url = new URL(window.location.href);
   url.searchParams.set('article', id);
   window.history.pushState({ articleId: id }, '', url);
 
-  // switch views
   const header = document.querySelector('.page-header');
-  const nav = document.querySelector('.lang-bar'); // if you have lang-bar in your header
+  const nav = document.querySelector('.lang-bar'); 
   const body = document.querySelector('.page-body');
   const footer = document.querySelector('.site-footer');
   if(header) header.style.display = 'none';
@@ -2099,7 +2070,7 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-text').style.textAlign  = isRTL ? 'right' : 'left';
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
-  // share buttons — use article-specific URL
+  // share buttons
   const pageUrl   = window.location.origin + window.location.pathname + '?article=' + a.id;
   const waText    = encodeURIComponent((tr.title || a.title || '') + '\n\n' + pageUrl);
 
@@ -2325,9 +2296,81 @@ async function uploadImage(e) {
 }
 
 function initQuillEditors() {
-  if (quillEditors.de) return;
-  const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
-  if(quillEditors.de) quillEditors.de.setText('');
+  if (window._quillInited) return;
+  const toolbar = [
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    [{ 'header': [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'blockquote'],
+    ['clean']
+  ];
+  if(document.getElementById('q-de')) {
+    quillEditors['de'] = new Quill('#q-de', { theme: 'snow', modules: { toolbar } });
+  }
+  window._quillInited = true;
+}
+
+function adminToggleCat() {
+  const isHag = document.getElementById('af-cat').value === 'hag';
+  document.getElementById('af-book-wrap').style.display    = isHag ? 'none' : '';
+  document.getElementById('af-parasha-wrap').style.display = isHag ? 'none' : '';
+  document.getElementById('af-hag-wrap').style.display     = isHag ? '' : 'none';
+}
+
+function adminUpdateParasha() {
+  const book = document.getElementById('af-book') ? document.getElementById('af-book').value : 'Bereschit';
+  document.getElementById('af-parasha').innerHTML =
+    (PARASHA_MAP[book]||[]).map(p=>`<option value="${p}">${p}</option>`).join('');
+}
+
+async function adminSave() {
+  const msg = document.getElementById('admin-msg');
+  const titleDE = document.getElementById('af-title-de').value.trim();
+  if (!titleDE) { msg.textContent = '⚠ German title required.'; return; }
+  msg.textContent = 'Saving…';
+  const isHag = document.getElementById('af-cat').value === 'hag';
+  const dv    = document.getElementById('af-date-input').value;
+  const docData = {
+    book: isHag ? '' : document.getElementById('af-book').value,
+    parasha: isHag ? '' : document.getElementById('af-parasha').value,
+    hag: isHag ? document.getElementById('af-hag-name').value.trim() : '',
+    date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    image: document.getElementById('af-image').value.trim(),
+    title: titleDE,
+    text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
+    translations: {
+      de: { title: titleDE,                                              text: quillEditors.de?.root.innerHTML||'' },
+      he: { title: document.getElementById('af-title-he').value.trim(), text: quillEditors.he?.root.innerHTML||'' },
+      en: { title: document.getElementById('af-title-en').value.trim(), text: quillEditors.en?.root.innerHTML||'' },
+      fr: { title: document.getElementById('af-title-fr').value.trim(), text: quillEditors.fr?.root.innerHTML||'' },
+      es: { title: document.getElementById('af-title-es').value.trim(), text: quillEditors.es?.root.innerHTML||'' },
+      ru: { title: document.getElementById('af-title-ru').value.trim(), text: quillEditors.ru?.root.innerHTML||'' }
+    }
+  };
+  try {
+    if (window._editingId) {
+      await db.collection('articles').doc(window._editingId).update(docData);
+      msg.textContent = '✓ Updated!';
+      window._editingId = null;
+      document.getElementById('admin-cancel-btn').style.display = 'none';
+    } else {
+      await db.collection('articles').add(docData);
+      msg.textContent = '✓ Saved!';
+    }
+    adminClearForm();
+    await loadArticles();
+    renderAdminList();
+  } catch(e) { msg.textContent = '✗ Error: '+e.message; console.error(e); }
+}
+
+function adminClearForm() {
+  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
 }
 
 function adminCancelEdit() {
@@ -2344,12 +2387,12 @@ async function adminEdit(id) {
   document.getElementById('admin-msg').textContent = '✏ Editing: ' + (a.title||id);
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
   if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
-  const el = document.getElementById('af-title-de');
-  if (el) el.value = (a.translations && a.translations.de && a.translations.de.title) ? a.translations.de.title : (a.title || '');
-  if (quillEditors.de) {
-    quillEditors.de.root.innerHTML = (a.translations && a.translations.de && a.translations.de.text) ? a.translations.de.text : (a.text || '');
-  }
-
+  ['de','he','en','fr','es','ru'].forEach(l => {
+    const tr = (a.translations&&a.translations[l]) ? a.translations[l] : {};
+    const el = document.getElementById('af-title-'+l);
+    if (el) el.value = tr.title||(l==='de'?a.title:'')||'';
+    if (quillEditors[l]) quillEditors[l].root.innerHTML = tr.text||(l==='de'?a.text:'')||'';
+  });
   document.getElementById('af-image').value = a.image||'';
   if (a.book) {
     document.getElementById('af-cat').value = 'parasha'; adminToggleCat();
@@ -2392,7 +2435,6 @@ document.addEventListener('DOMContentLoaded', () => {
       try { setLang('de'); } catch(e) {}
   }
 
-  // Force bio just in case setLang doesn't work for some reason
   if (typeof T !== 'undefined' && T.de) {
       const p1 = document.querySelector('[data-t="p1"]');
       const p2 = document.querySelector('[data-t="p2"]');
