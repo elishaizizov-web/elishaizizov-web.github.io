@@ -1438,11 +1438,11 @@ body {
     <!-- PARASHIOT -->
     <div id="panel-parasha">
       <div id="torah-nav" class="torah-nav">
-        <button class="book-btn" onclick="showBook('Bereschit')">Bereshit</button>
-        <button class="book-btn" onclick="showBook('Schemot')">Shemot</button>
-        <button class="book-btn" onclick="showBook('Wajikra')">Vayikra</button>
+        <button class="book-btn" onclick="showBook('Bereshit')">Bereshit</button>
+        <button class="book-btn" onclick="showBook('Shemot')">Shemot</button>
+        <button class="book-btn" onclick="showBook('Vayikra')">Vayikra</button>
         <button class="book-btn" onclick="showBook('Bamidbar')">Bamidbar</button>
-        <button class="book-btn" onclick="showBook('Dewarim')">Devarim</button>
+        <button class="book-btn" onclick="showBook('Devarim')">Devarim</button>
       </div>
       <div id="parasha-nav" class="parasha-nav" style="display:none">
         <button class="back-btn" onclick="showBooks()">← Zurück</button>
@@ -1593,37 +1593,53 @@ body {
       <!-- ADMIN CONTENT -->
       <div id="admin-content" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Artikel veröffentlichen</span>
+          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Publish New Article</span>
           <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Logout</button>
         </div>
 
         <div class="aform-grid">
           <div class="aform-group">
-            <label>Titel des Artikels</label>
-            <input type="text" id="af-title-de" placeholder="Titel eingeben...">
+            <label>Title (DE) - German</label>
+            <input type="text" id="af-title-de" placeholder="Deutscher Titel...">
           </div>
           <div class="aform-group">
-            <label>Datum</label>
-            <input type="date" id="af-date-input">
+            <label>Title (HE) - עברית</label>
+            <input type="text" id="af-title-he" placeholder="כותרת בעברית..." dir="rtl">
+          </div>
+          <div class="aform-group">
+            <label>Title (EN) - English</label>
+            <input type="text" id="af-title-en" placeholder="English Title...">
+          </div>
+          <div class="aform-group">
+            <label>Title (FR) - French</label>
+            <input type="text" id="af-title-fr" placeholder="Titre en français...">
+          </div>
+          <div class="aform-group">
+            <label>Title (ES) - Spanish</label>
+            <input type="text" id="af-title-es" placeholder="Título en español...">
+          </div>
+          <div class="aform-group">
+            <label>Title (RU) - Russian</label>
+            <input type="text" id="af-title-ru" placeholder="Русский заголовок...">
           </div>
         </div>
 
         <div class="aform-grid">
           <div class="aform-group">
-            <label>Kategorie</label>
+            <label>Category</label>
             <select id="af-cat" onchange="adminToggleCat()">
               <option value="parasha">Parasha / Torah</option>
               <option value="hag">Hag / Holiday</option>
             </select>
           </div>
           <div class="aform-group" id="af-book-wrap">
-            <label>Buch</label>
+            <label>Book</label>
             <select id="af-book" onchange="adminUpdateParasha()">
-              <option value="Bereschit">Bereschit</option>
-              <option value="Schemot">Schemot</option>
-              <option value="Wajikra">Wajikra</option>
-              <option value="Bamidbar">Bamidbar</option>
-              <option value="Dewarim">Dewarim</option>
+              <option value="Bereshit">Bereshit / בראשית</option>
+              <option value="Shemot">Shemot / שמות</option>
+              <option value="Vayikra">Vayikra / ויקרא</option>
+              <option value="Bamidbar">Bamidbar / במדבר</option>
+              <option value="Devarim">Devarim / דברים</option>
             </select>
           </div>
           <div class="aform-group" id="af-parasha-wrap">
@@ -1631,40 +1647,50 @@ body {
             <select id="af-parasha"></select>
           </div>
           <div class="aform-group" id="af-hag-wrap" style="display:none;">
-            <label>Feiertag</label>
-            <input type="text" id="af-hag-name" placeholder="z.B. Sukkot, Pessach">
+            <label>Holiday Name</label>
+            <input type="text" id="af-hag-name" placeholder="e.g. Sukkot, Pessach">
+          </div>
+          <div class="aform-group">
+            <label>Publish Date</label>
+            <input type="date" id="af-date-input">
           </div>
         </div>
 
-        <div class="aform-group">
-          <label>📸 Artikelbild (Hier klicken, um ein Bild auszuwählen)</label>
-          <div class="premium-upload-box" style="position:relative; cursor:pointer;">
-            <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10;">
+        <div class="aform-group" style="margin-bottom:30px;">
+          <label>📸 Article Image (Click box to select from Photos)</label>
+          <div class="premium-upload-box" onclick="document.getElementById('af-image-file').click()">
+            <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
             <div class="premium-upload-icon">📁</div>
-            <div class="premium-upload-text">Bild auswählen (Upload)</div>
-            <div class="premium-upload-subtext">JPEG, PNG, JPG akzeptiert</div>
+            <div class="premium-upload-text">Tap to upload image from your device</div>
+            <div class="premium-upload-subtext">JPEG, PNG, JPG accepted</div>
             <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
           </div>
           <input type="hidden" id="af-image">
         </div>
 
         <div class="aform-group">
-          <label style="margin-bottom:8px; display:block;">Artikelinhalt (Text mit Design)</label>
-          <div class="quill-wrapper"><div id="q-de" style="min-height:300px;"></div></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="margin:0;">Content (DE) - German</label>
+            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Auto-Translate All</button>
+          </div>
+          <div class="quill-wrapper"><div id="q-de"></div></div>
         </div>
+        <div class="aform-group"><label>Content (HE) - עברית</label><div class="quill-wrapper"><div id="q-he"></div></div></div>
+        <div class="aform-group"><label>Content (EN) - English</label><div class="quill-wrapper"><div id="q-en"></div></div></div>
+        <div class="aform-group"><label>Content (FR) - French</label><div class="quill-wrapper"><div id="q-fr"></div></div></div>
+        <div class="aform-group"><label>Content (ES) - Spanish</label><div class="quill-wrapper"><div id="q-es"></div></div></div>
+        <div class="aform-group"><label>Content (RU) - Russian</label><div class="quill-wrapper"><div id="q-ru"></div></div></div>
 
         <div style="text-align:center;">
-          <button class="admin-save-btn" id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:#888; margin-right:10px;">ABBRECHEN</button>
-          <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
+          <button class="admin-save-btn" onclick="adminSave()">PUBLISH ARTICLE</button>
           <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy);"></p>
+          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ccc; padding:8px 24px; border-radius:6px; margin-top:10px; cursor:pointer;">Cancel Edit</button>
         </div>
 
         <div style="margin-top:60px;">
-          <span class="admin-section-title">Veröffentlichte Artikel</span>
+          <span class="admin-section-title">Manage Existing Articles</span>
           <div id="admin-art-list" class="admin-art-list"></div>
         </div>
-<div>
-      </div>
 
       </div>
     </div>
@@ -1868,20 +1894,20 @@ function showHag(hag) {
 
 // Torah & Hagim navigation — multilingual
 const TORAH_NAMES = {
-  de: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Zurück',    tab_p: 'Parashiot', tab_h: 'Chagim' },
-  en: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Back',      tab_p: 'Parashiot', tab_h: 'Holidays' },
-  fr: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Retour',    tab_p: 'Parachioth', tab_h: 'Fêtes' },
-  es: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Volver',    tab_p: 'Parashiot', tab_h: 'Festividades' },
+  de: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Zurück',    tab_p: 'Parashiot', tab_h: 'Chagim' },
+  en: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Back',      tab_p: 'Parashiot', tab_h: 'Holidays' },
+  fr: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Retour',    tab_p: 'Parachioth', tab_h: 'Fêtes' },
+  es: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Volver',    tab_p: 'Parashiot', tab_h: 'Festividades' },
   ru: { books: ['Берешит','Шемот','Ваикра','Бемидбар','Дварим'],    back: '← Назад',     tab_p: 'Парашот', tab_h: 'Праздники' },
   he: { books: ['בראשית','שמות','ויקרא','במדבר','דברים'],          back: '← חזרה',      tab_p: 'פרשיות', tab_h: 'חגים' }
 };
-const BOOK_KEYS = ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'];
+const BOOK_KEYS = ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'];
 const TORAH = {
-  'Bereschit': { de:['Bereschit','Noach','Lech Lecha','Vayera','Chayei Sara','Toldot','Vayetzé','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi'], he:['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי'] },
-  'Schemot':   { de:['Schemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Teruma','Tetzavé','Ki Tissa','Vayakhel','Pekudei'], he:['שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי'] },
-  'Wajikra':  { de:['Wajikra','Tzav','Shemini','Tazria','Metzora','Acharei Mot','Kedoshim','Emor','Behar','Bechukotai'], he:['ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי'] },
+  'Bereshit': { de:['Bereshit','Noach','Lech Lecha','Vayera','Chayei Sara','Toldot','Vayetzé','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi'], he:['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי'] },
+  'Shemot':   { de:['Shemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Teruma','Tetzavé','Ki Tissa','Vayakhel','Pekudei'], he:['שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי'] },
+  'Vayikra':  { de:['Vayikra','Tzav','Shemini','Tazria','Metzora','Acharei Mot','Kedoshim','Emor','Behar','Bechukotai'], he:['ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי'] },
   'Bamidbar': { de:['Bamidbar','Nasso','Behaalotcha','Shelach','Korach','Chukat','Balak','Pinchas','Matot','Massei'], he:['במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי'] },
-  'Dewarim':  { de:['Dewarim','Vaetchanan','Ekev','Ree','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','Vezot Habracha'], he:['דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','נצבים','וילך','האזינו','וזאת הברכה'] }
+  'Devarim':  { de:['Devarim','Vaetchanan','Ekev','Ree','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','Vezot Habracha'], he:['דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','נצבים','וילך','האזינו','וזאת הברכה'] }
 };
 const HAG_KEYS = ['Rosh Hashanah','Yom Kippur','Sukkot','Shemini Atzeret','Chanukah','Asarah BeTevet','Tu BiShvat','Purim','Pesach','Sefirat HaOmer','Yom HaShoah','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Yom Yerushalayim','Shavuot','Shiva Asar BeTammuz','Tisha BAv'];
 const HAGIM_NAMES = {
@@ -2031,22 +2057,16 @@ function searchArticles(q) {
 // Article full view
 function openArticle(id) {
   const a = getArticles().find(x => x.id === id);
-  if (!a) { return; }
+  if (!a) { console.warn('Article not found:', id); return; }
   window._currentArticle = a;
   _renderArticlePage(a, currentLang);
+  // URL
   const url = new URL(window.location.href);
   url.searchParams.set('article', id);
   window.history.pushState({ articleId: id }, '', url);
-
-  const header = document.querySelector('.page-header');
-  const nav = document.querySelector('.lang-bar'); 
-  const body = document.querySelector('.page-body');
-  const footer = document.querySelector('.site-footer');
-  if(header) header.style.display = 'none';
-  if(nav) nav.style.display = 'none';
-  if(body) body.style.display = 'none';
-  if(footer) footer.style.display = 'none';
-
+  // switch views
+  document.querySelector('.page-header').style.display = 'none';
+  document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
   window.scrollTo(0, 0);
 }
@@ -2070,22 +2090,23 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-text').style.textAlign  = isRTL ? 'right' : 'left';
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
-  // share buttons
+  // share buttons — use article-specific URL
   const pageUrl   = window.location.origin + window.location.pathname + '?article=' + a.id;
   const waText    = encodeURIComponent((tr.title || a.title || '') + '\n\n' + pageUrl);
-
+  const tgUrl     = encodeURIComponent(pageUrl);
+  const tgTitle   = encodeURIComponent(tr.title || a.title || '');
   document.getElementById('ap-share').innerHTML = `
-      <div style="display:flex; gap:10px; width:100%; align-items:center;">
-          <a class="share-btn share-wa" href="https://wa.me/?text=${waText}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.305-.885-.653-1.482-1.459-1.656-1.756-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            WhatsApp
-          </a>
-          <button class="share-btn" onclick="navigator.clipboard.writeText('${pageUrl}').then(()=>alert('Link kopiert!'))" style="display:inline-flex; align-items:center; gap:6px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Copy Link
-          </button>
-      </div>
-  `;
+    <a class="share-btn share-wa" href="https://wa.me/?text=${waText}" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:5px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378L.057 22l1.649-6.079a9.925 9.925 0 0 1-1.334-4.93c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+      WhatsApp
+    </a>
+    <a class="share-btn" href="https://t.me/share/url?url=${tgUrl}&text=${tgTitle}" target="_blank" rel="noopener">Telegram</a>
+    <button class="share-btn" id="copy-link-btn" onclick="
+      navigator.clipboard.writeText('${pageUrl}').then(()=>{ 
+        const b=document.getElementById('copy-link-btn');
+        b.textContent='✓ Copied!'; 
+        setTimeout(()=>b.textContent='Copy Link',2000); 
+      })">Copy Link</button>`;
 }
 
 function switchArticleLang(l) {
@@ -2094,20 +2115,11 @@ function switchArticleLang(l) {
 
 function closeArticlePage() {
   document.getElementById('article-page').style.display  = 'none';
-
-  const header = document.querySelector('.page-header');
-  const nav = document.querySelector('.lang-bar');
-  const body = document.querySelector('.page-body');
-  const footer = document.querySelector('.site-footer');
-  if(header) header.style.display = '';
-  if(nav) nav.style.display = '';
-  if(body) body.style.display = '';
-  if(footer) footer.style.display = '';
-
+  document.querySelector('.page-header').style.display   = 'block';
+  document.querySelector('.page-body').style.display     = 'block';
   const url = new URL(window.location.href);
   url.searchParams.delete('article');
   window.history.pushState({}, '', url);
-  window.scrollTo(0, 0);
 }
 
 function closeOverlay() { closeArticlePage(); }
@@ -2201,11 +2213,11 @@ window.addEventListener('popstate', () => {
 // AUTHENTICATION & ADMIN
 // ════════════════════════════════════════════════════════
 const PARASHA_MAP = {
-  'Bereschit': ["Bereschit","Noach","Lech Lecha","Vayera","Chayei Sara","Toldot","Vayetzei","Vayishlach","Vayeshev","Miketz","Vayigash","Vayechi"],
-  'Schemot':   ["Schemot","Vaera","Bo","Beshalach","Yitro","Mishpatim","Teruma","Tetzaveh","Ki Tisa","Vayakhel","Pekudei"],
-  'Wajikra':  ["Wajikra","Tzav","Shemini","Tazria","Metzora","Acharei Mot","Kedoshim","Emor","Behar","Bechukotai"],
-  'Bamidbar': ["Bamidbar","Nasso","Beha'alotcha","Shelach","Korach","Chukat","Balak","Pinchas","Matot","Masei"],
-  'Dewarim':  ["Dewarim","Vaetchanan","Eikev","Re'eh","Shoftim","Ki Teitzei","Ki Tavo","Nitzavim","Vayeilech","Ha'azinu","Vezot Habracha"]
+  Bereshit: ["Bereshit","Noach","Lech Lecha","Vayera","Chayei Sara","Toldot","Vayetzei","Vayishlach","Vayeshev","Miketz","Vayigash","Vayechi"],
+  Shemot:   ["Shemot","Vaera","Bo","Beshalach","Yitro","Mishpatim","Teruma","Tetzaveh","Ki Tisa","Vayakhel","Pekudei"],
+  Vayikra:  ["Vayikra","Tzav","Shemini","Tazria","Metzora","Acharei Mot","Kedoshim","Emor","Behar","Bechukotai"],
+  Bamidbar: ["Bamidbar","Nasso","Beha'alotcha","Shelach","Korach","Chukat","Balak","Pinchas","Matot","Masei"],
+  Devarim:  ["Devarim","Vaetchanan","Eikev","Re'eh","Shoftim","Ki Teitzei","Ki Tavo","Nitzavim","Vayeilech","Ha'azinu","Vezot Habracha"]
 };
 let quillEditors = {};
 
@@ -2216,7 +2228,7 @@ let quillEditors = {};
 const btoa = window.btoa || function(str) { return str; };
 // The encoded password (base64 of "ElishaiAdmin2026!") is "RWxpc2hhaUFkbWluMjAyNiE="
 
-const HASH_VAL = 'dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==';
+const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
 function checkToken(input) {
   try {
     const scrambled = input.split('').reverse().join('');
@@ -2275,63 +2287,34 @@ async function uploadImage(e) {
   if (!file) return;
   const status = document.getElementById('upload-status');
   const urlInput = document.getElementById('af-image');
+
   status.style.display = 'block';
-  status.textContent = 'Lädt hoch...';
+  status.textContent = 'Uploading... Please wait.';
   status.style.color = '#b8952a';
+
   try {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-        let width = img.width; let height = img.height;
-        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-        canvas.width = width; canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
+    const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
+    const snapshot = await storageRef.put(file);
+    const downloadURL = await snapshot.ref.getDownloadURL();
 
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        urlInput.value = dataUrl;
-        status.textContent = 'Bild erfolgreich hochgeladen!';
-        status.style.color = 'green';
-
-        let preview = document.getElementById('admin-img-preview');
-        if(!preview) {
-           preview = document.createElement('img');
-           preview.id = 'admin-img-preview';
-           preview.style.marginTop = '10px';
-           preview.style.maxHeight = '150px';
-           preview.style.borderRadius = '8px';
-           status.parentNode.appendChild(preview);
-        }
-        preview.src = dataUrl;
-      };
-      img.onerror = function() { status.textContent = 'Fehler beim Laden.'; status.style.color = 'red'; };
-      img.src = event.target.result;
-    };
-    reader.onerror = function() { status.textContent = 'Fehler beim Lesen.'; status.style.color = 'red'; };
-    reader.readAsDataURL(file);
-  } catch (err) { status.textContent = 'Upload failed: ' + err.message; status.style.color = 'red'; }
+    urlInput.value = downloadURL;
+    status.textContent = '✓ Image uploaded successfully!';
+    status.style.color = 'green';
+  } catch (err) {
+    console.error(err);
+    status.textContent = '❌ Upload failed: ' + err.message;
+    status.style.color = 'red';
+  }
 }
 
 function initQuillEditors() {
-  if (window._quillInited) return;
-  const toolbar = [
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    [{ 'header': [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'align': [] }],
-    ['link', 'blockquote'],
-    ['clean']
-  ];
-  if(document.getElementById('q-de')) {
-    quillEditors['de'] = new Quill('#q-de', { theme: 'snow', modules: { toolbar } });
-  }
-  window._quillInited = true;
+  if (quillEditors.de) return;
+  const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
+  ['de','he','en','fr','es','ru'].forEach(l => {
+    quillEditors[l] = new Quill('#q-'+l, { theme:'snow', modules:{toolbar} });
+  });
+  const heEditor = document.querySelector('#q-he .ql-editor');
+  if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
 }
 
 function adminToggleCat() {
@@ -2342,7 +2325,7 @@ function adminToggleCat() {
 }
 
 function adminUpdateParasha() {
-  const book = document.getElementById('af-book') ? document.getElementById('af-book').value : 'Bereschit';
+  const book = document.getElementById('af-book') ? document.getElementById('af-book').value : 'Bereshit';
   document.getElementById('af-parasha').innerHTML =
     (PARASHA_MAP[book]||[]).map(p=>`<option value="${p}">${p}</option>`).join('');
 }
@@ -2350,8 +2333,8 @@ function adminUpdateParasha() {
 async function adminSave() {
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
-  if (!titleDE) { msg.textContent = '⚠ Deutscher Titel erforderlich.'; return; }
-  msg.textContent = 'Speichern...';
+  if (!titleDE) { msg.textContent = '⚠ German title required.'; return; }
+  msg.textContent = 'Saving…';
   const isHag = document.getElementById('af-cat').value === 'hag';
   const dv    = document.getElementById('af-date-input').value;
   const docData = {
@@ -2363,35 +2346,35 @@ async function adminSave() {
     image: document.getElementById('af-image').value.trim(),
     title: titleDE,
     text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
-    translations: { de: { title: titleDE, text: quillEditors.de ? quillEditors.de.root.innerHTML : '' } }
+    translations: {
+      de: { title: titleDE,                                              text: quillEditors.de?.root.innerHTML||'' },
+      he: { title: document.getElementById('af-title-he').value.trim(), text: quillEditors.he?.root.innerHTML||'' },
+      en: { title: document.getElementById('af-title-en').value.trim(), text: quillEditors.en?.root.innerHTML||'' },
+      fr: { title: document.getElementById('af-title-fr').value.trim(), text: quillEditors.fr?.root.innerHTML||'' },
+      es: { title: document.getElementById('af-title-es').value.trim(), text: quillEditors.es?.root.innerHTML||'' },
+      ru: { title: document.getElementById('af-title-ru').value.trim(), text: quillEditors.ru?.root.innerHTML||'' }
+    }
   };
   try {
     if (window._editingId) {
       await db.collection('articles').doc(window._editingId).update(docData);
-      msg.textContent = '✓ Aktualisiert!';
+      msg.textContent = '✓ Updated!';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
     } else {
       await db.collection('articles').add(docData);
-      msg.textContent = '✓ Gespeichert!';
+      msg.textContent = '✓ Saved!';
     }
     adminClearForm();
     await loadArticles();
     renderAdminList();
-  } catch(e) { msg.textContent = '✗ Fehler: '+e.message; console.error(e); }
+  } catch(e) { msg.textContent = '✗ Error: '+e.message; console.error(e); }
 }
 
 function adminClearForm() {
-  ['af-title-de','af-image','af-hag-name','af-date-input'].forEach(id => {
-    const el = document.getElementById(id); 
-    if(el) el.value=''; 
-  });
-  if(quillEditors.de) quillEditors.de.setText('');
-
-  const pv = document.getElementById('admin-img-preview');
-  if(pv) pv.parentNode.removeChild(pv);
-  const st = document.getElementById('upload-status');
-  if(st) st.style.display = 'none';
+  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
 }
 
 function adminCancelEdit() {
@@ -2405,16 +2388,15 @@ async function adminEdit(id) {
   window._editingId = id;
   const a = window._articles.find(x => x.id === id);
   if (!a) return;
-  document.getElementById('admin-msg').textContent = '✏ Bearbeiten: ' + (a.title||id);
+  document.getElementById('admin-msg').textContent = '✏ Editing: ' + (a.title||id);
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
-  if (!window._quillInited) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
-
-  const el = document.getElementById('af-title-de');
-  if (el) el.value = (a.translations && a.translations.de && a.translations.de.title) ? a.translations.de.title : (a.title || '');
-  if (quillEditors.de) {
-    quillEditors.de.root.innerHTML = (a.translations && a.translations.de && a.translations.de.text) ? a.translations.de.text : (a.text || '');
-  }
-
+  if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
+  ['de','he','en','fr','es','ru'].forEach(l => {
+    const tr = (a.translations&&a.translations[l]) ? a.translations[l] : {};
+    const el = document.getElementById('af-title-'+l);
+    if (el) el.value = tr.title||(l==='de'?a.title:'')||'';
+    if (quillEditors[l]) quillEditors[l].root.innerHTML = tr.text||(l==='de'?a.text:'')||'';
+  });
   document.getElementById('af-image').value = a.image||'';
   if (a.book) {
     document.getElementById('af-cat').value = 'parasha'; adminToggleCat();
@@ -2424,13 +2406,7 @@ async function adminEdit(id) {
     document.getElementById('af-cat').value = 'hag'; adminToggleCat();
     document.getElementById('af-hag-name').value = a.hag;
   }
-  if (a.date) {
-    const parts = a.date.split('.');
-    if (parts.length === 3) {
-      document.getElementById('af-date-input').value = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-    }
-  }
-  document.querySelector('.admin-body').scrollTo(0,0);
+  document.querySelector('.admin-box').scrollTo(0,0);
 }
 
 async function adminDelete(id) {
@@ -2458,20 +2434,6 @@ function renderAdminList() {
 document.addEventListener('DOMContentLoaded', () => {
   const di = document.getElementById('af-date-input');
   if (di) di.valueAsDate = new Date();
-
-  if (typeof setLang === 'function') {
-      try { setLang('de'); } catch(e) {}
-  }
-
-  if (typeof T !== 'undefined' && T.de) {
-      const p1 = document.querySelector('[data-t="p1"]');
-      const p2 = document.querySelector('[data-t="p2"]');
-      const p3 = document.querySelector('[data-t="p3"]');
-      if (p1) p1.innerHTML = T.de.p1;
-      if (p2) p2.innerHTML = T.de.p2;
-      if (p3) p3.innerHTML = T.de.p3;
-  }
-
   loadArticles();
 });
 
@@ -2479,6 +2441,71 @@ document.addEventListener('DOMContentLoaded', () => {
 // ════════════════════════════════════════════════════════
 // FREE AUTO TRANSLATE (Google Translate API)
 // ════════════════════════════════════════════════════════
+async function autoTranslateFree() {
+  const deTitle = document.getElementById('af-title-de').value.trim();
+  const deText = quillEditors.de ? quillEditors.de.root.innerHTML : '';
+
+  if (!deTitle && (!deText || deText === '<p><br></p>')) {
+    alert("אנא כתוב קודם את המאמר בגרמנית כדי שהמערכת תוכל לתרגם אותו.");
+    return;
+  }
+
+  const msg = document.getElementById('admin-msg');
+  msg.textContent = 'מתרגם בחינם... אנא המתן (זה עשוי לקחת מספר שניות)...';
+
+  // Google Translate language codes ('iw' is used for Hebrew instead of 'he')
+  const langs = [
+    { id: 'he', code: 'iw', name: 'עברית' },
+    { id: 'en', code: 'en', name: 'אנגלית' },
+    { id: 'fr', code: 'fr', name: 'צרפתית' },
+    { id: 'es', code: 'es', name: 'ספרדית' },
+    { id: 'ru', code: 'ru', name: 'רוסית' }
+  ];
+
+  async function translateChunk(text, targetCode) {
+    if (!text) return "";
+    try {
+      const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=${targetCode}&dt=t`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ q: text })
+      });
+      const data = await res.json();
+      let translated = data[0].map(x => x[0]).join('');
+
+      // Fix broken HTML tags caused by Google Translate spacing
+      translated = translated.replace(/<\s+\/\s+/g, '</')
+                             .replace(/<\s+/g, '<')
+                             .replace(/\s+>/g, '>')
+                             .replace(/<\/\s+/g, '</');
+      return translated;
+    } catch (e) {
+      console.error(e);
+      return text;
+    }
+  }
+
+  try {
+    for (const l of langs) {
+      msg.textContent = `מתרגם ל-${l.name}...`;
+
+      if (deTitle) {
+        document.getElementById('af-title-' + l.id).value = await translateChunk(deTitle, l.code);
+      }
+
+      if (deText && deText !== '<p><br></p>') {
+        const translatedHtml = await translateChunk(deText, l.code);
+        if (quillEditors[l.id]) {
+          quillEditors[l.id].root.innerHTML = translatedHtml;
+        }
+      }
+    }
+    msg.textContent = '✨ התרגום הסתיים בהצלחה בחינם! אנא עבור על התוצאות (ולעיתים תקן מעט עיצוב אם תגיות זזו), ולאחר מכן לחץ Save.';
+  } catch (error) {
+    console.error(error);
+    msg.textContent = '❌ שגיאה בתרגום.';
+  }
+}
 </script>
 
 <div class="social-bar">
