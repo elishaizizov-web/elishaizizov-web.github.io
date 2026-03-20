@@ -969,7 +969,377 @@ body {
     ::-webkit-scrollbar-thumb { background: rgba(184,149,42,0.4); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-  </style>
+  
+/* ── PREMIUM ADMIN PANEL DESIGN ── */
+.admin-overlay {
+  background: rgba(17, 28, 45, 0.85);
+  backdrop-filter: blur(8px);
+}
+.admin-box {
+  background: #fdfbf7;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  border: 1px solid rgba(184,149,42,0.3);
+  padding: 40px;
+  max-width: 800px;
+  width: 90%;
+  height: 85vh;
+  overflow-y: auto;
+}
+.admin-box-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: var(--navy);
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(184,149,42,0.2);
+  padding-bottom: 10px;
+}
+.admin-section-title {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--navy);
+  margin: 30px 0 15px;
+  font-weight: 600;
+}
+.aform-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.aform-group label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-soft);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.aform-group input[type="text"],
+.aform-group input[type="date"],
+.aform-group select {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: 'Raleway', sans-serif;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+.aform-group input:focus,
+.aform-group select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184,149,42,0.1);
+}
+.file-upload-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fff;
+  border: 1px dashed #ccc;
+  padding: 15px;
+  border-radius: 6px;
+}
+.file-upload-btn {
+  background: var(--gold);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.file-upload-btn:hover {
+  background: var(--gold-light);
+}
+.quill-wrapper {
+  margin-bottom: 40px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+.ql-toolbar.ql-snow {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-color: #ddd !important;
+  background: #f9f9f9;
+}
+.ql-container.ql-snow {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-color: #ddd !important;
+  min-height: 150px;
+}
+.admin-save-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, #a38221 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(184,149,42,0.3);
+  transition: all 0.2s ease;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.admin-save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(184,149,42,0.4);
+}
+.admin-art-item {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+.admin-art-item:hover {
+  border-color: var(--gold);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+
+/* ── ULTRA PREMIUM ADMIN PANEL DESIGN ── */
+.admin-overlay {
+  background: rgba(10, 15, 25, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+.admin-overlay.open {
+  display: flex;
+}
+.admin-box {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.admin-header-bar {
+  background: #fdfbf7;
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(184,149,42,0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-radius: 16px 16px 0 0;
+}
+.admin-header-bar h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--navy);
+  margin: 0;
+  font-weight: 600;
+}
+.admin-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: var(--navy);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.admin-close-btn:hover { opacity: 1; }
+.admin-body {
+  padding: 32px;
+  background: #fafafa;
+}
+.admin-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--navy);
+  margin: 0 0 24px 0;
+  font-weight: bold;
+  border-bottom: 2px solid rgba(184,149,42,0.3);
+  padding-bottom: 10px;
+  display: inline-block;
+}
+.aform-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .aform-grid { grid-template-columns: 1fr; gap: 16px; }
+  .admin-body { padding: 20px; }
+}
+.aform-group {
+  display: flex;
+  flex-direction: column;
+}
+.aform-group label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.aform-group input[type="text"],
+.aform-group input[type="date"],
+.aform-group select {
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'Raleway', sans-serif;
+  background: #fff;
+  transition: all 0.2s ease;
+  color: #333;
+}
+.aform-group input:focus,
+.aform-group select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(184,149,42,0.15);
+}
+
+/* Luxury Image Upload */
+.premium-upload-box {
+  border: 2px dashed #c2b082;
+  background: #fdfbf7;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.premium-upload-box:hover {
+  background: #fff;
+  border-color: var(--gold);
+  box-shadow: 0 4px 12px rgba(184,149,42,0.1);
+}
+.premium-upload-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+.premium-upload-text {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.premium-upload-subtext {
+  font-size: 12px;
+  color: #888;
+}
+#af-image-file {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.quill-wrapper {
+  margin-bottom: 30px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+.ql-toolbar.ql-snow {
+  border: none !important;
+  border-bottom: 1px solid #ddd !important;
+  background: #fdfdfd;
+  padding: 12px !important;
+}
+.ql-container.ql-snow {
+  border: none !important;
+  min-height: 200px;
+  font-size: 16px;
+}
+.admin-save-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, #9e7f22 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(184,149,42,0.3);
+  transition: all 0.3s ease;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 20px;
+}
+.admin-save-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(184,149,42,0.4);
+}
+.admin-art-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+.admin-art-item {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+.admin-art-title {
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 15px;
+}
+.admin-art-actions button {
+  background: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: 0.2s;
+}
+.admin-art-actions button.edit-btn { color: var(--navy); }
+.admin-art-actions button.edit-btn:hover { background: #e0e0e0; }
+.admin-art-actions button.del-btn { color: #d32f2f; background: #ffebee; }
+.admin-art-actions button.del-btn:hover { background: #ffcdd2; }
+
+</style>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -1202,147 +1572,130 @@ body {
 <!-- ── ADMIN PANEL (open via ?admin=1) ───────────────────── -->
 <button class="admin-fab" onclick="toggleAdmin()" title="Admin">&#9881;</button>
 
+
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-box">
-    <button class="admin-close" onclick="toggleAdmin()">&times;</button>
 
-    <!-- PASSWORD SCREEN -->
-    
-    
-    <!-- LOGIN SCREEN -->
-    <div id="admin-login-screen" style="text-align:center; padding:20px 0;">
-      <p style="font-family:'Playfair Display',serif; font-size:18px; margin-bottom:16px;">Admin Login</p>
-      <input type="password" id="admin-pw" placeholder="Enter Password" style="padding:10px; width:220px; outline:none; font-size:15px; border:1px solid var(--rule); display:block; margin:0 auto 16px;" onkeyup="if(event.key==='Enter')adminLogin()">
-      <button class="admin-save-btn" style="padding:10px 24px;" onclick="adminLogin()">Login</button>
-      <p id="admin-login-err" style="display:none; color:#8b0000; margin-top:12px; font-size:13px;"></p>
+    <div class="admin-header-bar">
+      <h2>Article Management</h2>
+      <button class="admin-close-btn" onclick="toggleAdmin()">&times;</button>
     </div>
 
-
-
-    <!-- ADMIN CONTENT -->
-    <div id="admin-content" style="display:none;">
-      
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 class="admin-box-title" style="margin:0;">Manage Articles</h2>
-        <button class="share-btn" onclick="adminLogout()" style="font-size:11px; padding:6px 12px; background:transparent; border:1px solid var(--rule);">Logout</button>
+    <div class="admin-body">
+      <!-- LOGIN SCREEN -->
+      <div id="admin-login-screen" style="text-align:center; padding:40px 0;">
+        <p style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:24px; color:var(--navy);">Please authenticate to continue</p>
+        <input type="password" id="admin-pw" placeholder="Enter Admin Password" style="padding:16px; width:280px; border-radius:8px; border:1px solid #ccc; font-size:16px; display:block; margin:0 auto 20px; outline:none; text-align:center;" onkeyup="if(event.key==='Enter')adminLogin()">
+        <button class="admin-save-btn" style="width:280px;" onclick="adminLogin()">SECURE LOGIN</button>
+        <p id="admin-login-err" style="display:none; color:#d32f2f; margin-top:16px; font-size:14px; font-weight:bold;"></p>
       </div>
 
+      <!-- ADMIN CONTENT -->
+      <div id="admin-content" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Publish New Article</span>
+          <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Logout</button>
+        </div>
 
-      <!-- ADD / EDIT -->
-      <span class="admin-section-title">Add New Article</span>
-      <div class="aform-2col">
-        <div class="aform-group">
-          <label>Title (DE)</label>
-          <input type="text" id="af-title-de" placeholder="Deutscher Titel">
+        <div class="aform-grid">
+          <div class="aform-group">
+            <label>Title (DE) - German</label>
+            <input type="text" id="af-title-de" placeholder="Deutscher Titel...">
+          </div>
+          <div class="aform-group">
+            <label>Title (HE) - עברית</label>
+            <input type="text" id="af-title-he" placeholder="כותרת בעברית..." dir="rtl">
+          </div>
+          <div class="aform-group">
+            <label>Title (EN) - English</label>
+            <input type="text" id="af-title-en" placeholder="English Title...">
+          </div>
+          <div class="aform-group">
+            <label>Title (FR) - French</label>
+            <input type="text" id="af-title-fr" placeholder="Titre en français...">
+          </div>
+          <div class="aform-group">
+            <label>Title (ES) - Spanish</label>
+            <input type="text" id="af-title-es" placeholder="Título en español...">
+          </div>
+          <div class="aform-group">
+            <label>Title (RU) - Russian</label>
+            <input type="text" id="af-title-ru" placeholder="Русский заголовок...">
+          </div>
         </div>
-        <div class="aform-group">
-          <label>Title (HE) עברית</label>
-          <input type="text" id="af-title-he" placeholder="כותרת" dir="rtl">
-        </div>
-        <div class="aform-group">
-          <label>Title (EN)</label>
-          <input type="text" id="af-title-en" placeholder="English Title">
-        </div>
-        <div class="aform-group">
-          <label>Title (FR)</label>
-          <input type="text" id="af-title-fr" placeholder="Titre en français">
-        </div>
-        <div class="aform-group">
-          <label>Title (ES)</label>
-          <input type="text" id="af-title-es" placeholder="Título en español">
-        </div>
-        <div class="aform-group">
-          <label>Title (RU)</label>
-          <input type="text" id="af-title-ru" placeholder="Русский заголовок">
-        </div>
-      </div>
-      <div class="aform-2col">
-        <div class="aform-group">
-          <label>Category</label>
-          <select id="af-cat" onchange="adminToggleCat()" style="">
-            <option value="parasha">Parasha / Torah</option>
-            <option value="hag">Hag / Holiday</option>
-          </select>
-        </div>
-        <div class="aform-group" id="af-book-wrap">
-          <label>Book</label>
-          <select id="af-book" onchange="adminUpdateParasha()">
-            <option value="Bereshit">Bereshit / בראשית</option>
-            <option value="Shemot">Shemot / שמות</option>
-            <option value="Vayikra">Vayikra / ויקרא</option>
-            <option value="Bamidbar">Bamidbar / במדבר</option>
-            <option value="Devarim">Devarim / דברים</option>
-          </select>
-        </div>
-        <div class="aform-group" id="af-parasha-wrap">
-          <label>Parasha</label>
-          <select id="af-parasha"></select>
-        </div>
-        <div class="aform-group" id="af-hag-wrap" style="display:none;">
-          <label>Holiday Name</label>
-          <input type="text" id="af-hag-name" placeholder="e.g. Sukkot, Pessach">
-        </div>
-      </div>
-      <div class="aform-2col">
-        <div class="aform-group">
-          <label>Date</label>
-          <input type="date" id="af-date-input">
-        </div>
-        <div class="aform-group">
-          <label>Image URL (optional)</label>
-          <input type="text" id="af-image" placeholder="https://...">
-        </div>
-      </div>
 
-      <div class="aform-group">
-        <label>Content (DE) — German</label>
-        <div id="q-de" style="background:#fff;"></div>
-      </div>
-      <div class="aform-group" style="margin-top:16px;">
-        <label>Content (HE) — עברית</label>
-        <div id="q-he" style="background:#fff;" dir="rtl"></div>
-      </div>
-      <div class="aform-group" style="margin-top:16px;">
-        <label>Content (EN) — English</label>
-        <div id="q-en" style="background:#fff;"></div>
-      </div>
-      <div class="aform-group" style="margin-top:16px;">
-        <label>Content (FR) — Français</label>
-        <div id="q-fr" style="background:#fff;"></div>
-      </div>
-      <div class="aform-group" style="margin-top:16px;">
-        <label>Content (ES) — Español</label>
-        <div id="q-es" style="background:#fff;"></div>
-      </div>
-      <div class="aform-group" style="margin-top:16px;">
-        <label>Content (RU) — Русский</label>
-        <div id="q-ru" style="background:#fff;"></div>
-      </div>
+        <div class="aform-grid">
+          <div class="aform-group">
+            <label>Category</label>
+            <select id="af-cat" onchange="adminToggleCat()">
+              <option value="parasha">Parasha / Torah</option>
+              <option value="hag">Hag / Holiday</option>
+            </select>
+          </div>
+          <div class="aform-group" id="af-book-wrap">
+            <label>Book</label>
+            <select id="af-book" onchange="adminUpdateParasha()">
+              <option value="Bereshit">Bereshit / בראשית</option>
+              <option value="Shemot">Shemot / שמות</option>
+              <option value="Vayikra">Vayikra / ויקרא</option>
+              <option value="Bamidbar">Bamidbar / במדבר</option>
+              <option value="Devarim">Devarim / דברים</option>
+            </select>
+          </div>
+          <div class="aform-group" id="af-parasha-wrap">
+            <label>Parasha</label>
+            <select id="af-parasha"></select>
+          </div>
+          <div class="aform-group" id="af-hag-wrap" style="display:none;">
+            <label>Holiday Name</label>
+            <input type="text" id="af-hag-name" placeholder="e.g. Sukkot, Pessach">
+          </div>
+          <div class="aform-group">
+            <label>Publish Date</label>
+            <input type="date" id="af-date-input">
+          </div>
+        </div>
 
-      
-      <div style="display:flex; gap:10px; margin-top:20px; align-items:center;">
-        <button class="admin-save-btn" onclick="adminSave()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save Article
-        </button>
-        <button class="admin-save-btn" style="background:#b8952a; color:#fff;" onclick="autoTranslateFree()" type="button">
-          ✨ תרגם אוטומטית (חינם)
-        </button>
+        <div class="aform-group" style="margin-bottom:30px;">
+          <label>📸 Article Image (Click box to select from Photos)</label>
+          <div class="premium-upload-box" onclick="document.getElementById('af-image-file').click()">
+            <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
+            <div class="premium-upload-icon">📁</div>
+            <div class="premium-upload-text">Tap to upload image from your device</div>
+            <div class="premium-upload-subtext">JPEG, PNG, JPG accepted</div>
+            <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
+          </div>
+          <input type="hidden" id="af-image">
+        </div>
+
+        <div class="aform-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="margin:0;">Content (DE) - German</label>
+            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Auto-Translate All</button>
+          </div>
+          <div class="quill-wrapper"><div id="q-de"></div></div>
+        </div>
+        <div class="aform-group"><label>Content (HE) - עברית</label><div class="quill-wrapper"><div id="q-he"></div></div></div>
+        <div class="aform-group"><label>Content (EN) - English</label><div class="quill-wrapper"><div id="q-en"></div></div></div>
+        <div class="aform-group"><label>Content (FR) - French</label><div class="quill-wrapper"><div id="q-fr"></div></div></div>
+        <div class="aform-group"><label>Content (ES) - Spanish</label><div class="quill-wrapper"><div id="q-es"></div></div></div>
+        <div class="aform-group"><label>Content (RU) - Russian</label><div class="quill-wrapper"><div id="q-ru"></div></div></div>
+
+        <div style="text-align:center;">
+          <button class="admin-save-btn" onclick="adminSave()">PUBLISH ARTICLE</button>
+          <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy);"></p>
+          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ccc; padding:8px 24px; border-radius:6px; margin-top:10px; cursor:pointer;">Cancel Edit</button>
+        </div>
+
+        <div style="margin-top:60px;">
+          <span class="admin-section-title">Manage Existing Articles</span>
+          <div id="admin-art-list" class="admin-art-list"></div>
+        </div>
+
       </div>
-
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Save Article
-      </button>
-      <p id="admin-msg"></p>
-      <button class="admin-save-btn" style="margin-top:8px; background:var(--text-soft); display:none;" id="admin-cancel-btn" onclick="adminCancelEdit()">Cancel Edit</button>
-
-      <!-- ARTICLE LIST -->
-      <span class="admin-section-title" style="margin-top:36px; display:block;">Existing Articles</span>
-      <div id="admin-art-list"></div>
     </div>
   </div>
 </div>
-
 
 <script>
 const T = {
@@ -2064,18 +2417,20 @@ async function adminDelete(id) {
   } catch(e) { alert('Error: '+e.message); }
 }
 
+
 function renderAdminList() {
   const el = document.getElementById('admin-art-list');
   if (!el) return;
-  if (!window._articles.length) { el.innerHTML='<p style="color:var(--text-soft);font-size:14px;padding:10px 0;">No articles yet.</p>'; return; }
+  if (!window._articles.length) { el.innerHTML='<p style="color:#888; font-style:italic;">No articles published yet.</p>'; return; }
   el.innerHTML = window._articles.map(a=>`
     <div class="admin-art-item">
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;">${a.title||a.id}</span>
-      <button class="share-btn" style="font-size:11px;padding:5px 10px;margin-right:6px;" onclick="adminEdit('${a.id}')">✏ Edit</button>
-      <button class="admin-art-del" onclick="adminDelete('${a.id}')" title="Delete">&times;</button>
+      <div class="admin-art-title">${a.title||a.id}</div>
+      <div class="admin-art-actions">
+        <button class="edit-btn" onclick="adminEdit('${a.id}')">EDIT</button>
+        <button class="del-btn" onclick="adminDelete('${a.id}')">DELETE</button>
+      </div>
     </div>`).join('');
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   const di = document.getElementById('af-date-input');
   if (di) di.valueAsDate = new Date();
