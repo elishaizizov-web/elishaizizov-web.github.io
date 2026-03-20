@@ -2275,24 +2275,45 @@ async function uploadImage(e) {
   if (!file) return;
   const status = document.getElementById('upload-status');
   const urlInput = document.getElementById('af-image');
-
   status.style.display = 'block';
-  status.textContent = 'Uploading... Please wait.';
+  status.textContent = 'Lädt hoch...';
   status.style.color = '#b8952a';
-
   try {
-    const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
-    const snapshot = await storageRef.put(file);
-    const downloadURL = await snapshot.ref.getDownloadURL();
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
+        let width = img.width; let height = img.height;
+        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
+        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+        canvas.width = width; canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
 
-    urlInput.value = downloadURL;
-    status.textContent = '✓ Image uploaded successfully!';
-    status.style.color = 'green';
-  } catch (err) {
-    console.error(err);
-    status.textContent = '❌ Upload failed: ' + err.message;
-    status.style.color = 'red';
-  }
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        urlInput.value = dataUrl;
+        status.textContent = 'Bild erfolgreich hochgeladen!';
+        status.style.color = 'green';
+
+        let preview = document.getElementById('admin-img-preview');
+        if(!preview) {
+           preview = document.createElement('img');
+           preview.id = 'admin-img-preview';
+           preview.style.marginTop = '10px';
+           preview.style.maxHeight = '150px';
+           preview.style.borderRadius = '8px';
+           status.parentNode.appendChild(preview);
+        }
+        preview.src = dataUrl;
+      };
+      img.onerror = function() { status.textContent = 'Fehler beim Laden.'; status.style.color = 'red'; };
+      img.src = event.target.result;
+    };
+    reader.onerror = function() { status.textContent = 'Fehler beim Lesen.'; status.style.color = 'red'; };
+    reader.readAsDataURL(file);
+  } catch (err) { status.textContent = 'Upload failed: ' + err.message; status.style.color = 'red'; }
 }
 
 function initQuillEditors() {
