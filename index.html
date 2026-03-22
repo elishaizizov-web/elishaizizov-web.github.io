@@ -1357,6 +1357,7 @@ body {
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <!-- Quill Rich Text Editor -->
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -2111,8 +2112,20 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-text').style.textAlign  = isRTL ? 'right' : 'left';
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
-  // share buttons — use article-specific URL
+  // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
   const pageUrl   = window.location.origin + window.location.pathname + '?article=' + a.id;
+  document.title = (tr.title || a.title || '') + ' — Rabbiner Elishai Zizov';
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', pageUrl);
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', tr.title || a.title || '');
+  const desc = stripHtml(tr.text || a.text || '').trim().substring(0, 200);
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', desc);
+  if (a.image) {
+    let ogImg = document.querySelector('meta[property="og:image"]');
+    if (!ogImg) { ogImg = document.createElement('meta'); ogImg.setAttribute('property','og:image'); document.head.appendChild(ogImg); }
+    ogImg.setAttribute('content', a.image);
+  }
+
+  // share buttons — use article-specific URL
   const waText    = encodeURIComponent((tr.title || a.title || '') + '\n\n' + pageUrl);
   const tgUrl     = encodeURIComponent(pageUrl);
   const tgTitle   = encodeURIComponent(tr.title || a.title || '');
@@ -2141,6 +2154,11 @@ function closeArticlePage() {
   const url = new URL(window.location.href);
   url.searchParams.delete('article');
   window.history.pushState({}, '', url);
+  // Reset meta tags to homepage defaults
+  document.title = 'Rabbiner Elishai Zizov';
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.origin);
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', 'Rabbiner Elishai Zizov');
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', 'Rabbiner, Vortragsredner und jüdischer Pädagoge in Frankfurt am Main.');
 }
 
 function closeOverlay() { closeArticlePage(); }
@@ -2195,8 +2213,9 @@ if (!firebase.apps.length) {
 }
 
 // Global Firebase references
-const db = firebase.firestore();
+const db      = firebase.firestore();
 const storage = firebase.storage();
+const auth    = firebase.auth();
 
 
 
@@ -2328,6 +2347,10 @@ async function uploadImage(e) {
   status.style.color = '#b8952a';
 
   try {
+    // Ensure we have auth credentials for Storage access
+    if (!auth.currentUser) {
+      await auth.signInAnonymously();
+    }
     const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
     const snapshot = await storageRef.put(file);
     const downloadURL = await snapshot.ref.getDownloadURL();
@@ -2481,104 +2504,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ════════════════════════════════════════════════════════
-// PDF DOWNLOAD
+// PDF DOWNLOAD — opens a print-ready window (handles all Unicode/German chars)
 // ════════════════════════════════════════════════════════
-async function downloadArticlePDF() {
+function downloadArticlePDF() {
   const a = window._currentArticle;
   if (!a) return;
   const l = currentLang;
   const tr = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
-
-  if (!window.jspdf) { alert('PDF-Bibliothek wird geladen, bitte erneut versuchen.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  const pageWidth  = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 20;
-  let yPos = margin;
-
-  // ── Article image at top ──────────────────────────────
-  if (a.image) {
-    try {
-      await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-          try {
-            const canvas = document.createElement('canvas');
-            canvas.width  = img.naturalWidth;
-            canvas.height = img.naturalHeight;
-            canvas.getContext('2d').drawImage(img, 0, 0);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            const maxW   = pageWidth - 2 * margin;
-            const imgH   = Math.min((img.naturalHeight * maxW) / img.naturalWidth, 70);
-            doc.addImage(dataUrl, 'JPEG', margin, yPos, maxW, imgH);
-            yPos += imgH + 8;
-          } catch(e) {}
-          resolve();
-        };
-        img.onerror = () => resolve();
-        img.src = a.image;
-      });
-    } catch(e) {}
-  }
-
-  // ── Title ─────────────────────────────────────────────
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
   const title = tr.title || a.title || '';
-  const titleLines = doc.splitTextToSize(title, pageWidth - 2 * margin);
-  doc.text(titleLines, margin, yPos);
-  yPos += titleLines.length * 8 + 4;
+  const text  = tr.text  || a.text  || '';
+  const isRTL = (l === 'he');
 
-  // ── Date ──────────────────────────────────────────────
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(120, 100, 80);
-  doc.text(a.date || '', margin, yPos);
-  yPos += 8;
-
-  // ── Divider ───────────────────────────────────────────
-  doc.setDrawColor(184, 149, 42);
-  doc.setLineWidth(0.5);
-  doc.line(margin, yPos, pageWidth - margin, yPos);
-  yPos += 6;
-  doc.setTextColor(42, 36, 32);
-
-  // ── Content ───────────────────────────────────────────
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  const rawText = stripHtml(tr.text || a.text || '');
-  const paragraphs = rawText.split(/\n+/).filter(p => p.trim());
-  for (const para of paragraphs) {
-    const lines = doc.splitTextToSize(para.trim(), pageWidth - 2 * margin);
-    for (const line of lines) {
-      if (yPos > pageHeight - 28) {
-        doc.addPage();
-        yPos = margin;
-      }
-      doc.text(line, margin, yPos);
-      yPos += 6;
-    }
-    yPos += 3; // paragraph spacing
-  }
-
-  // ── Footer on every page ──────────────────────────────
-  const totalPages = doc.internal.getNumberOfPages();
-  const footerText = 'Verfasst von Rabbiner Elishai Zizov \u2013 Alle Rechte vorbehalten \u00B7 elishaizizov.com';
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'italic');
-    doc.setTextColor(140, 130, 120);
-    doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
-    doc.setDrawColor(220, 216, 208);
-    doc.setLineWidth(0.3);
-    doc.line(margin, pageHeight - 14, pageWidth - margin, pageHeight - 14);
-  }
-
-  const filename = (title || 'artikel').replace(/[^a-z0-9\u00C0-\u024F]/gi, '_').toLowerCase().substring(0, 60) + '.pdf';
-  doc.save(filename);
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html lang="${l}" dir="${isRTL?'rtl':'ltr'}"><head>
+<meta charset="UTF-8">
+<title>${title.replace(/</g,'&lt;')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Source Serif 4',Georgia,serif;color:#1a1a1a;background:#fff;padding:28mm 22mm;font-size:11.5pt;line-height:1.75}
+  h1{font-size:20pt;font-weight:700;margin-bottom:6px;line-height:1.3}
+  .date{font-size:9pt;color:#7a6a50;margin-bottom:10px}
+  hr{border:none;border-top:1.5px solid #b8952a;margin:12px 0 16px}
+  img{max-width:100%;height:auto;display:block;margin-bottom:18px;border-radius:4px}
+  p{margin-bottom:12px}
+  .footer{margin-top:40px;padding-top:12px;border-top:1px solid #ddd;text-align:center;font-size:8pt;color:#999;font-family:sans-serif;letter-spacing:.05em}
+  @media print{body{padding:20mm 18mm}@page{margin:0}}
+</style></head><body>
+${a.image ? `<img src="${a.image}" crossorigin="anonymous">` : ''}
+<h1>${title.replace(/</g,'&lt;')}</h1>
+<div class="date">${a.date||''}</div>
+<hr>
+<div>${text}</div>
+<div class="footer">Verfasst von Rabbiner Elishai Zizov &ndash; Alle Rechte vorbehalten &middot; elishaizizov.com</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+  w.document.close();
 }
 
 // ════════════════════════════════════════════════════════
