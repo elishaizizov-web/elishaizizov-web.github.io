@@ -2347,23 +2347,53 @@ async function uploadImage(e) {
   status.style.color = '#b8952a';
 
   try {
-    // Ensure we have auth credentials for Storage access
+    // Try Firebase Storage first
     if (!auth.currentUser) {
       await auth.signInAnonymously();
     }
     const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
     const snapshot = await storageRef.put(file);
     const downloadURL = await snapshot.ref.getDownloadURL();
-
     urlInput.value = downloadURL;
     updateImagePreview(downloadURL);
     status.textContent = '✓ Bild erfolgreich hochgeladen!';
     status.style.color = 'green';
   } catch (err) {
-    console.error(err);
-    status.textContent = '❌ Upload fehlgeschlagen: ' + err.message;
-    status.style.color = 'red';
+    // Fallback: compress and store as base64
+    try {
+      const base64 = await compressImageToBase64(file);
+      urlInput.value = base64;
+      updateImagePreview(base64);
+      status.textContent = '✓ Bild erfolgreich hochgeladen!';
+      status.style.color = 'green';
+    } catch (err2) {
+      console.error(err2);
+      status.textContent = '❌ Upload fehlgeschlagen: ' + err2.message;
+      status.style.color = 'red';
+    }
   }
+}
+
+function compressImageToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const MAX_W = 900;
+        let w = img.width, h = img.height;
+        if (w > MAX_W) { h = Math.round(h * MAX_W / w); w = MAX_W; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.75));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function initQuillEditors() {
