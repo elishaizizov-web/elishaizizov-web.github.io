@@ -315,6 +315,7 @@ body {
 .article-card-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 8px; line-height: 1.3; }
 .article-card-excerpt { font-size: 13px; color: var(--text-soft); line-height: 1.75; font-weight: 300; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .articles-empty { font-size: 14px; color: var(--text-soft); font-style: italic; font-family: 'Playfair Display', serif; }
+.latest-article-label { font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
 
 @media (max-width: 540px) { .torah-nav { grid-template-columns: repeat(3, 1fr); } }
 
@@ -1441,9 +1442,15 @@ body {
   <section class="articles-section" id="articles-section">
     <span class="section-label" data-t="art-label">Beiträge</span>
 
+    <!-- Latest Article -->
+    <div id="latest-article-block" style="display:none; margin-bottom:28px;">
+      <p class="latest-article-label" data-t="latest-label">Neuester Beitrag</p>
+      <div id="latest-article-card"></div>
+    </div>
+
     <!-- Tabs -->
     <div class="tab-bar">
-      <button class="tab-btn active" id="tab-parasha" onclick="switchTab('parasha')" data-t="tab-p">Parashiot</button>
+      <button class="tab-btn active" id="tab-parasha" onclick="switchTab('parasha')" data-t="tab-p">Paraschot</button>
       <button class="tab-btn" id="tab-hagim" onclick="switchTab('hagim')" data-t="tab-h">Chagim</button>
     </div>
 
@@ -1721,7 +1728,7 @@ const T = {
     y3: '2020 bis 2023',  s3h: 'Basel',                      s3d: 'Rabbiner und Vortragsredner, Schomre Tora Institut Basel',
     y4: 'Ordination',      s4h: 'Rabbinatsordination, Alter 24', s4d: 'Talmud, Halacha und jüdisches Denken',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.',
+    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neuester Beitrag',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.',
   },
   en: {
@@ -1737,7 +1744,7 @@ const T = {
     y3: '2020 to 2023',   s3h: 'Basel',                      s3d: 'Rabbi and Lecturer, Schomre Tora Institut Basel',
     y4: 'Ordination',       s4h: 'Rabbinical Ordination, age 24', s4d: 'Talmud, Halacha and Jewish Thought',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.',
+    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Article',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.',
   },
   fr: {
@@ -1753,7 +1760,7 @@ const T = {
     y3: '2020 à 2023',    s3h: 'Bâle',                       s3d: 'Rabbin et Conférencier, Schomre Tora Bâle',
     y4: 'Ordination',       s4h: 'Ordination rabbinique, 24 ans', s4d: 'Talmud, Halacha et pensée juive',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles à venir.',
+    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'latest-label': 'Dernier Article',
     'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.',
   },
   he: {
@@ -1769,7 +1776,7 @@ const T = {
     y3: '2020 עד 2023',   s3h: 'באזל',                      s3d: 'רב ומרצה, מכון שומרי תורה באזל',
     y4: 'Ordination',         s4h: 'הסמכה לרבנות בגיל 24',       s4d: 'תלמוד, הלכה ומחשבת ישראל',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'חפש', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.',
+    'nav-search': 'חפש', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבה אחרונה',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.',
   },
   es: {
@@ -1785,7 +1792,7 @@ const T = {
     y3: '2020 a 2023',           s3h: 'Basilea',               s3d: 'Rabino y Conferencista, Schomre Tora Institut Basel',
     y4: 'Ordination',            s4h: 'Ordenación rabínica, 24 años', s4d: 'Talmud, Halacha y pensamiento judío',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'Buscar', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.',
+    'nav-search': 'Buscar', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'latest-label': 'Último Artículo',
     'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.',
   },
   ru: {
@@ -1801,7 +1808,7 @@ const T = {
     y3: '2020 до 2023',   s3h: 'Базель',                    s3d: 'Раввин и лектор, Schomre Tora Базель',
     y4: 'Ordination',         s4h: 'Раввинская ординация, 24 года', s4d: 'Талмуд, Halacha и еврейская мысль',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'Поиск', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.',
+    'nav-search': 'Поиск', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'latest-label': 'Последняя статья',
     'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.',
   }
 };
@@ -1844,6 +1851,7 @@ function setLang(l) {
   });
   renderBooks();
   renderHagim();
+  renderLatestArticle();
 }
 
 // Form submit via Formspree
@@ -1903,10 +1911,10 @@ function showHag(hag) {
 
 // Torah & Hagim navigation — multilingual
 const TORAH_NAMES = {
-  de: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Zurück',    tab_p: 'Paraschjot', tab_h: 'Chagim' },
-  en: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Back',      tab_p: 'Parashiot', tab_h: 'Holidays' },
-  fr: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Retour',    tab_p: 'Parachioth', tab_h: 'Fêtes' },
-  es: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Volver',    tab_p: 'Parashiot', tab_h: 'Festividades' },
+  de: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Zurück',    tab_p: 'Paraschot', tab_h: 'Chagim' },
+  en: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Back',      tab_p: 'Paraschot', tab_h: 'Holidays' },
+  fr: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Retour',    tab_p: 'Paraschot', tab_h: 'Fêtes' },
+  es: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Volver',    tab_p: 'Paraschot', tab_h: 'Festividades' },
   ru: { books: ['Берешит','Шемот','Ваикра','Бемидбар','Дварим'],       back: '← Назад',     tab_p: 'Парашот', tab_h: 'Праздники' },
   he: { books: ['בראשית','שמות','ויקרא','במדבר','דברים'],             back: '← חזרה',      tab_p: 'פרשיות', tab_h: 'חגים' }
 };
@@ -1961,6 +1969,16 @@ function renderHagim() {
     const label = names[i].replace(/'/g, "\'");
     return `<button class="parasha-btn ${hasArt ? 'has-articles' : ''}" onclick="showHag('${key}','${label}')">${names[i]}</button>`;
   }).join('');
+}
+
+function renderLatestArticle() {
+  const articles = getArticles();
+  const block = document.getElementById('latest-article-block');
+  const card = document.getElementById('latest-article-card');
+  if (!block || !card) return;
+  if (!articles.length) { block.style.display = 'none'; return; }
+  block.style.display = 'block';
+  card.innerHTML = renderCard(articles[0]);
 }
 
 function showBooks() {
@@ -2227,6 +2245,7 @@ async function loadArticles() {
     snap.forEach(doc => window._articles.push({ id: doc.id, ...doc.data() }));
     renderBooks();
     renderHagim();
+    renderLatestArticle();
     const aid = new URLSearchParams(window.location.search).get('article');
     if (aid) openArticle(aid);
   } catch(e) { console.error('Firestore error:', e); }
