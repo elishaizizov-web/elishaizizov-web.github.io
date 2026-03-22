@@ -702,12 +702,10 @@ body {
   font-weight: 300;
 }
 .article-full-text p {
-  margin: 0 0 0.5em 0;
+  margin: 0 0 0.6em 0;
 }
-.article-full-text p:has(> br:only-child),
-.article-full-text p:empty {
-  margin: 0;
-  line-height: 0.6;
+.art-spacer {
+  height: 0.6em;
 }
 .article-full-share {
   margin-top: 28px;
@@ -2129,7 +2127,10 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-title').textContent = tr.title || '';
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
-  document.getElementById('ap-text').innerHTML  = tr.text || '';
+  const cleanedText = (tr.text || '')
+    .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>')
+    .replace(/<p><br\s*\/?><\/p>/gi, '<div class="art-spacer"></div>');
+  document.getElementById('ap-text').innerHTML  = cleanedText;
   document.getElementById('ap-text').style.direction  = dir;
   document.getElementById('ap-text').style.textAlign  = isRTL ? 'right' : 'left';
   const img = document.getElementById('ap-img');
