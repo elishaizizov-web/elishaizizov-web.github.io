@@ -702,7 +702,12 @@ body {
   font-weight: 300;
 }
 .article-full-text p {
-  margin: 0 0 1em 0;
+  margin: 0 0 0.5em 0;
+}
+.article-full-text p:has(> br:only-child),
+.article-full-text p:empty {
+  margin: 0;
+  line-height: 0.6;
 }
 .article-full-share {
   margin-top: 28px;
