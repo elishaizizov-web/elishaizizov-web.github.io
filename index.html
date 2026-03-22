@@ -2483,8 +2483,13 @@ async function adminSave() {
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
     } else {
-      await db.collection('articles').add(docData);
+      const ref = await db.collection('articles').add(docData);
       msg.textContent = '✓ Gespeichert!';
+      // Ping Google to index the new article
+      fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
+      const articleUrl = 'https://elishaizizov.com/?article=' + ref.id;
+      fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
+      console.log('New article URL for indexing:', articleUrl);
     }
     adminClearForm();
     await loadArticles();
