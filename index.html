@@ -2118,8 +2118,20 @@ function _renderArticlePage(a, l) {
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
   const parashaEl = document.getElementById('ap-parasha');
-  parashaEl.textContent = a.parasha || a.hag || '';
-  parashaEl.style.display = (a.parasha || a.hag) ? 'block' : 'none';
+  let parashaDisplay = a.hag || '';
+  if (!parashaDisplay && a.parasha) {
+    // Look up German display name from TORAH map
+    for (const book of Object.keys(TORAH)) {
+      const idx = (PARASHA_MAP[book] || []).indexOf(a.parasha);
+      if (idx !== -1 && TORAH[book].de_display) {
+        parashaDisplay = TORAH[book].de_display[idx] || a.parasha;
+        break;
+      }
+    }
+    if (!parashaDisplay) parashaDisplay = a.parasha;
+  }
+  parashaEl.textContent = parashaDisplay;
+  parashaEl.style.display = parashaDisplay ? 'block' : 'none';
   document.getElementById('ap-title').textContent = tr.title || '';
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
