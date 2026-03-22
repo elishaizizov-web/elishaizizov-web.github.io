@@ -1339,6 +1339,65 @@ body {
 .admin-art-actions button.del-btn { color: #d32f2f; background: #ffebee; }
 .admin-art-actions button.del-btn:hover { background: #ffcdd2; }
 
+
+/* ── FEATURED ARTICLE ─────────────────────────────── */
+.featured-article {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  background: #fdfcfa;
+  overflow: hidden;
+  transition: border-color 0.22s, box-shadow 0.22s;
+  border-radius: 2px;
+}
+.featured-article:hover { border-color: var(--navy); box-shadow: 0 4px 24px rgba(27,42,59,0.10); }
+.featured-img-wrap { width: 100%; max-height: 340px; overflow: hidden; }
+.featured-img { width: 100%; height: 340px; object-fit: cover; display: block; }
+.featured-body { padding: 28px 32px 32px; }
+.featured-label {
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 10px;
+}
+.featured-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 8px 0 14px;
+  line-height: 1.3;
+}
+.featured-excerpt {
+  font-size: 15px;
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+.featured-read-btn {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--navy);
+  border: none;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 2px;
+}
+.featured-read-btn:hover { background: var(--navy-light); }
+@media (min-width: 700px) {
+  .featured-article { flex-direction: row; }
+  .featured-img-wrap { width: 42%; max-height: none; flex-shrink: 0; }
+  .featured-img { height: 100%; min-height: 280px; }
+}
 </style>
 
   <!-- Firebase -->
@@ -1427,6 +1486,7 @@ body {
   </section>
 
   <section class="articles-section" id="articles-section">
+  <div id="featured-article-section" style="display:none; margin-bottom:40px;"></div>
     <span class="section-label" data-t="art-label">Beiträge</span>
 
     <!-- Tabs -->
@@ -1664,6 +1724,7 @@ body {
             <div class="premium-upload-text">Tap to upload image from your device</div>
             <div class="premium-upload-subtext">JPEG, PNG, JPG accepted</div>
             <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
+            <img id="upload-preview" src="" alt="Vorschau" style="display:none;max-width:100%;max-height:180px;margin-top:10px;border-radius:6px;border:1px solid var(--rule);">
           </div>
           <input type="hidden" id="af-image">
         </div>
@@ -1894,7 +1955,7 @@ function showHag(hag) {
 
 // Torah & Hagim navigation — multilingual
 const TORAH_NAMES = {
-  de: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Zurück',    tab_p: 'Parashiot', tab_h: 'Chagim' },
+  de: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Zurück',    tab_p: 'Paraschaot', tab_h: 'Chagim' },
   en: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Back',      tab_p: 'Parashiot', tab_h: 'Holidays' },
   fr: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Retour',    tab_p: 'Parachioth', tab_h: 'Fêtes' },
   es: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Volver',    tab_p: 'Parashiot', tab_h: 'Festividades' },
@@ -1903,11 +1964,11 @@ const TORAH_NAMES = {
 };
 const BOOK_KEYS = ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'];
 const TORAH = {
-  'Bereshit': { de:['Bereshit','Noach','Lech Lecha','Vayera','Chayei Sara','Toldot','Vayetzé','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi'], he:['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי'] },
-  'Shemot':   { de:['Shemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Teruma','Tetzavé','Ki Tissa','Vayakhel','Pekudei'], he:['שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי'] },
-  'Vayikra':  { de:['Vayikra','Tzav','Shemini','Tazria','Metzora','Acharei Mot','Kedoshim','Emor','Behar','Bechukotai'], he:['ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי'] },
-  'Bamidbar': { de:['Bamidbar','Nasso','Behaalotcha','Shelach','Korach','Chukat','Balak','Pinchas','Matot','Massei'], he:['במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי'] },
-  'Devarim':  { de:['Devarim','Vaetchanan','Ekev','Ree','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','Vezot Habracha'], he:['דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','נצבים','וילך','האזינו','וזאת הברכה'] }
+  'Bereshit': { de:['Bereschit','Noach','Lech Lecha','Wajera','Chawei Sara','Toldot','Wajeze','Wajischlach','Wajeschew','Mikez','Wajiggasch','Wajechi'], he:['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי'] },
+  'Shemot':   { de:['Schemot','Waera','Bo','Beschalach','Jitro','Mischpatim','Teruma','Tetzawe','Ki Tissa','Wajakchel','Pekudej'], he:['שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי'] },
+  'Vayikra':  { de:['Wajikra','Zaw','Schemini','Tazria','Mezora','Acharej Mot','Kedoschim','Emor','Behar','Bechukotaj'], he:['ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי'] },
+  'Bamidbar': { de:['Bamidbar','Nasso','Beaalotcha','Schelach Lecha','Korach','Chukat','Balak','Pinchas','Matot','Massej'], he:['במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי'] },
+  'Devarim':  { de:['Dewarim','Waetchanan','Ekew','Ree','Schoftim','Ki Teze','Ki Tawo','Nizawim','Wajelech','Haasinu','Wesot Habracha'], he:['דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','נצבים','וילך','האזינו','וזאת הברכה'] }
 };
 const HAG_KEYS = ['Rosh Hashanah','Yom Kippur','Sukkot','Shemini Atzeret','Chanukah','Asarah BeTevet','Tu BiShvat','Purim','Pesach','Sefirat HaOmer','Yom HaShoah','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Yom Yerushalayim','Shavuot','Shiva Asar BeTammuz','Tisha BAv'];
 const HAGIM_NAMES = {
@@ -2056,19 +2117,7 @@ function searchArticles(q) {
 
 // Article full view
 function openArticle(id) {
-  const a = getArticles().find(x => x.id === id);
-  if (!a) { console.warn('Article not found:', id); return; }
-  window._currentArticle = a;
-  _renderArticlePage(a, currentLang);
-  // URL
-  const url = new URL(window.location.href);
-  url.searchParams.set('article', id);
-  window.history.pushState({ articleId: id }, '', url);
-  // switch views
-  document.querySelector('.page-header').style.display = 'none';
-  document.querySelector('.page-body').style.display   = 'none';
-  document.getElementById('article-page').style.display = 'block';
-  window.scrollTo(0, 0);
+  window.open('https://elishaizizov.com/artikel/' + id, '_blank');
 }
 
 function _renderArticlePage(a, l) {
@@ -2190,9 +2239,31 @@ async function loadArticles() {
     snap.forEach(doc => window._articles.push({ id: doc.id, ...doc.data() }));
     renderBooks();
     renderHagim();
-    const aid = new URLSearchParams(window.location.search).get('article');
-    if (aid) openArticle(aid);
+    renderFeaturedArticle();
   } catch(e) { console.error('Firestore error:', e); }
+}
+
+function renderFeaturedArticle() {
+  const container = document.getElementById('featured-article-section');
+  if (!container) return;
+  const articles = window._articles;
+  if (!articles || articles.length === 0) { container.style.display = 'none'; return; }
+  const a = articles[0];
+  const lang = (typeof currentLang !== 'undefined') ? currentLang : 'de';
+  const tr = (a.translations && a.translations[lang]) ? a.translations[lang] : { title: a.title || '', text: a.text || '' };
+  const title = tr.title || a.title || '';
+  const excerpt = (tr.text || a.text || '').replace(/<[^>]+>/g,'').substring(0, 200) + '…';
+  container.style.display = 'block';
+  container.innerHTML =
+    '<div class="featured-article" onclick="openArticle(\'' + a.id + '\')" style="cursor:pointer;">' +
+    (a.image ? '<div class="featured-img-wrap"><img src="' + a.image + '" alt="' + title + '" class="featured-img"></div>' : '') +
+    '<div class="featured-body">' +
+    '<span class="featured-label">Aktueller Beitrag</span>' +
+    '<span class="article-card-date" style="display:block;margin-bottom:6px;">' + (a.date || '') + '</span>' +
+    '<h2 class="featured-title">' + title + '</h2>' +
+    '<p class="featured-excerpt">' + excerpt + '</p>' +
+    '<button class="featured-read-btn" onclick="event.stopPropagation();openArticle(\'' + a.id + '\')">Beitrag lesen →</button>' +
+    '</div></div>';
 }
 
 window.addEventListener('popstate', () => {
@@ -2228,11 +2299,17 @@ let quillEditors = {};
 const btoa = window.btoa || function(str) { return str; };
 // The encoded password (base64 of "ElishaiAdmin2026!") is "RWxpc2hhaUFkbWluMjAyNiE="
 
-const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
+const HASH_VAL = "PT1BYUc5MVRMZzNRYzlFV2RrblhGUjBUcVoyUU5Ka1g=";
 function checkToken(input) {
   try {
-    const scrambled = input.split('').reverse().join('');
-    return window.btoa(scrambled) === HASH_VAL;
+    const _s = input.split('').reverse().join('');
+    const _k = 42;
+    let _x = '';
+    for (let i = 0; i < _s.length; i++) _x += String.fromCharCode(_s.charCodeAt(i) ^ _k);
+    const _b1 = window.btoa(unescape(encodeURIComponent(_x)));
+    const _r = _b1.split('').reverse().join('');
+    const _b2 = window.btoa(_r);
+    return _b2 === HASH_VAL;
   } catch(e) {
     return false;
   }
@@ -2282,7 +2359,7 @@ function adminLogout() {
 // ════════════════════════════════════════════════════════
 // IMAGE UPLOAD
 // ════════════════════════════════════════════════════════
-async function uploadImage(e) {
+async async function uploadImage(e) {
   const file = e.target.files[0];
   if (!file) return;
   const status = document.getElementById('upload-status');
@@ -2298,8 +2375,10 @@ async function uploadImage(e) {
     const downloadURL = await snapshot.ref.getDownloadURL();
 
     urlInput.value = downloadURL;
-    status.textContent = '✓ Image uploaded successfully!';
+    status.textContent = '✓ Bild hochgeladen!';
     status.style.color = 'green';
+    const prev = document.getElementById('upload-preview');
+    if (prev) { prev.src = downloadURL; prev.style.display = 'block'; }
   } catch (err) {
     console.error(err);
     status.textContent = '❌ Upload failed: ' + err.message;
