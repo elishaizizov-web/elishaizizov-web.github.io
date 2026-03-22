@@ -1270,10 +1270,7 @@ body {
   color: #888;
 }
 #af-image-file {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  opacity: 0;
-  cursor: pointer;
+  display: none;
 }
 .quill-wrapper {
   margin-bottom: 30px;
@@ -1663,13 +1660,13 @@ body {
 
         <div class="aform-group" style="margin-bottom:30px;">
           <label>📸 Artikelbild (Klicken Sie um ein Bild auszuwählen)</label>
-          <div class="premium-upload-box" onclick="document.getElementById('af-image-file').click()">
+          <label for="af-image-file" class="premium-upload-box">
             <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
             <div class="premium-upload-icon">📁</div>
             <div class="premium-upload-text">Tippen um Bild hochzuladen</div>
             <div class="premium-upload-subtext">JPEG, PNG, JPG</div>
             <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
-          </div>
+          </label>
           <input type="hidden" id="af-image" oninput="updateImagePreview(this.value)">
           <div id="af-image-preview" style="display:none; margin-top:10px; text-align:center;">
             <img id="af-image-preview-img" src="" alt="Vorschau" style="max-width:100%; max-height:160px; border-radius:6px; border:1px solid var(--rule); object-fit:cover;">
