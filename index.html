@@ -805,6 +805,18 @@ body {
       body > *:not(#article-page) { display:none !important; }
       #article-page { display:block !important; padding:0; margin:0; }
       .ap-back, #ap-share, .ap-lang-bar, .print-btn-wrap, .admin-fab { display:none !important; }
+      #article-page::after {
+        content: 'Verfasst von Rabbiner Elishai Zizov – Alle Rechte vorbehalten · elishaizizov.com';
+        display: block;
+        text-align: center;
+        font-size: 10px;
+        color: #888;
+        margin-top: 40px;
+        padding-top: 12px;
+        border-top: 1px solid #ddd;
+        font-family: 'Raleway', sans-serif;
+        letter-spacing: 0.05em;
+      }
     }
 
   
@@ -1348,6 +1360,8 @@ body {
   <!-- Quill Rich Text Editor -->
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <!-- jsPDF for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
 <body>
@@ -1560,10 +1574,14 @@ body {
   <img id="ap-img" src="" alt="" style="display:none">
   <div id="ap-text"></div>
   <div id="ap-share"></div>
-  <div class="print-btn-wrap" style="margin-top:16px;">
+  <div class="print-btn-wrap" style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
     <button class="share-btn" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Print / PDF
+      Drucken
+    </button>
+    <button class="share-btn" onclick="downloadArticlePDF()" style="display:inline-flex;align-items:center;gap:6px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      PDF herunterladen
     </button>
   </div>
 </div>
@@ -1577,118 +1595,111 @@ body {
   <div class="admin-box">
 
     <div class="admin-header-bar">
-      <h2>Article Management</h2>
+      <h2>Artikel-Verwaltung</h2>
       <button class="admin-close-btn" onclick="toggleAdmin()">&times;</button>
     </div>
 
     <div class="admin-body">
       <!-- LOGIN SCREEN -->
       <div id="admin-login-screen" style="text-align:center; padding:40px 0;">
-        <p style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:24px; color:var(--navy);">Please authenticate to continue</p>
-        <input type="password" id="admin-pw" placeholder="Enter Admin Password" style="padding:16px; width:280px; border-radius:8px; border:1px solid #ccc; font-size:16px; display:block; margin:0 auto 20px; outline:none; text-align:center;" onkeyup="if(event.key==='Enter')adminLogin()">
-        <button class="admin-save-btn" style="width:280px;" onclick="adminLogin()">SECURE LOGIN</button>
+        <p style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:24px; color:var(--navy);">Bitte anmelden um fortzufahren</p>
+        <input type="password" id="admin-pw" placeholder="Administrator-Passwort eingeben" style="padding:16px; width:280px; border-radius:8px; border:1px solid #ccc; font-size:16px; display:block; margin:0 auto 20px; outline:none; text-align:center;" onkeyup="if(event.key==='Enter')adminLogin()">
+        <button class="admin-save-btn" style="width:280px;" onclick="adminLogin()">ANMELDEN</button>
         <p id="admin-login-err" style="display:none; color:#d32f2f; margin-top:16px; font-size:14px; font-weight:bold;"></p>
       </div>
 
       <!-- ADMIN CONTENT -->
       <div id="admin-content" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Publish New Article</span>
-          <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Logout</button>
+          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Neuen Artikel veröffentlichen</span>
+          <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Abmelden</button>
+        </div>
+
+        <div class="aform-grid">
+          <div class="aform-group" style="grid-column:1/-1;">
+            <label>Titel (Deutsch)</label>
+            <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben...">
+          </div>
+          <!-- Hidden translation title inputs (filled by auto-translate) -->
+          <input type="hidden" id="af-title-he">
+          <input type="hidden" id="af-title-en">
+          <input type="hidden" id="af-title-fr">
+          <input type="hidden" id="af-title-es">
+          <input type="hidden" id="af-title-ru">
         </div>
 
         <div class="aform-grid">
           <div class="aform-group">
-            <label>Title (DE) - German</label>
-            <input type="text" id="af-title-de" placeholder="Deutscher Titel...">
-          </div>
-          <div class="aform-group">
-            <label>Title (HE) - עברית</label>
-            <input type="text" id="af-title-he" placeholder="כותרת בעברית..." dir="rtl">
-          </div>
-          <div class="aform-group">
-            <label>Title (EN) - English</label>
-            <input type="text" id="af-title-en" placeholder="English Title...">
-          </div>
-          <div class="aform-group">
-            <label>Title (FR) - French</label>
-            <input type="text" id="af-title-fr" placeholder="Titre en français...">
-          </div>
-          <div class="aform-group">
-            <label>Title (ES) - Spanish</label>
-            <input type="text" id="af-title-es" placeholder="Título en español...">
-          </div>
-          <div class="aform-group">
-            <label>Title (RU) - Russian</label>
-            <input type="text" id="af-title-ru" placeholder="Русский заголовок...">
-          </div>
-        </div>
-
-        <div class="aform-grid">
-          <div class="aform-group">
-            <label>Category</label>
+            <label>Kategorie</label>
             <select id="af-cat" onchange="adminToggleCat()">
-              <option value="parasha">Parasha / Torah</option>
-              <option value="hag">Hag / Holiday</option>
+              <option value="parasha">Parascha / Tora</option>
+              <option value="hag">Fest / Feiertag</option>
             </select>
           </div>
           <div class="aform-group" id="af-book-wrap">
-            <label>Book</label>
+            <label>Buch</label>
             <select id="af-book" onchange="adminUpdateParasha()">
-              <option value="Bereshit">Bereshit / בראשית</option>
-              <option value="Shemot">Shemot / שמות</option>
-              <option value="Vayikra">Vayikra / ויקרא</option>
-              <option value="Bamidbar">Bamidbar / במדבר</option>
-              <option value="Devarim">Devarim / דברים</option>
+              <option value="Bereshit">Bereschit</option>
+              <option value="Shemot">Schemot</option>
+              <option value="Vayikra">Wajikra</option>
+              <option value="Bamidbar">Bamidbar</option>
+              <option value="Devarim">Dewarim</option>
             </select>
           </div>
           <div class="aform-group" id="af-parasha-wrap">
-            <label>Parasha</label>
+            <label>Parascha</label>
             <select id="af-parasha"></select>
           </div>
           <div class="aform-group" id="af-hag-wrap" style="display:none;">
-            <label>Holiday Name</label>
-            <input type="text" id="af-hag-name" placeholder="e.g. Sukkot, Pessach">
+            <label>Festname</label>
+            <input type="text" id="af-hag-name" placeholder="z.B. Sukkot, Pessach">
           </div>
           <div class="aform-group">
-            <label>Publish Date</label>
+            <label>Veröffentlichungsdatum</label>
             <input type="date" id="af-date-input">
           </div>
         </div>
 
         <div class="aform-group" style="margin-bottom:30px;">
-          <label>📸 Article Image (Click box to select from Photos)</label>
+          <label>📸 Artikelbild (Klicken Sie um ein Bild auszuwählen)</label>
           <div class="premium-upload-box" onclick="document.getElementById('af-image-file').click()">
             <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
             <div class="premium-upload-icon">📁</div>
-            <div class="premium-upload-text">Tap to upload image from your device</div>
-            <div class="premium-upload-subtext">JPEG, PNG, JPG accepted</div>
+            <div class="premium-upload-text">Tippen um Bild hochzuladen</div>
+            <div class="premium-upload-subtext">JPEG, PNG, JPG</div>
             <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
           </div>
-          <input type="hidden" id="af-image">
+          <input type="hidden" id="af-image" oninput="updateImagePreview(this.value)">
+          <div id="af-image-preview" style="display:none; margin-top:10px; text-align:center;">
+            <img id="af-image-preview-img" src="" alt="Vorschau" style="max-width:100%; max-height:160px; border-radius:6px; border:1px solid var(--rule); object-fit:cover;">
+            <button type="button" onclick="clearImageUpload()" style="display:block; margin:6px auto 0; background:transparent; border:1px solid #ccc; padding:4px 14px; border-radius:4px; font-size:11px; cursor:pointer;">Bild entfernen</button>
+          </div>
         </div>
 
         <div class="aform-group">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <label style="margin:0;">Content (DE) - German</label>
-            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Auto-Translate All</button>
+            <label style="margin:0;">Inhalt (Deutsch)</label>
+            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Alle Sprachen übersetzen</button>
           </div>
           <div class="quill-wrapper"><div id="q-de"></div></div>
         </div>
-        <div class="aform-group"><label>Content (HE) - עברית</label><div class="quill-wrapper"><div id="q-he"></div></div></div>
-        <div class="aform-group"><label>Content (EN) - English</label><div class="quill-wrapper"><div id="q-en"></div></div></div>
-        <div class="aform-group"><label>Content (FR) - French</label><div class="quill-wrapper"><div id="q-fr"></div></div></div>
-        <div class="aform-group"><label>Content (ES) - Spanish</label><div class="quill-wrapper"><div id="q-es"></div></div></div>
-        <div class="aform-group"><label>Content (RU) - Russian</label><div class="quill-wrapper"><div id="q-ru"></div></div></div>
+        <!-- Hidden editors for other languages (filled by auto-translate) -->
+        <div style="display:none;">
+          <div id="q-he"></div>
+          <div id="q-en"></div>
+          <div id="q-fr"></div>
+          <div id="q-es"></div>
+          <div id="q-ru"></div>
+        </div>
 
         <div style="text-align:center;">
-          <button class="admin-save-btn" onclick="adminSave()">PUBLISH ARTICLE</button>
+          <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
           <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy);"></p>
-          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ccc; padding:8px 24px; border-radius:6px; margin-top:10px; cursor:pointer;">Cancel Edit</button>
+          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ccc; padding:8px 24px; border-radius:6px; margin-top:10px; cursor:pointer;">Bearbeitung abbrechen</button>
         </div>
 
         <div style="margin-top:60px;">
-          <span class="admin-section-title">Manage Existing Articles</span>
+          <span class="admin-section-title">Veröffentlichte Artikel verwalten</span>
           <div id="admin-art-list" class="admin-art-list"></div>
         </div>
 
@@ -1894,24 +1905,24 @@ function showHag(hag) {
 
 // Torah & Hagim navigation — multilingual
 const TORAH_NAMES = {
-  de: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Zurück',    tab_p: 'Parashiot', tab_h: 'Chagim' },
-  en: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Back',      tab_p: 'Parashiot', tab_h: 'Holidays' },
-  fr: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Retour',    tab_p: 'Parachioth', tab_h: 'Fêtes' },
-  es: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'], back: '← Volver',    tab_p: 'Parashiot', tab_h: 'Festividades' },
-  ru: { books: ['Берешит','Шемот','Ваикра','Бемидбар','Дварим'],    back: '← Назад',     tab_p: 'Парашот', tab_h: 'Праздники' },
-  he: { books: ['בראשית','שמות','ויקרא','במדבר','דברים'],          back: '← חזרה',      tab_p: 'פרשיות', tab_h: 'חגים' }
+  de: { books: ['Bereschit','Schemot','Wajikra','Bamidbar','Dewarim'], back: '← Zurück',    tab_p: 'Paraschjot', tab_h: 'Chagim' },
+  en: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Back',      tab_p: 'Parashiot', tab_h: 'Holidays' },
+  fr: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Retour',    tab_p: 'Parachioth', tab_h: 'Fêtes' },
+  es: { books: ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'],   back: '← Volver',    tab_p: 'Parashiot', tab_h: 'Festividades' },
+  ru: { books: ['Берешит','Шемот','Ваикра','Бемидбар','Дварим'],       back: '← Назад',     tab_p: 'Парашот', tab_h: 'Праздники' },
+  he: { books: ['בראשית','שמות','ויקרא','במדבר','דברים'],             back: '← חזרה',      tab_p: 'פרשיות', tab_h: 'חגים' }
 };
 const BOOK_KEYS = ['Bereshit','Shemot','Vayikra','Bamidbar','Devarim'];
 const TORAH = {
-  'Bereshit': { de:['Bereshit','Noach','Lech Lecha','Vayera','Chayei Sara','Toldot','Vayetzé','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi'], he:['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי'] },
-  'Shemot':   { de:['Shemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Teruma','Tetzavé','Ki Tissa','Vayakhel','Pekudei'], he:['שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי'] },
-  'Vayikra':  { de:['Vayikra','Tzav','Shemini','Tazria','Metzora','Acharei Mot','Kedoshim','Emor','Behar','Bechukotai'], he:['ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי'] },
-  'Bamidbar': { de:['Bamidbar','Nasso','Behaalotcha','Shelach','Korach','Chukat','Balak','Pinchas','Matot','Massei'], he:['במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי'] },
-  'Devarim':  { de:['Devarim','Vaetchanan','Ekev','Ree','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','Vezot Habracha'], he:['דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','נצבים','וילך','האזינו','וזאת הברכה'] }
+  'Bereshit': { de:['Bereshit','Noach','Lech Lecha','Vayera','Chayei Sara','Toldot','Vayetzé','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi'], de_display:['Bereschit','Noach','Lech Lecha','Wajera','Chajje Sara','Toldot','Wajeze','Wajischlach','Wajeschew','Mikez','Wajiggasch','Wajchi'], he:['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי'] },
+  'Shemot':   { de:['Shemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Teruma','Tetzavé','Ki Tissa','Vayakhel','Pekudei'], de_display:['Schemot','Waera','Bo','Beschallach','Jitro','Mischpatim','Teruma','Tezawwe','Ki Tissa','Wajakhel','Pekude'], he:['שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי'] },
+  'Vayikra':  { de:['Vayikra','Tzav','Shemini','Tazria','Metzora','Acharei Mot','Kedoshim','Emor','Behar','Bechukotai'], de_display:['Wajikra','Zaw','Schemini','Tazria','Mezora','Achare Mot','Kedoschim','Emor','Behar','Bechukotai'], he:['ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי'] },
+  'Bamidbar': { de:['Bamidbar','Nasso','Behaalotcha','Shelach','Korach','Chukat','Balak','Pinchas','Matot','Massei'], de_display:['Bamidbar','Nasso','Beaalotcha','Schelach','Korach','Chukkat','Balak','Pinchas','Mattot','Masse'], he:['במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי'] },
+  'Devarim':  { de:['Devarim','Vaetchanan','Ekev','Ree','Shoftim','Ki Tetze','Ki Tavo','Nitzavim','Vayelech','Haazinu','Vezot Habracha'], de_display:['Dewarim','Waetchanan','Ekew','Ree','Schoftim','Ki Teze','Ki Tawo','Nizawim','Wajelech','Haasinu','Wesot Habracha'], he:['דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','נצבים','וילך','האזינו','וזאת הברכה'] }
 };
 const HAG_KEYS = ['Rosh Hashanah','Yom Kippur','Sukkot','Shemini Atzeret','Chanukah','Asarah BeTevet','Tu BiShvat','Purim','Pesach','Sefirat HaOmer','Yom HaShoah','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Yom Yerushalayim','Shavuot','Shiva Asar BeTammuz','Tisha BAv'];
 const HAGIM_NAMES = {
-  de: ['Rosh Hashanah','Yom Kippur','Sukkot','Shemini Atzeret','Chanukah','Asarah BeTevet','Tu BiShvat','Purim','Pessach','Sefirat HaOmer','Yom HaShoah','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Jom Jeruschalajim','Schawuot','17. Tammus','Tischa beAw'],
+  de: ['Rosch Haschana','Jom Kipur','Sukkot','Schemini Azeret','Chanukka','Asara beTebet','Tu biSchewat','Purim','Pessach','Sefirat HaOmer','Jom HaSchoah','Jom HaZikaron','Jom HaAzmaut','Lag baOmer','Jom Jeruschalajim','Schawuot','17. Tammus','Tischa beAw'],
   en: ['Rosh Hashanah','Yom Kippur','Sukkot','Shemini Atzeret','Hanukkah','Asarah BeTevet','Tu BiShvat','Purim','Passover','Sefirat HaOmer','Yom HaShoah','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Yom Yerushalayim','Shavuot','17th of Tammuz',"Tisha B'Av"],
   fr: ['Roch Hachana','Yom Kippour','Souccot','Chemini Atseret','Hanoukka','Assara BéTévet','Tou BiChvat','Pourim',"Pessa'h",'Sefirat HaOmer','Yom HaShoah','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Yom Yérouchalayim','Chavouot','17 Tamouz','Tisha BeAv'],
   es: ['Rosh Hashaná','Yom Kipur','Sucot','Shemini Atzeret','Janucá','Asará BeTevet','Tu BiShvat','Purim','Pésaj','Sefirat HaOmer','Yom HaShoá','Yom HaZikaron','Yom HaAtzmaut','Lag BaOmer','Yom Yerushalayim','Shavuot','17 de Tamuz','Tisha BeAv'],
@@ -1967,7 +1978,7 @@ function showBook(book) {
   const articles = getArticles();
   const isHe = currentLang === 'he';
   const parashiot_de = TORAH[book].de;
-  const parashiot_display = isHe ? TORAH[book].he : TORAH[book].de;
+  const parashiot_display = isHe ? TORAH[book].he : (currentLang === 'de' && TORAH[book].de_display ? TORAH[book].de_display : TORAH[book].de);
 
   document.getElementById('torah-nav').style.display = 'none';
   document.getElementById('articles-list').style.display = 'none';
@@ -2000,12 +2011,22 @@ function showParasha(parashaKey, parashaDisplay) {
   }
 }
 
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+  return tmp.textContent || tmp.innerText || '';
+}
+
 function renderCard(a, noClick) {
   const l = currentLang;
   const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
   const img = a.image ? `<img class="article-card-img" src="${a.image}" alt="${t.title}">` : `<div class="article-card-img-placeholder"></div>`;
-  const click = noClick ? '' : `onclick="openArticle(${a.id})" style="cursor:pointer"`;
-  return `<div class="article-card" ${click}>${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3><p class="article-card-excerpt">${t.text}</p></div></div>`;
+  const excerpt = stripHtml(t.text).substring(0, 200).trim();
+  const excerptHtml = excerpt ? `<p class="article-card-excerpt">${excerpt}${excerpt.length >= 200 ? '…' : ''}</p>` : '';
+  if (noClick) {
+    return `<div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div>`;
+  }
+  return `<a href="?article=${a.id}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div></a>`;
 }
 
 function showHagim() {
@@ -2102,11 +2123,11 @@ function _renderArticlePage(a, l) {
     </a>
     <a class="share-btn" href="https://t.me/share/url?url=${tgUrl}&text=${tgTitle}" target="_blank" rel="noopener">Telegram</a>
     <button class="share-btn" id="copy-link-btn" onclick="
-      navigator.clipboard.writeText('${pageUrl}').then(()=>{ 
+      navigator.clipboard.writeText('${pageUrl}').then(()=>{
         const b=document.getElementById('copy-link-btn');
-        b.textContent='✓ Copied!'; 
-        setTimeout(()=>b.textContent='Copy Link',2000); 
-      })">Copy Link</button>`;
+        b.textContent='✓ Kopiert!';
+        setTimeout(()=>b.textContent='Link kopieren',2000);
+      })">Link kopieren</button>`;
 }
 
 function switchArticleLang(l) {
@@ -2250,9 +2271,9 @@ function adminLogin() {
   err.style.display = 'none';
 
   if (!pw) { 
-    err.textContent = 'Please enter password.'; 
-    err.style.display = 'block'; 
-    return; 
+    err.textContent = 'Bitte Passwort eingeben.';
+    err.style.display = 'block';
+    return;
   }
 
   if (checkToken(pw)) {
@@ -2263,7 +2284,7 @@ function adminLogin() {
     renderAdminList();
     document.getElementById('admin-pw').value = '';
   } else {
-    err.textContent = 'Incorrect password.';
+    err.textContent = 'Falsches Passwort.';
     err.style.display = 'block';
   }
 }
@@ -2282,6 +2303,20 @@ function adminLogout() {
 // ════════════════════════════════════════════════════════
 // IMAGE UPLOAD
 // ════════════════════════════════════════════════════════
+function updateImagePreview(url) {
+  const wrap = document.getElementById('af-image-preview');
+  const img  = document.getElementById('af-image-preview-img');
+  if (url) { img.src = url; wrap.style.display = 'block'; }
+  else { wrap.style.display = 'none'; img.src = ''; }
+}
+
+function clearImageUpload() {
+  document.getElementById('af-image').value = '';
+  updateImagePreview('');
+  const status = document.getElementById('upload-status');
+  status.style.display = 'none';
+}
+
 async function uploadImage(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -2289,7 +2324,7 @@ async function uploadImage(e) {
   const urlInput = document.getElementById('af-image');
 
   status.style.display = 'block';
-  status.textContent = 'Uploading... Please wait.';
+  status.textContent = 'Bild wird hochgeladen... Bitte warten.';
   status.style.color = '#b8952a';
 
   try {
@@ -2298,11 +2333,12 @@ async function uploadImage(e) {
     const downloadURL = await snapshot.ref.getDownloadURL();
 
     urlInput.value = downloadURL;
-    status.textContent = '✓ Image uploaded successfully!';
+    updateImagePreview(downloadURL);
+    status.textContent = '✓ Bild erfolgreich hochgeladen!';
     status.style.color = 'green';
   } catch (err) {
     console.error(err);
-    status.textContent = '❌ Upload failed: ' + err.message;
+    status.textContent = '❌ Upload fehlgeschlagen: ' + err.message;
     status.style.color = 'red';
   }
 }
@@ -2326,15 +2362,17 @@ function adminToggleCat() {
 
 function adminUpdateParasha() {
   const book = document.getElementById('af-book') ? document.getElementById('af-book').value : 'Bereshit';
+  const keys = PARASHA_MAP[book] || [];
+  const displayNames = (TORAH[book] && TORAH[book].de_display) ? TORAH[book].de_display : keys;
   document.getElementById('af-parasha').innerHTML =
-    (PARASHA_MAP[book]||[]).map(p=>`<option value="${p}">${p}</option>`).join('');
+    keys.map((p, i) => `<option value="${p}">${displayNames[i] || p}</option>`).join('');
 }
 
 async function adminSave() {
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
-  if (!titleDE) { msg.textContent = '⚠ German title required.'; return; }
-  msg.textContent = 'Saving…';
+  if (!titleDE) { msg.textContent = '⚠ Deutscher Titel erforderlich.'; return; }
+  msg.textContent = 'Speichere…';
   const isHag = document.getElementById('af-cat').value === 'hag';
   const dv    = document.getElementById('af-date-input').value;
   const docData = {
@@ -2358,12 +2396,12 @@ async function adminSave() {
   try {
     if (window._editingId) {
       await db.collection('articles').doc(window._editingId).update(docData);
-      msg.textContent = '✓ Updated!';
+      msg.textContent = '✓ Aktualisiert!';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
     } else {
       await db.collection('articles').add(docData);
-      msg.textContent = '✓ Saved!';
+      msg.textContent = '✓ Gespeichert!';
     }
     adminClearForm();
     await loadArticles();
@@ -2375,6 +2413,9 @@ function adminClearForm() {
   ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
     .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
+  updateImagePreview('');
+  const status = document.getElementById('upload-status');
+  if (status) status.style.display = 'none';
 }
 
 function adminCancelEdit() {
@@ -2388,7 +2429,7 @@ async function adminEdit(id) {
   window._editingId = id;
   const a = window._articles.find(x => x.id === id);
   if (!a) return;
-  document.getElementById('admin-msg').textContent = '✏ Editing: ' + (a.title||id);
+  document.getElementById('admin-msg').textContent = '✏ Bearbeitung: ' + (a.title||id);
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
   if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
   ['de','he','en','fr','es','ru'].forEach(l => {
@@ -2398,6 +2439,7 @@ async function adminEdit(id) {
     if (quillEditors[l]) quillEditors[l].root.innerHTML = tr.text||(l==='de'?a.text:'')||'';
   });
   document.getElementById('af-image').value = a.image||'';
+  updateImagePreview(a.image||'');
   if (a.book) {
     document.getElementById('af-cat').value = 'parasha'; adminToggleCat();
     document.getElementById('af-book').value = a.book; adminUpdateParasha();
@@ -2410,7 +2452,7 @@ async function adminEdit(id) {
 }
 
 async function adminDelete(id) {
-  if (!confirm('Delete this article? / למחוק מאמר זה?')) return;
+  if (!confirm('Diesen Artikel wirklich löschen?')) return;
   try {
     await db.collection('articles').doc(id).delete();
     await loadArticles(); renderAdminList();
@@ -2421,7 +2463,7 @@ async function adminDelete(id) {
 function renderAdminList() {
   const el = document.getElementById('admin-art-list');
   if (!el) return;
-  if (!window._articles.length) { el.innerHTML='<p style="color:#888; font-style:italic;">No articles published yet.</p>'; return; }
+  if (!window._articles.length) { el.innerHTML='<p style="color:#888; font-style:italic;">Noch keine Artikel veröffentlicht.</p>'; return; }
   el.innerHTML = window._articles.map(a=>`
     <div class="admin-art-item">
       <div class="admin-art-title">${a.title||a.id}</div>
@@ -2439,6 +2481,107 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ════════════════════════════════════════════════════════
+// PDF DOWNLOAD
+// ════════════════════════════════════════════════════════
+async function downloadArticlePDF() {
+  const a = window._currentArticle;
+  if (!a) return;
+  const l = currentLang;
+  const tr = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
+
+  if (!window.jspdf) { alert('PDF-Bibliothek wird geladen, bitte erneut versuchen.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth  = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 20;
+  let yPos = margin;
+
+  // ── Article image at top ──────────────────────────────
+  if (a.image) {
+    try {
+      await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width  = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            const maxW   = pageWidth - 2 * margin;
+            const imgH   = Math.min((img.naturalHeight * maxW) / img.naturalWidth, 70);
+            doc.addImage(dataUrl, 'JPEG', margin, yPos, maxW, imgH);
+            yPos += imgH + 8;
+          } catch(e) {}
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = a.image;
+      });
+    } catch(e) {}
+  }
+
+  // ── Title ─────────────────────────────────────────────
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  const title = tr.title || a.title || '';
+  const titleLines = doc.splitTextToSize(title, pageWidth - 2 * margin);
+  doc.text(titleLines, margin, yPos);
+  yPos += titleLines.length * 8 + 4;
+
+  // ── Date ──────────────────────────────────────────────
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(120, 100, 80);
+  doc.text(a.date || '', margin, yPos);
+  yPos += 8;
+
+  // ── Divider ───────────────────────────────────────────
+  doc.setDrawColor(184, 149, 42);
+  doc.setLineWidth(0.5);
+  doc.line(margin, yPos, pageWidth - margin, yPos);
+  yPos += 6;
+  doc.setTextColor(42, 36, 32);
+
+  // ── Content ───────────────────────────────────────────
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  const rawText = stripHtml(tr.text || a.text || '');
+  const paragraphs = rawText.split(/\n+/).filter(p => p.trim());
+  for (const para of paragraphs) {
+    const lines = doc.splitTextToSize(para.trim(), pageWidth - 2 * margin);
+    for (const line of lines) {
+      if (yPos > pageHeight - 28) {
+        doc.addPage();
+        yPos = margin;
+      }
+      doc.text(line, margin, yPos);
+      yPos += 6;
+    }
+    yPos += 3; // paragraph spacing
+  }
+
+  // ── Footer on every page ──────────────────────────────
+  const totalPages = doc.internal.getNumberOfPages();
+  const footerText = 'Verfasst von Rabbiner Elishai Zizov \u2013 Alle Rechte vorbehalten \u00B7 elishaizizov.com';
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(140, 130, 120);
+    doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    doc.setDrawColor(220, 216, 208);
+    doc.setLineWidth(0.3);
+    doc.line(margin, pageHeight - 14, pageWidth - margin, pageHeight - 14);
+  }
+
+  const filename = (title || 'artikel').replace(/[^a-z0-9\u00C0-\u024F]/gi, '_').toLowerCase().substring(0, 60) + '.pdf';
+  doc.save(filename);
+}
+
+// ════════════════════════════════════════════════════════
 // FREE AUTO TRANSLATE (Google Translate API)
 // ════════════════════════════════════════════════════════
 async function autoTranslateFree() {
@@ -2446,20 +2589,20 @@ async function autoTranslateFree() {
   const deText = quillEditors.de ? quillEditors.de.root.innerHTML : '';
 
   if (!deTitle && (!deText || deText === '<p><br></p>')) {
-    alert("אנא כתוב קודם את המאמר בגרמנית כדי שהמערכת תוכל לתרגם אותו.");
+    alert("Bitte schreiben Sie zuerst den Artikel auf Deutsch, damit das System ihn übersetzen kann.");
     return;
   }
 
   const msg = document.getElementById('admin-msg');
-  msg.textContent = 'מתרגם בחינם... אנא המתן (זה עשוי לקחת מספר שניות)...';
+  msg.textContent = 'Übersetze... Bitte warten (kann einige Sekunden dauern)...';
 
   // Google Translate language codes ('iw' is used for Hebrew instead of 'he')
   const langs = [
-    { id: 'he', code: 'iw', name: 'עברית' },
-    { id: 'en', code: 'en', name: 'אנגלית' },
-    { id: 'fr', code: 'fr', name: 'צרפתית' },
-    { id: 'es', code: 'es', name: 'ספרדית' },
-    { id: 'ru', code: 'ru', name: 'רוסית' }
+    { id: 'he', code: 'iw', name: 'Hebräisch' },
+    { id: 'en', code: 'en', name: 'Englisch' },
+    { id: 'fr', code: 'fr', name: 'Französisch' },
+    { id: 'es', code: 'es', name: 'Spanisch' },
+    { id: 'ru', code: 'ru', name: 'Russisch' }
   ];
 
   async function translateChunk(text, targetCode) {
@@ -2487,7 +2630,7 @@ async function autoTranslateFree() {
 
   try {
     for (const l of langs) {
-      msg.textContent = `מתרגם ל-${l.name}...`;
+      msg.textContent = `Übersetze ins ${l.name}...`;
 
       if (deTitle) {
         document.getElementById('af-title-' + l.id).value = await translateChunk(deTitle, l.code);
@@ -2500,10 +2643,10 @@ async function autoTranslateFree() {
         }
       }
     }
-    msg.textContent = '✨ התרגום הסתיים בהצלחה בחינם! אנא עבור על התוצאות (ולעיתים תקן מעט עיצוב אם תגיות זזו), ולאחר מכן לחץ Save.';
+    msg.textContent = '✨ Übersetzung abgeschlossen! Bitte prüfen Sie das Ergebnis und klicken Sie dann auf "Artikel veröffentlichen".';
   } catch (error) {
     console.error(error);
-    msg.textContent = '❌ שגיאה בתרגום.';
+    msg.textContent = '❌ Übersetzungsfehler. Bitte erneut versuchen.';
   }
 }
 </script>
