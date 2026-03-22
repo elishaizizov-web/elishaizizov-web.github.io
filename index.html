@@ -1570,18 +1570,11 @@ body {
 
 <!-- ── FULL ARTICLE PAGE ─────────────────────────────────── -->
 <div id="article-page">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--rule); padding-bottom:16px; margin-bottom:28px; flex-wrap:wrap; gap:12px;">
+  <div style="border-bottom:1px solid var(--rule); padding-bottom:16px; margin-bottom:28px;">
     <button class="ap-back" onclick="closeArticlePage()">&#8592; <span id="ap-back-label">Zurück</span></button>
-    <div class="ap-lang-bar" id="ap-lang-bar">
-      <button class="ap-lang-btn active" data-l="de" onclick="switchArticleLang('de')">DE</button>
-      <button class="ap-lang-btn" data-l="en" onclick="switchArticleLang('en')">EN</button>
-      <button class="ap-lang-btn" data-l="fr" onclick="switchArticleLang('fr')">FR</button>
-      <button class="ap-lang-btn" data-l="es" onclick="switchArticleLang('es')">ES</button>
-      <button class="ap-lang-btn" data-l="ru" onclick="switchArticleLang('ru')">RU</button>
-      <button class="ap-lang-btn" data-l="he" onclick="switchArticleLang('he')">עב</button>
-    </div>
   </div>
   <span id="ap-date"></span>
+  <div id="ap-parasha" style="font-family:'Raleway',sans-serif; font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:10px;"></div>
   <h1 id="ap-title"></h1>
   <img id="ap-img" src="" alt="" style="display:none">
   <div id="ap-text"></div>
@@ -2122,10 +2115,11 @@ function _renderArticlePage(a, l) {
   // back label
   const backLabels = { de:'Zurück', en:'Back', fr:'Retour', es:'Volver', ru:'Назад', he:'חזור' };
   document.getElementById('ap-back-label').textContent = backLabels[l] || 'Back';
-  // lang bar highlight
-  document.querySelectorAll('.ap-lang-btn').forEach(b => b.classList.toggle('active', b.dataset.l === l));
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
+  const parashaEl = document.getElementById('ap-parasha');
+  parashaEl.textContent = a.parasha || a.hag || '';
+  parashaEl.style.display = (a.parasha || a.hag) ? 'block' : 'none';
   document.getElementById('ap-title').textContent = tr.title || '';
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
