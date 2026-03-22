@@ -2343,34 +2343,19 @@ async function uploadImage(e) {
   const urlInput = document.getElementById('af-image');
 
   status.style.display = 'block';
-  status.textContent = 'Bild wird hochgeladen... Bitte warten.';
+  status.textContent = 'Bild wird verarbeitet...';
   status.style.color = '#b8952a';
 
   try {
-    // Try Firebase Storage first
-    if (!auth.currentUser) {
-      await auth.signInAnonymously();
-    }
-    const storageRef = storage.ref('articles/' + Date.now() + '_' + file.name);
-    const snapshot = await storageRef.put(file);
-    const downloadURL = await snapshot.ref.getDownloadURL();
-    urlInput.value = downloadURL;
-    updateImagePreview(downloadURL);
+    const base64 = await compressImageToBase64(file);
+    urlInput.value = base64;
+    updateImagePreview(base64);
     status.textContent = '✓ Bild erfolgreich hochgeladen!';
     status.style.color = 'green';
   } catch (err) {
-    // Fallback: compress and store as base64
-    try {
-      const base64 = await compressImageToBase64(file);
-      urlInput.value = base64;
-      updateImagePreview(base64);
-      status.textContent = '✓ Bild erfolgreich hochgeladen!';
-      status.style.color = 'green';
-    } catch (err2) {
-      console.error(err2);
-      status.textContent = '❌ Upload fehlgeschlagen: ' + err2.message;
-      status.style.color = 'red';
-    }
+    console.error(err);
+    status.textContent = '❌ Upload fehlgeschlagen: ' + err.message;
+    status.style.color = 'red';
   }
 }
 
