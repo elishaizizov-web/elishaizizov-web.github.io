@@ -2145,7 +2145,6 @@ function openArticle(id) {
   const slug = articleSlug(a);
   window.history.pushState({ articleId: slug }, '', '/' + slug);
   // switch views
-  document.querySelector('.logo-band').style.display   = 'none';
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
@@ -2233,7 +2232,6 @@ function switchArticleLang(l) {
 
 function closeArticlePage() {
   document.getElementById('article-page').style.display  = 'none';
-  document.querySelector('.logo-band').style.display     = 'flex';
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
   window.history.pushState({}, '', '/');
