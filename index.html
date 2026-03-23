@@ -1684,7 +1684,7 @@ body {
 
 
 <!-- ── ADMIN PANEL (open via ?admin=1) ───────────────────── -->
-<button class="admin-fab" onclick="toggleAdmin()" title="Admin">&#9881;</button>
+<button class="admin-fab" id="admin-fab" onclick="toggleAdmin()" title="Admin">&#9881;</button>
 
 
 <div class="admin-overlay" id="admin-overlay">
@@ -2337,12 +2337,16 @@ function closeArticle(e) { /* handled by full-page nav */ }
 
 // Hamburger menu
 function toggleMenu() {
-  document.getElementById('hmenu').classList.toggle('open');
+  const open = document.getElementById('hmenu').classList.toggle('open');
   document.getElementById('hmenu-overlay').classList.toggle('open');
+  const fab = document.getElementById('admin-fab');
+  if (fab) fab.style.display = open ? 'none' : '';
 }
 function closeMenu() {
   document.getElementById('hmenu').classList.remove('open');
   document.getElementById('hmenu-overlay').classList.remove('open');
+  const fab = document.getElementById('admin-fab');
+  if (fab) fab.style.display = '';
   // reset art sub-menu
   const sub = document.getElementById('hmenu-art-sub');
   const btn = document.getElementById('hmenu-art-btn');
