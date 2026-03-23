@@ -535,6 +535,36 @@ body {
 }
 .hmenu-item:hover { color: var(--gold-light); }
 .hmenu-item-arrow { float: right; transition: transform 0.2s; }
+
+.hmenu-search-wrap { padding: 2px 0 8px; }
+.hmenu-search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px; padding: 10px 14px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.hmenu-search-box:focus-within { border-color: rgba(184,149,42,0.5); }
+.hmenu-search-box svg { opacity: 0.45; flex-shrink: 0; color: #fff; }
+.hmenu-search-box input {
+  background: none; border: none; outline: none;
+  color: rgba(247,244,238,0.9);
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px; letter-spacing: 0.1em;
+  width: 100%;
+}
+.hmenu-search-box input::placeholder { color: rgba(247,244,238,0.3); }
+.hmenu-search-results { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; max-height: 240px; overflow-y: auto; }
+.hmenu-search-result {
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px; padding: 10px 12px;
+  cursor: pointer; transition: background 0.15s;
+  border: none; text-align: left; width: 100%; box-sizing: border-box;
+  color: inherit;
+}
+.hmenu-search-result:hover { background: rgba(184,149,42,0.15); }
+.hmenu-search-result-title { font-family: 'Playfair Display', serif; font-size: 13px; color: rgba(247,244,238,0.9); line-height: 1.35; }
+.hmenu-search-none { font-size: 11px; color: rgba(247,244,238,0.35); font-style: italic; padding: 6px 2px; }
 .hmenu-item.open .hmenu-item-arrow { transform: rotate(90deg); }
 
 .hmenu-sub { display: none; flex-direction: column; padding-left: 0; gap: 0; border-left: 1px solid rgba(184,149,42,0.2); margin-left: 4px; padding-left: 16px; margin-top: 4px; }
@@ -1821,7 +1851,7 @@ const T = {
     y3: '2020 bis 2023',  s3h: 'Basel',                      s3d: 'Rabbiner und Vortragsredner, Schomre Tora Institut Basel',
     y4: 'Ordination',      s4h: 'Rabbinatsordination, Alter 24', s4d: 'Talmud, Halacha und jüdisches Denken',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neuester Beitrag',
+    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neuester Beitrag',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.',
   },
   en: {
@@ -1837,7 +1867,7 @@ const T = {
     y3: '2020 to 2023',   s3h: 'Basel',                      s3d: 'Rabbi and Lecturer, Schomre Tora Institut Basel',
     y4: 'Ordination',       s4h: 'Rabbinical Ordination, age 24', s4d: 'Talmud, Halacha and Jewish Thought',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Article',
+    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Article',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.',
   },
   fr: {
@@ -1853,7 +1883,7 @@ const T = {
     y3: '2020 à 2023',    s3h: 'Bâle',                       s3d: 'Rabbin et Conférencier, Schomre Tora Bâle',
     y4: 'Ordination',       s4h: 'Ordination rabbinique, 24 ans', s4d: 'Talmud, Halacha et pensée juive',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'latest-label': 'Dernier Article',
+    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Rechercher...', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'latest-label': 'Dernier Article',
     'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.',
   },
   he: {
@@ -1869,7 +1899,7 @@ const T = {
     y3: '2020 עד 2023',   s3h: 'באזל',                      s3d: 'רב ומרצה, מכון שומרי תורה באזל',
     y4: 'Ordination',         s4h: 'הסמכה לרבנות בגיל 24',       s4d: 'תלמוד, הלכה ומחשבת ישראל',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'חפש', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבה אחרונה',
+    'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבה אחרונה',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.',
   },
   es: {
@@ -1885,7 +1915,7 @@ const T = {
     y3: '2020 a 2023',           s3h: 'Basilea',               s3d: 'Rabino y Conferencista, Schomre Tora Institut Basel',
     y4: 'Ordination',            s4h: 'Ordenación rabínica, 24 años', s4d: 'Talmud, Halacha y pensamiento judío',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'Buscar', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'latest-label': 'Último Artículo',
+    'nav-search': 'Buscar', 'search-ph': 'Buscar...', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'latest-label': 'Último Artículo',
     'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.',
   },
   ru: {
@@ -1901,7 +1931,7 @@ const T = {
     y3: '2020 до 2023',   s3h: 'Базель',                    s3d: 'Раввин и лектор, Schomre Tora Базель',
     y4: 'Ordination',         s4h: 'Раввинская ординация, 24 года', s4d: 'Талмуд, Halacha и еврейская мысль',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'Поиск', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'latest-label': 'Последняя статья',
+    'nav-search': 'Поиск', 'search-ph': 'Поиск...', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'latest-label': 'Последняя статья',
     'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.',
   }
 };
@@ -2349,6 +2379,32 @@ function closeMenu() {
   const sub = document.getElementById('hmenu-art-sub');
   const btn = document.getElementById('hmenu-art-btn');
   if (sub) { sub.classList.remove('open'); btn.classList.remove('open'); hmenuBackToL1(); }
+  // clear inline search
+  const si = document.getElementById('hmenu-search-input');
+  const sr = document.getElementById('hmenu-search-results');
+  if (si) si.value = '';
+  if (sr) sr.innerHTML = '';
+}
+
+function hmenuSearch(q) {
+  const container = document.getElementById('hmenu-search-results');
+  if (!q.trim()) { container.innerHTML = ''; return; }
+  const articles = getArticles();
+  const l = currentLang;
+  const filtered = articles.filter(a => {
+    const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
+    return (t.title||'').toLowerCase().includes(q.toLowerCase()) || (t.text||'').toLowerCase().includes(q.toLowerCase());
+  });
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="hmenu-search-none">—</div>';
+    return;
+  }
+  container.innerHTML = filtered.slice(0, 6).map(a => {
+    const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title };
+    return `<button class="hmenu-search-result" onclick="closeMenu(); openArticle('${a.id}')">
+      <div class="hmenu-search-result-title">${t.title}</div>
+    </button>`;
+  }).join('');
 }
 
 // ── Hamburger Beiträge sub-navigation ──
@@ -2930,7 +2986,13 @@ async function autoTranslateFree() {
       </div>
     </div>
 
-    <button class="hmenu-item" onclick="closeMenu(); toggleSearch()" data-t="nav-search">Suche</button>
+    <div class="hmenu-search-wrap">
+      <div class="hmenu-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="hmenu-search-input" placeholder="Suche..." data-t-ph="search-ph" oninput="hmenuSearch(this.value)" autocomplete="off">
+      </div>
+      <div id="hmenu-search-results"></div>
+    </div>
     <button class="hmenu-item" onclick="closeMenu(); document.getElementById('anfragen').scrollIntoView({behavior:'smooth'})" data-t="nav-form">Anfragen</button>
   </div>
 
