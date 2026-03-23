@@ -2439,9 +2439,12 @@ function hmenuShowParashaLevel(book) {
   const tn = TORAH_NAMES[currentLang] || TORAH_NAMES['de'];
   const parashiot = PARASHA_MAP[book] || [];
   const list = document.getElementById('hmenu-parasha-list');
-  list.innerHTML = parashiot.map(p => {
+  list.innerHTML = parashiot.map((p, i) => {
     const hasArt = getArticles().some(a => a.parasha === p);
-    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showParasha('${p}','${p}')">${p}</button>`;
+    let label = p;
+    if (currentLang === 'de' && TORAH[book] && TORAH[book].de_display && TORAH[book].de_display[i]) label = TORAH[book].de_display[i];
+    else if (currentLang === 'he' && TORAH[book] && TORAH[book].he && TORAH[book].he[i]) label = TORAH[book].he[i];
+    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showParasha('${p}','${p}')">${label}</button>`;
   }).join('');
   window._hmenuPrevBook = book;
 }
