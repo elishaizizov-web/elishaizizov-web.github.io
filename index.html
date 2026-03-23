@@ -99,12 +99,18 @@ body {
 }
 .logo-band {
   background: #fff;
-  text-align: center;
-  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px;
   border-bottom: 1px solid var(--rule);
 }
+.logo-band-spacer {
+  width: 40px;
+  flex-shrink: 0;
+}
 .logo-band img {
-  width: min(180px, 48vw);
+  width: min(100px, 28vw);
   height: auto;
 }
 .header-eyebrow {
@@ -445,15 +451,17 @@ body {
 .hamburger-btn {
   background: none;
   border: none;
-  color: rgba(247,244,238,0.7);
-  font-size: 20px;
+  color: var(--navy);
+  font-size: 22px;
   cursor: pointer;
-  padding: 8px 16px 8px 0;
-  margin-right: auto;
+  padding: 6px 8px;
   transition: color 0.2s;
   line-height: 1;
+  flex-shrink: 0;
+  width: 40px;
+  text-align: center;
 }
-.hamburger-btn:hover { color: var(--cream); }
+.hamburger-btn:hover { color: var(--gold); }
 
 .hmenu-overlay {
   position: fixed;
@@ -1373,11 +1381,12 @@ body {
 <body>
 
 <div class="logo-band">
+  <span class="logo-band-spacer"></span>
   <img src="logo.png" alt="Rabbiner Elishai Zizov">
+  <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu">&#9776;</button>
 </div>
 
 <nav class="lang-bar">
-  <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu">&#9776;</button>
   <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
   <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
   <button class="lang-btn" onclick="setLang('fr')" id="lb-fr">FR</button>
@@ -2224,7 +2233,7 @@ function switchArticleLang(l) {
 
 function closeArticlePage() {
   document.getElementById('article-page').style.display  = 'none';
-  document.querySelector('.logo-band').style.display     = 'block';
+  document.querySelector('.logo-band').style.display     = 'flex';
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
   window.history.pushState({}, '', '/');
@@ -2321,7 +2330,7 @@ window.addEventListener('popstate', () => {
                new URLSearchParams(window.location.search).get('article'); // backward compat
   if (slug) { const a = findArticle(slug); if (a) { openArticle(a.id); return; } }
   document.getElementById('article-page').style.display = 'none';
-  document.querySelector('.logo-band').style.display    = 'block';
+  document.querySelector('.logo-band').style.display    = 'flex';
   document.querySelector('.page-header').style.display  = 'block';
   document.querySelector('.page-body').style.display    = 'block';
 });
