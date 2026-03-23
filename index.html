@@ -2204,9 +2204,6 @@ function _renderArticlePage(a, l) {
   const tr = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
   const isRTL = (l === 'he');
   const dir   = isRTL ? 'rtl' : 'ltr';
-  // back label
-  const backLabels = { de:'Zurück', en:'Back', fr:'Retour', es:'Volver', ru:'Назад', he:'חזור' };
-  document.getElementById('ap-back-label').textContent = backLabels[l] || 'Back';
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
   const parashaEl = document.getElementById('ap-parasha');
