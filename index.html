@@ -2439,9 +2439,12 @@ function hmenuShowParashaLevel(book) {
   const tn = TORAH_NAMES[currentLang] || TORAH_NAMES['de'];
   const parashiot = PARASHA_MAP[book] || [];
   const list = document.getElementById('hmenu-parasha-list');
-  list.innerHTML = parashiot.map(p => {
+  list.innerHTML = parashiot.map((p, i) => {
     const hasArt = getArticles().some(a => a.parasha === p);
-    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showParasha('${p}','${p}')">${p}</button>`;
+    let label = p;
+    if (currentLang === 'de' && TORAH[book] && TORAH[book].de_display && TORAH[book].de_display[i]) label = TORAH[book].de_display[i];
+    else if (currentLang === 'he' && TORAH[book] && TORAH[book].he && TORAH[book].he[i]) label = TORAH[book].he[i];
+    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showParasha('${p}','${p}')">${label}</button>`;
   }).join('');
   window._hmenuPrevBook = book;
 }
@@ -2961,6 +2964,13 @@ async function autoTranslateFree() {
   <button class="hmenu-close" onclick="closeMenu()">×</button>
 
   <div class="hmenu-section">
+    <div class="hmenu-search-wrap">
+      <div class="hmenu-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="hmenu-search-input" placeholder="Suche..." data-t-ph="search-ph" oninput="hmenuSearch(this.value)" autocomplete="off">
+      </div>
+      <div id="hmenu-search-results"></div>
+    </div>
     <!-- Beiträge expandable -->
     <button class="hmenu-item" id="hmenu-art-btn" onclick="hmenuToggleArt()" data-t="nav-art">Beiträge <span class="hmenu-item-arrow">›</span></button>
     <div class="hmenu-sub" id="hmenu-art-sub">
@@ -2986,13 +2996,6 @@ async function autoTranslateFree() {
       </div>
     </div>
 
-    <div class="hmenu-search-wrap">
-      <div class="hmenu-search-box">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="hmenu-search-input" placeholder="Suche..." data-t-ph="search-ph" oninput="hmenuSearch(this.value)" autocomplete="off">
-      </div>
-      <div id="hmenu-search-results"></div>
-    </div>
     <button class="hmenu-item" onclick="closeMenu(); document.getElementById('anfragen').scrollIntoView({behavior:'smooth'})" data-t="nav-form">Anfragen</button>
   </div>
 
