@@ -96,9 +96,9 @@ body {
   color: var(--gold-light);
   font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 700;
   letter-spacing: 0.22em; text-transform: uppercase;
-  padding: 11px 28px 11px 24px;
+  padding: 11px 22px;
   cursor: pointer; transition: all 0.2s;
-  align-items: center; gap: 8px;
+  align-items: center; gap: 0;
   margin-right: auto;
 }
 .lang-back-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
@@ -1437,7 +1437,9 @@ body {
 </div>
 
 <nav class="lang-bar">
-  <button class="lang-back-btn" id="lang-back-btn" onclick="closeArticlePage()">&#8592; <span id="ap-back-label">Zurück</span></button>
+  <button class="lang-back-btn" id="lang-back-btn" onclick="closeArticlePage()" aria-label="Home">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
   <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
   <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
   <button class="lang-btn" onclick="setLang('fr')" id="lb-fr">FR</button>
