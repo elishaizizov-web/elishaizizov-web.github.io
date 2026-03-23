@@ -88,6 +88,19 @@ body {
 .lang-btn:hover { color: rgba(255,255,255,0.9); }
 .lang-btn.active { color: var(--gold-light); }
 
+.lang-back-btn {
+  display: none;
+  background: none; border: none;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.55);
+  font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 11px 20px 11px 16px;
+  cursor: pointer; transition: color 0.2s; align-items: center; gap: 7px;
+  margin-right: auto;
+}
+.lang-back-btn:hover { color: var(--gold-light); }
+
 /* HEADER */
 .page-header {
   background: var(--navy);
@@ -753,9 +766,9 @@ body {
       display: none;
       max-width: 820px;
       margin: 0 auto;
-      padding: 20px 64px 80px;
+      padding: 0 64px 80px;
     }
-    @media(max-width:640px){ #article-page{ padding:12px 24px 60px; } }
+    @media(max-width:640px){ #article-page{ padding:0 24px 60px; } }
     .ap-back {
       background: none; border: none;
       font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 700;
@@ -790,26 +803,36 @@ body {
     #ap-text em { font-style:italic; }
     #ap-text blockquote { border-left:3px solid var(--gold); margin:24px 0; padding:12px 20px; color:var(--text-soft); font-style:italic; }
     /* ── SHARE / ACTION BAR ─── */
-    #ap-share { margin-top:48px; padding-top:28px; border-top:1px solid var(--rule); display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    #ap-share {
+      margin-top: 52px; padding-top: 32px;
+      border-top: 2px solid var(--navy);
+      display: flex; gap: 0; flex-wrap: wrap; align-items: stretch;
+    }
     .share-action-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Raleway', sans-serif; font-size: 9.5px; font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none;
-      padding: 13px 24px; border: 1px solid; cursor: pointer;
-      transition: all 0.25s ease; white-space: nowrap;
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.24em; text-transform: uppercase; text-decoration: none;
+      padding: 15px 26px; border: 1px solid var(--rule); margin: 0 8px 8px 0;
+      cursor: pointer; transition: all 0.28s ease; white-space: nowrap;
+      background: none; color: var(--text-soft);
     }
+    .share-action-btn svg { flex-shrink: 0; }
+    /* WhatsApp — keep brand green as accent only */
     .share-action-btn.btn-wa {
-      background: #25D366; border-color: #25D366; color: #fff;
+      border-color: #25D366; color: #25D366;
     }
-    .share-action-btn.btn-wa:hover { background: #1aab53; border-color: #1aab53; }
+    .share-action-btn.btn-wa:hover { background: #25D366; color: #fff; }
+    /* Copy link — gold accent */
     .share-action-btn.btn-copy {
-      background: none; border-color: var(--navy); color: var(--navy);
+      border-color: var(--gold); color: var(--gold);
     }
-    .share-action-btn.btn-copy:hover { background: var(--navy); color: #fff; }
+    .share-action-btn.btn-copy:hover { background: var(--gold); color: #fff; }
+    /* Print — ghost navy */
     .share-action-btn.btn-print {
-      background: none; border-color: var(--rule); color: var(--text-soft);
+      border-color: var(--navy); color: var(--navy);
     }
-    .share-action-btn.btn-print:hover { border-color: var(--gold); color: var(--gold); }
+    .share-action-btn.btn-print:hover { background: var(--navy); color: #fff; }
+    /* PDF — solid navy, primary */
     .share-action-btn.btn-pdf {
       background: var(--navy); border-color: var(--navy); color: #fff;
     }
@@ -1412,6 +1435,7 @@ body {
 </div>
 
 <nav class="lang-bar">
+  <button class="lang-back-btn" id="lang-back-btn" onclick="closeArticlePage()">&#8592; <span id="ap-back-label">Zurück</span></button>
   <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
   <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
   <button class="lang-btn" onclick="setLang('fr')" id="lb-fr">FR</button>
@@ -1612,10 +1636,6 @@ body {
   <div class="ap-print-logo">
     <img src="logo.png" alt="Rabbiner Elishai Zizov">
     <p>Rabbiner Elishai Zizov</p>
-  </div>
-  <!-- top bar: back button + lang switcher -->
-  <div class="ap-topbar">
-    <button class="ap-back" onclick="closeArticlePage()">&#8592; <span id="ap-back-label">Zurück</span></button>
   </div>
   <div id="ap-parasha"></div>
   <h1 id="ap-title"></h1>
@@ -2172,6 +2192,7 @@ function openArticle(id) {
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
+  document.getElementById('lang-back-btn').style.display = 'inline-flex';
   window.scrollTo(0, 0);
 }
 
@@ -2267,6 +2288,7 @@ function switchArticleLang(l) {
 
 function closeArticlePage() {
   document.getElementById('article-page').style.display  = 'none';
+  document.getElementById('lang-back-btn').style.display = 'none';
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
   window.history.pushState({}, '', '/');
@@ -2659,30 +2681,36 @@ function downloadArticlePDF() {
   const text  = tr.text  || a.text  || '';
   const isRTL = (l === 'he');
 
+  const logoUrl = window.location.origin + '/logo.png';
   const w = window.open('', '_blank');
   w.document.write(`<!DOCTYPE html><html lang="${l}" dir="${isRTL?'rtl':'ltr'}"><head>
 <meta charset="UTF-8">
 <title>${title.replace(/</g,'&lt;')}</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Source Serif 4',Georgia,serif;color:#1a1a1a;background:#fff;padding:28mm 22mm;font-size:11.5pt;line-height:1.75}
-  .parasha{font-family:sans-serif;font-size:10pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8952a;margin-bottom:8px}
-  h1{font-size:20pt;font-weight:700;margin-bottom:6px;line-height:1.3}
-  .date{font-size:9pt;color:#7a6a50;margin-bottom:10px}
-  hr{border:none;border-top:1.5px solid #b8952a;margin:12px 0 16px}
-  img{max-width:100%;height:auto;display:block;margin-bottom:18px;border-radius:4px}
+  body{font-family:'Source Serif 4',Georgia,serif;color:#1a1a1a;background:#fff;padding:20mm 22mm;font-size:11.5pt;line-height:1.75}
+  .pdf-logo{text-align:center;padding-bottom:16px;margin-bottom:20px;border-bottom:1.5px solid #b8952a}
+  .pdf-logo img{height:70px;width:auto;display:block;margin:0 auto 6px}
+  .pdf-logo-name{font-family:'Raleway',sans-serif;font-size:9pt;letter-spacing:.2em;text-transform:uppercase;color:#444}
+  .parasha{font-family:'Raleway',sans-serif;font-size:9pt;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:8px;margin-top:18px}
+  h1{font-size:20pt;font-weight:700;margin-bottom:18px;line-height:1.3}
+  .date{font-size:8.5pt;color:#888;letter-spacing:.12em;font-family:'Raleway',sans-serif;text-transform:uppercase;margin-bottom:10px}
+  img.article-img{max-width:100%;height:auto;display:block;margin-bottom:18px}
   p{margin-bottom:12px}
-  .footer{margin-top:40px;padding-top:12px;border-top:1px solid #ddd;text-align:center;font-size:8pt;color:#999;font-family:sans-serif;letter-spacing:.05em}
-  @media print{body{padding:20mm 18mm}@page{margin:0}}
+  .footer{margin-top:40px;padding-top:12px;border-top:1px solid #ddd;text-align:center;font-size:8pt;color:#999;font-family:'Raleway',sans-serif;letter-spacing:.08em}
+  @media print{body{padding:15mm 18mm}@page{margin:0}}
 </style></head><body>
+<div class="pdf-logo">
+  <img src="${logoUrl}" crossorigin="anonymous">
+  <div class="pdf-logo-name">Rabbiner Elishai Zizov</div>
+</div>
 ${a._parashaDisplay ? `<div class="parasha">${a._parashaDisplay}</div>` : ''}
 <h1>${title.replace(/</g,'&lt;')}</h1>
-${a.image ? `<img src="${a.image}" crossorigin="anonymous">` : ''}
-<div class="date">${a.date||''}</div>
-<hr>
+${a.image ? `<img class="article-img" src="${a.image}" crossorigin="anonymous">` : ''}
+${a.date ? `<div class="date">${a.date}</div>` : ''}
 <div>${text}</div>
-<div class="footer">Verfasst von Rabbiner Elishai Zizov &ndash; Alle Rechte vorbehalten &middot; elishaizizov.com</div>
+<div class="footer">Rabbiner Elishai Zizov &mdash; elishaizizov.com</div>
 <script>window.onload=function(){window.print();}<\/script>
 </body></html>`);
   w.document.close();
