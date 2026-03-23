@@ -98,7 +98,7 @@ body {
   padding: 6px 12px;
   cursor: pointer; transition: all 0.2s;
   align-items: center; gap: 0;
-  margin-right: 8px;
+  margin-right: auto;
 }
 .lang-back-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
@@ -272,6 +272,7 @@ body {
   .page-header { padding: 48px 24px 44px; }
   .page-body { padding: 48px 24px 64px; }
   .lang-bar { padding: 0 24px; }
+  .lang-back-btn { padding: 6px 20px 6px 4px; }
   .station { grid-template-columns: 1fr; gap: 4px; }
   .form-row { grid-template-columns: 1fr; }
 }
@@ -533,6 +534,41 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 .hmenu-item:hover { color: var(--gold-light); }
+.hmenu-item-arrow { float: right; transition: transform 0.2s; }
+.hmenu-item.open .hmenu-item-arrow { transform: rotate(90deg); }
+
+.hmenu-sub { display: none; flex-direction: column; padding-left: 14px; gap: 0; }
+.hmenu-sub.open { display: flex; }
+.hmenu-sub-item {
+  background: none; border: none;
+  color: rgba(247,244,238,0.55);
+  font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 9px 0; cursor: pointer; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: color 0.2s;
+}
+.hmenu-sub-item:hover { color: var(--gold-light); }
+.hmenu-sub-item.has-articles { color: rgba(247,244,238,0.8); }
+.hmenu-sub-back {
+  background: none; border: none;
+  color: var(--gold-light); opacity: 0.7;
+  font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 7px 0 9px; cursor: pointer; text-align: left;
+  transition: opacity 0.2s;
+}
+.hmenu-sub-back:hover { opacity: 1; }
+
+.hmenu-admin-btn {
+  background: none; border: none;
+  color: rgba(247,244,238,0.3);
+  font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 10px 0 0; cursor: pointer; text-align: left;
+  transition: color 0.2s;
+}
+.hmenu-admin-btn:hover { color: var(--gold-light); }
 
 .hmenu-divider {
   height: 1px;
@@ -2312,6 +2348,65 @@ function toggleMenu() {
 function closeMenu() {
   document.getElementById('hmenu').classList.remove('open');
   document.getElementById('hmenu-overlay').classList.remove('open');
+  // reset art sub-menu
+  const sub = document.getElementById('hmenu-art-sub');
+  const btn = document.getElementById('hmenu-art-btn');
+  if (sub) { sub.classList.remove('open'); btn.classList.remove('open'); hmenuBackToL1(); }
+}
+
+// ── Hamburger Beiträge sub-navigation ──
+function hmenuToggleArt() {
+  const sub = document.getElementById('hmenu-art-sub');
+  const btn = document.getElementById('hmenu-art-btn');
+  const opening = !sub.classList.contains('open');
+  sub.classList.toggle('open');
+  btn.classList.toggle('open');
+  if (opening) hmenuBackToL1();
+}
+function hmenuBackToL1() {
+  document.getElementById('hmenu-l1').style.display = '';
+  document.getElementById('hmenu-books-level').style.display = 'none';
+  document.getElementById('hmenu-parasha-level').style.display = 'none';
+  document.getElementById('hmenu-hagim-level').style.display = 'none';
+}
+function hmenuShowParashaBooksLevel() {
+  document.getElementById('hmenu-l1').style.display = 'none';
+  document.getElementById('hmenu-books-level').style.display = '';
+  const tn = TORAH_NAMES[currentLang] || TORAH_NAMES['de'];
+  const list = document.getElementById('hmenu-books-list');
+  list.innerHTML = BOOK_KEYS.map((k, i) =>
+    `<button class="hmenu-sub-item" onclick="hmenuShowParashaLevel('${k}')">${tn.books[i]} ›</button>`
+  ).join('');
+}
+function hmenuShowParashaLevel(book) {
+  document.getElementById('hmenu-books-level').style.display = 'none';
+  document.getElementById('hmenu-parasha-level').style.display = '';
+  const btn = document.getElementById('hmenu-parasha-level').querySelector('.hmenu-sub-back');
+  btn.onclick = hmenuBackToBooks;
+  const tn = TORAH_NAMES[currentLang] || TORAH_NAMES['de'];
+  const parashiot = PARASHA_MAP[book] || [];
+  const list = document.getElementById('hmenu-parasha-list');
+  list.innerHTML = parashiot.map(p => {
+    const hasArt = getArticles().some(a => a.parasha === p);
+    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showParasha('${p}','${p}')">${p}</button>`;
+  }).join('');
+  window._hmenuPrevBook = book;
+}
+function hmenuBackToBooks() {
+  document.getElementById('hmenu-parasha-level').style.display = 'none';
+  hmenuShowParashaBooksLevel();
+}
+function hmenuShowHagimLevel() {
+  document.getElementById('hmenu-l1').style.display = 'none';
+  document.getElementById('hmenu-hagim-level').style.display = '';
+  const tn = TORAH_NAMES[currentLang] || TORAH_NAMES['de'];
+  const names = HAGIM_NAMES[currentLang] || HAGIM_NAMES.de;
+  const list = document.getElementById('hmenu-hagim-list');
+  list.innerHTML = HAG_KEYS.map((k, i) => {
+    const hasArt = getArticles().some(a => a.hag === k);
+    const label = names[i] || k;
+    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showHag('${k}','${label}')">${label}</button>`;
+  }).join('');
 }
 function updateHmenuLangs(l) {
   document.querySelectorAll('.hmenu-lang').forEach(b => {
@@ -2813,7 +2908,31 @@ async function autoTranslateFree() {
   <button class="hmenu-close" onclick="closeMenu()">×</button>
 
   <div class="hmenu-section">
-    <button class="hmenu-item" onclick="closeMenu(); document.getElementById('articles-section').scrollIntoView({behavior:'smooth'})" data-t="nav-art">Beiträge</button>
+    <!-- Beiträge expandable -->
+    <button class="hmenu-item" id="hmenu-art-btn" onclick="hmenuToggleArt()" data-t="nav-art">Beiträge <span class="hmenu-item-arrow">›</span></button>
+    <div class="hmenu-sub" id="hmenu-art-sub">
+      <!-- level 1: Paraschot / Chagim -->
+      <div id="hmenu-l1">
+        <button class="hmenu-sub-item" onclick="hmenuShowParashaBooksLevel()">Paraschot ›</button>
+        <button class="hmenu-sub-item" onclick="hmenuShowHagimLevel()">Chagim ›</button>
+      </div>
+      <!-- level 2a: books -->
+      <div id="hmenu-books-level" style="display:none">
+        <button class="hmenu-sub-back" onclick="hmenuBackToL1()">‹ Zurück</button>
+        <div id="hmenu-books-list"></div>
+      </div>
+      <!-- level 2b: parashiot of a book -->
+      <div id="hmenu-parasha-level" style="display:none">
+        <button class="hmenu-sub-back" onclick="hmenuBackToBooks()">‹ Zurück</button>
+        <div id="hmenu-parasha-list"></div>
+      </div>
+      <!-- level 2c: hagim -->
+      <div id="hmenu-hagim-level" style="display:none">
+        <button class="hmenu-sub-back" onclick="hmenuBackToL1()">‹ Zurück</button>
+        <div id="hmenu-hagim-list"></div>
+      </div>
+    </div>
+
     <button class="hmenu-item" onclick="closeMenu(); toggleSearch()" data-t="nav-search">Suche</button>
     <button class="hmenu-item" onclick="closeMenu(); document.getElementById('anfragen').scrollIntoView({behavior:'smooth'})" data-t="nav-form">Anfragen</button>
   </div>
@@ -2845,6 +2964,9 @@ async function autoTranslateFree() {
     </svg>
     Facebook
   </a>
+
+  <div class="hmenu-divider" style="margin:16px 0 12px"></div>
+  <button class="hmenu-admin-btn" onclick="closeMenu(); toggleAdmin()">&#9881; Admin</button>
 </nav>
 
 <!-- Search bar (hidden, appears in main) -->
