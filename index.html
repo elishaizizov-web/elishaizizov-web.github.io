@@ -200,8 +200,8 @@ body {
 
 /* STATIONEN */
 .stations-section {
-  margin-bottom: 56px;
-  padding-bottom: 56px;
+  margin-bottom: 52px;
+  padding-bottom: 52px;
   border-bottom: 1px solid var(--rule);
 }
 .section-label {
@@ -214,34 +214,58 @@ body {
   margin-bottom: 28px;
   display: block;
 }
-.station {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  padding: 16px 0;
-  border-top: 1px solid var(--rule);
+.timeline {
+  position: relative;
+  padding-left: 22px;
 }
-.station:last-child { border-bottom: 1px solid var(--rule); }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 6px; bottom: 10px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold) 0%, rgba(184,149,42,0.15) 100%);
+}
+.station {
+  position: relative;
+  display: block;
+  padding: 0 0 22px 0;
+  border: none;
+}
+.station:last-child { padding-bottom: 0; }
+.station::before {
+  content: '';
+  position: absolute;
+  left: -26px; top: 5px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--gold);
+}
 .station-period {
   font-family: 'Raleway', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  color: #8a8480;
-  letter-spacing: 0.06em;
-  padding-top: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 3px;
 }
 .station-info strong {
   display: block;
   font-family: 'Playfair Display', serif;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
+  line-height: 1.2;
 }
 .station-info span {
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: var(--text-soft);
   font-weight: 300;
-  line-height: 1.5;
+  line-height: 1.55;
+  font-style: italic;
 }
 
 /* CONTACT */
@@ -283,7 +307,7 @@ body {
   .page-body { padding: 48px 24px 64px; }
   .lang-bar { padding: 0 24px; }
   .lang-back-btn { padding: 6px 20px 6px 4px; }
-  .station { grid-template-columns: 1fr; gap: 4px; }
+  .timeline { padding-left: 18px; }
   .form-row { grid-template-columns: 1fr; }
 }
 
@@ -1080,8 +1104,8 @@ body {
     .bio-section p { font-size: 16.5px !important; line-height: 1.9 !important; }
 
     /* ── Upgraded stations ── */
-    .station { transition: background 0.2s; border-radius: 4px; padding: 16px 8px !important; }
-    .station:hover { background: rgba(184,149,42,0.04); }
+    .station { transition: background 0.2s; border-radius: 4px; }
+    .station:hover .station-info strong { color: var(--gold); }
 
     /* ── Upgraded contact/inquiry ── */
     .submit-btn {
@@ -1567,35 +1591,37 @@ body {
   <section class="stations-section">
     <span class="section-label" data-t="sl">Karriere</span>
 
-    <div class="station">
-      <span class="station-period" data-t="y1">Ab 2024</span>
-      <div class="station-info">
-        <strong data-t="s1h">Frankfurt am Main</strong>
-        <span data-t="s1d">Ernannt zum Rabbiner von Bait Sfaradi Frankfurt am Main</span>
+    <div class="timeline">
+      <div class="station">
+        <span class="station-period" data-t="y1">Ab 2024</span>
+        <div class="station-info">
+          <strong data-t="s1h">Frankfurt am Main</strong>
+          <span data-t="s1d">Ernannt zum Rabbiner von Bait Sfaradi Frankfurt am Main</span>
+        </div>
       </div>
-    </div>
 
-    <div class="station">
-      <span class="station-period" data-t="y2">Ab Ende 2023</span>
-      <div class="station-info">
-        <strong data-t="s2h">Frankfurt am Main</strong>
-        <span data-t="s2d">Rabbiner für Jugend, Gymnasium und Gemeindearbeit</span>
+      <div class="station">
+        <span class="station-period" data-t="y2">Ab Ende 2023</span>
+        <div class="station-info">
+          <strong data-t="s2h">Frankfurt am Main</strong>
+          <span data-t="s2d">Rabbiner für Jugend, Gymnasium und Gemeindearbeit</span>
+        </div>
       </div>
-    </div>
 
-    <div class="station">
-      <span class="station-period" data-t="y3">2020 bis 2023</span>
-      <div class="station-info">
-        <strong data-t="s3h">Basel</strong>
-        <span data-t="s3d">Rabbiner und Vortragsredner, Schomre Tora Institut Basel</span>
+      <div class="station">
+        <span class="station-period" data-t="y3">2020 bis 2023</span>
+        <div class="station-info">
+          <strong data-t="s3h">Basel</strong>
+          <span data-t="s3d">Rabbiner und Vortragsredner, Schomre Tora Institut Basel</span>
+        </div>
       </div>
-    </div>
 
-    <div class="station">
-      <span class="station-period" data-t="y4">Ordination</span>
-      <div class="station-info">
-        <strong data-t="s4h">Rabbinatsordination, Alter 24</strong>
-        <span data-t="s4d">Talmud, Halacha und jüdisches Denken</span>
+      <div class="station">
+        <span class="station-period" data-t="y4">Ordination</span>
+        <div class="station-info">
+          <strong data-t="s4h">Rabbinatsordination, Alter 24</strong>
+          <span data-t="s4d">Talmud, Halacha und jüdisches Denken</span>
+        </div>
       </div>
     </div>
   </section>
