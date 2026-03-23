@@ -1943,6 +1943,37 @@ function getArticles() { return window._articles || []; }
 function getLang() { return currentLang; }
 function getTN() { return TORAH_NAMES[currentLang] || TORAH_NAMES.de; }
 
+// Returns the German display name for a parasha key (e.g. "Vayikra" → "Wajikra")
+function parashaDisplayName(parashaKey) {
+  if (!parashaKey) return '';
+  for (const book of Object.keys(TORAH)) {
+    const idx = (PARASHA_MAP[book] || []).indexOf(parashaKey);
+    if (idx !== -1 && TORAH[book].de_display) return TORAH[book].de_display[idx] || parashaKey;
+  }
+  return parashaKey;
+}
+
+// Returns a readable URL slug like "wajikra-2026"; falls back to Firestore ID
+function articleSlug(a) {
+  const year = a.date ? a.date.split('.').pop().trim() : '';
+  const rawName = a.parasha ? parashaDisplayName(a.parasha) : (a.hag || '');
+  if (!rawName || !year) return a.id;
+  const name = rawName.toLowerCase()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
+    .replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  const base = name + '-' + year;
+  // If multiple articles share the same slug, append -2, -3, …
+  const all = getArticles().filter(x => x.id !== a.id);
+  const sameSlug = all.filter(x => articleSlug(x) === base);
+  return sameSlug.length ? base + '-' + (sameSlug.length + 1) : base;
+}
+
+// Finds an article by Firestore ID or by slug (for backward-compatible links)
+function findArticle(idOrSlug) {
+  const all = getArticles();
+  return all.find(x => x.id === idOrSlug) || all.find(x => articleSlug(x) === idOrSlug);
+}
+
 function updateNavLabels() {
   const tn = getTN();
   const tabP = document.getElementById('tab-parasha');
@@ -2042,7 +2073,7 @@ function renderCard(a, noClick) {
   if (noClick) {
     return `<div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div>`;
   }
-  return `<a href="?article=${a.id}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div></a>`;
+  return `<a href="?article=${articleSlug(a)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div></a>`;
 }
 
 function showHagim() {
@@ -2093,14 +2124,15 @@ function searchArticles(q) {
 
 // Article full view
 function openArticle(id) {
-  const a = getArticles().find(x => x.id === id);
+  const a = findArticle(id);
   if (!a) { console.warn('Article not found:', id); return; }
   window._currentArticle = a;
   _renderArticlePage(a, currentLang);
-  // URL
+  // URL — use readable slug
+  const slug = articleSlug(a);
   const url = new URL(window.location.href);
-  url.searchParams.set('article', id);
-  window.history.pushState({ articleId: id }, '', url);
+  url.searchParams.set('article', slug);
+  window.history.pushState({ articleId: slug }, '', url);
   // switch views
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
@@ -2118,18 +2150,7 @@ function _renderArticlePage(a, l) {
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
   const parashaEl = document.getElementById('ap-parasha');
-  let parashaDisplay = a.hag || '';
-  if (!parashaDisplay && a.parasha) {
-    // Look up German display name from TORAH map
-    for (const book of Object.keys(TORAH)) {
-      const idx = (PARASHA_MAP[book] || []).indexOf(a.parasha);
-      if (idx !== -1 && TORAH[book].de_display) {
-        parashaDisplay = TORAH[book].de_display[idx] || a.parasha;
-        break;
-      }
-    }
-    if (!parashaDisplay) parashaDisplay = a.parasha;
-  }
+  const parashaDisplay = a.parasha ? parashaDisplayName(a.parasha) : (a.hag || '');
   parashaEl.textContent = parashaDisplay;
   parashaEl.style.display = parashaDisplay ? 'block' : 'none';
   a._parashaDisplay = parashaDisplay;
@@ -2145,7 +2166,7 @@ function _renderArticlePage(a, l) {
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
   // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
-  const pageUrl   = window.location.origin + window.location.pathname + '?article=' + a.id;
+  const pageUrl   = window.location.origin + window.location.pathname + '?article=' + articleSlug(a);
   document.title = (tr.title || a.title || '') + ' — Rabbiner Elishai Zizov';
   document.querySelector('meta[property="og:url"]')?.setAttribute('content', pageUrl);
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', tr.title || a.title || '');
@@ -2289,7 +2310,7 @@ async function loadArticles() {
 
 window.addEventListener('popstate', () => {
   const aid = new URLSearchParams(window.location.search).get('article');
-  if (aid) openArticle(aid);
+  if (aid) { const a = findArticle(aid); if (a) openArticle(a.id); }
   else {
     document.getElementById('article-page').style.display = 'none';
     document.querySelector('.page-header').style.display  = 'block';
@@ -2494,7 +2515,8 @@ async function adminSave() {
       msg.textContent = '✓ Gespeichert!';
       // Ping Google to index the new article
       fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
-      const articleUrl = 'https://elishaizizov.com/?article=' + ref.id;
+      const newArticle = { id: ref.id, ...docData };
+      const articleUrl = 'https://elishaizizov.com/?article=' + articleSlug(newArticle);
       fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       console.log('New article URL for indexing:', articleUrl);
     }
