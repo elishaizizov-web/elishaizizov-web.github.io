@@ -2964,6 +2964,13 @@ async function autoTranslateFree() {
   <button class="hmenu-close" onclick="closeMenu()">×</button>
 
   <div class="hmenu-section">
+    <div class="hmenu-search-wrap">
+      <div class="hmenu-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="hmenu-search-input" placeholder="Suche..." data-t-ph="search-ph" oninput="hmenuSearch(this.value)" autocomplete="off">
+      </div>
+      <div id="hmenu-search-results"></div>
+    </div>
     <!-- Beiträge expandable -->
     <button class="hmenu-item" id="hmenu-art-btn" onclick="hmenuToggleArt()" data-t="nav-art">Beiträge <span class="hmenu-item-arrow">›</span></button>
     <div class="hmenu-sub" id="hmenu-art-sub">
@@ -2989,13 +2996,6 @@ async function autoTranslateFree() {
       </div>
     </div>
 
-    <div class="hmenu-search-wrap">
-      <div class="hmenu-search-box">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="hmenu-search-input" placeholder="Suche..." data-t-ph="search-ph" oninput="hmenuSearch(this.value)" autocomplete="off">
-      </div>
-      <div id="hmenu-search-results"></div>
-    </div>
     <button class="hmenu-item" onclick="closeMenu(); document.getElementById('anfragen').scrollIntoView({behavior:'smooth'})" data-t="nav-form">Anfragen</button>
   </div>
 
