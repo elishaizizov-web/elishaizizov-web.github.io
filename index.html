@@ -2073,7 +2073,7 @@ function renderCard(a, noClick) {
   if (noClick) {
     return `<div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div>`;
   }
-  return `<a href="?article=${articleSlug(a)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div></a>`;
+  return `<a href="/${articleSlug(a)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${a.date}</span><h3 class="article-card-title">${t.title}</h3>${excerptHtml}</div></div></a>`;
 }
 
 function showHagim() {
@@ -2128,11 +2128,9 @@ function openArticle(id) {
   if (!a) { console.warn('Article not found:', id); return; }
   window._currentArticle = a;
   _renderArticlePage(a, currentLang);
-  // URL — use readable slug
+  // URL — use clean path like /wajikra-2026
   const slug = articleSlug(a);
-  const url = new URL(window.location.href);
-  url.searchParams.set('article', slug);
-  window.history.pushState({ articleId: slug }, '', url);
+  window.history.pushState({ articleId: slug }, '', '/' + slug);
   // switch views
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
@@ -2166,7 +2164,7 @@ function _renderArticlePage(a, l) {
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
   // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
-  const pageUrl   = window.location.origin + window.location.pathname + '?article=' + articleSlug(a);
+  const pageUrl   = window.location.origin + '/' + articleSlug(a);
   document.title = (tr.title || a.title || '') + ' — Rabbiner Elishai Zizov';
   document.querySelector('meta[property="og:url"]')?.setAttribute('content', pageUrl);
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', tr.title || a.title || '');
@@ -2223,9 +2221,7 @@ function closeArticlePage() {
   document.getElementById('article-page').style.display  = 'none';
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
-  const url = new URL(window.location.href);
-  url.searchParams.delete('article');
-  window.history.pushState({}, '', url);
+  window.history.pushState({}, '', '/');
   // Reset meta tags to homepage defaults
   document.title = 'Rabbiner Elishai Zizov';
   document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.origin);
@@ -2303,19 +2299,24 @@ async function loadArticles() {
     renderBooks();
     renderHagim();
     renderLatestArticle();
-    const aid = new URLSearchParams(window.location.search).get('article');
-    if (aid) openArticle(aid);
+    // Support: sessionStorage redirect (from 404.html), path-based, and old ?article= links
+    const redirectSlug = sessionStorage.getItem('redirect_article');
+    if (redirectSlug) { sessionStorage.removeItem('redirect_article'); openArticle(redirectSlug); }
+    else {
+      const slug = window.location.pathname.replace(/^\//, '') ||
+                   new URLSearchParams(window.location.search).get('article');
+      if (slug) openArticle(slug);
+    }
   } catch(e) { console.error('Firestore error:', e); }
 }
 
 window.addEventListener('popstate', () => {
-  const aid = new URLSearchParams(window.location.search).get('article');
-  if (aid) { const a = findArticle(aid); if (a) openArticle(a.id); }
-  else {
-    document.getElementById('article-page').style.display = 'none';
-    document.querySelector('.page-header').style.display  = 'block';
-    document.querySelector('.page-body').style.display    = 'block';
-  }
+  const slug = window.location.pathname.replace(/^\//, '') ||
+               new URLSearchParams(window.location.search).get('article'); // backward compat
+  if (slug) { const a = findArticle(slug); if (a) { openArticle(a.id); return; } }
+  document.getElementById('article-page').style.display = 'none';
+  document.querySelector('.page-header').style.display  = 'block';
+  document.querySelector('.page-body').style.display    = 'block';
 });
 
 // ════════════════════════════════════════════════════════
@@ -2516,7 +2517,7 @@ async function adminSave() {
       // Ping Google to index the new article
       fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       const newArticle = { id: ref.id, ...docData };
-      const articleUrl = 'https://elishaizizov.com/?article=' + articleSlug(newArticle);
+      const articleUrl = 'https://elishaizizov.com/' + articleSlug(newArticle);
       fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       console.log('New article URL for indexing:', articleUrl);
     }

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script>
+  // GitHub Pages SPA routing trick:
+  // Any unknown path (e.g. /wajikra-2026) lands here.
+  // We save the slug and redirect to / where index.html handles it.
+  var slug = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  if (slug && slug !== 'index.html') {
+    sessionStorage.setItem('redirect_article', slug);
+  }
+  window.location.replace('/');
+</script>
+</head><body></body></html>
