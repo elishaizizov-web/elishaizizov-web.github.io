@@ -1830,8 +1830,11 @@ body {
             <label>Titel (Deutsch)</label>
             <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben...">
           </div>
+          <div class="aform-group" style="grid-column:1/-1;">
+            <label style="direction:rtl; text-align:right; display:block;">כותרת (עברית)</label>
+            <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl; text-align:right;">
+          </div>
           <!-- Hidden translation title inputs (filled by auto-translate) -->
-          <input type="hidden" id="af-title-he">
           <input type="hidden" id="af-title-en">
           <input type="hidden" id="af-title-fr">
           <input type="hidden" id="af-title-es">
@@ -1889,13 +1892,21 @@ body {
         <div class="aform-group">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <label style="margin:0;">Inhalt (Deutsch)</label>
-            <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">✨ Alle Sprachen übersetzen</button>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+              <input type="password" id="deepl-key-input" placeholder="DeepL API Key" style="font-size:11px; padding:4px 8px; border:1px solid #ccc; border-radius:4px; width:180px;" oninput="localStorage.setItem('deepl_key',this.value)">
+              <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer; white-space:nowrap;">✨ EN / FR / ES / RU übersetzen</button>
+            </div>
           </div>
           <div class="quill-wrapper"><div id="q-de"></div></div>
         </div>
+
+        <div class="aform-group">
+          <label style="direction:rtl; text-align:right; display:block;">תוכן (עברית)</label>
+          <div class="quill-wrapper"><div id="q-he"></div></div>
+        </div>
+
         <!-- Hidden editors for other languages (filled by auto-translate) -->
         <div style="display:none;">
-          <div id="q-he"></div>
           <div id="q-en"></div>
           <div id="q-fr"></div>
           <div id="q-es"></div>
@@ -2737,6 +2748,8 @@ function adminLogin() {
     initQuillEditors();
     adminUpdateParasha();
     renderAdminList();
+    const savedKey = localStorage.getItem('deepl_key');
+    if (savedKey) document.getElementById('deepl-key-input').value = savedKey;
     document.getElementById('admin-pw').value = '';
   } else {
     err.textContent = 'Falsches Passwort.';
@@ -3007,71 +3020,70 @@ ${a.date ? `<div class="date">${a.date}</div>` : ''}
 }
 
 // ════════════════════════════════════════════════════════
-// FREE AUTO TRANSLATE (Google Translate API)
+// AUTO TRANSLATE — DeepL Free API (EN / FR / ES / RU)
+// Hebrew is entered manually in the admin form above.
 // ════════════════════════════════════════════════════════
 async function autoTranslateFree() {
   const deTitle = document.getElementById('af-title-de').value.trim();
-  const deText = quillEditors.de ? quillEditors.de.root.innerHTML : '';
+  const deText  = quillEditors.de ? quillEditors.de.root.innerHTML : '';
+  const keyInput = document.getElementById('deepl-key-input');
+  const apiKey   = (keyInput.value || localStorage.getItem('deepl_key') || '').trim();
 
   if (!deTitle && (!deText || deText === '<p><br></p>')) {
-    alert("Bitte schreiben Sie zuerst den Artikel auf Deutsch, damit das System ihn übersetzen kann.");
+    alert("Bitte schreiben Sie zuerst den Artikel auf Deutsch.");
     return;
   }
+  if (!apiKey) {
+    alert("Bitte DeepL API Key eingeben (kostenlos auf deepl.com/pro#developer).");
+    keyInput.focus();
+    return;
+  }
+  localStorage.setItem('deepl_key', apiKey);
+  if (keyInput.value !== apiKey) keyInput.value = apiKey;
 
   const msg = document.getElementById('admin-msg');
-  msg.textContent = 'Übersetze... Bitte warten (kann einige Sekunden dauern)...';
+  msg.textContent = 'Übersetze mit DeepL... Bitte warten...';
 
-  // Google Translate language codes ('iw' is used for Hebrew instead of 'he')
   const langs = [
-    { id: 'he', code: 'iw', name: 'Hebräisch' },
-    { id: 'en', code: 'en', name: 'Englisch' },
-    { id: 'fr', code: 'fr', name: 'Französisch' },
-    { id: 'es', code: 'es', name: 'Spanisch' },
-    { id: 'ru', code: 'ru', name: 'Russisch' }
+    { id: 'en', code: 'EN-GB', name: 'Englisch'    },
+    { id: 'fr', code: 'FR',    name: 'Französisch' },
+    { id: 'es', code: 'ES',    name: 'Spanisch'    },
+    { id: 'ru', code: 'RU',    name: 'Russisch'    }
   ];
 
-  async function translateChunk(text, targetCode) {
-    if (!text) return "";
-    try {
-      const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=${targetCode}&dt=t`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ q: text })
-      });
-      const data = await res.json();
-      let translated = data[0].map(x => x[0]).join('');
-
-      // Fix broken HTML tags caused by Google Translate spacing
-      translated = translated.replace(/<\s+\/\s+/g, '</')
-                             .replace(/<\s+/g, '<')
-                             .replace(/\s+>/g, '>')
-                             .replace(/<\/\s+/g, '</');
-      return translated;
-    } catch (e) {
-      console.error(e);
-      return text;
+  async function translateDeepL(text, targetLang) {
+    if (!text || text === '<p><br></p>') return '';
+    const res = await fetch('https://api-free.deepl.com/v2/translate', {
+      method: 'POST',
+      headers: {
+        'Authorization': `DeepL-Auth-Key ${apiKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({ text, source_lang: 'DE', target_lang: targetLang, tag_handling: 'html' })
+    });
+    if (!res.ok) {
+      const err = await res.text().catch(() => res.status);
+      throw new Error(`DeepL ${res.status}: ${err}`);
     }
+    const data = await res.json();
+    return data.translations[0].text;
   }
 
   try {
     for (const l of langs) {
       msg.textContent = `Übersetze ins ${l.name}...`;
-
       if (deTitle) {
-        document.getElementById('af-title-' + l.id).value = await translateChunk(deTitle, l.code);
+        document.getElementById('af-title-' + l.id).value = await translateDeepL(deTitle, l.code);
       }
-
       if (deText && deText !== '<p><br></p>') {
-        const translatedHtml = await translateChunk(deText, l.code);
-        if (quillEditors[l.id]) {
-          quillEditors[l.id].root.innerHTML = translatedHtml;
-        }
+        const translated = await translateDeepL(deText, l.code);
+        if (quillEditors[l.id]) quillEditors[l.id].root.innerHTML = translated;
       }
     }
-    msg.textContent = '✨ Übersetzung abgeschlossen! Bitte prüfen Sie das Ergebnis und klicken Sie dann auf "Artikel veröffentlichen".';
+    msg.textContent = '✨ Übersetzung abgeschlossen! Bitte Ergebnis prüfen und auf "Artikel veröffentlichen" klicken.';
   } catch (error) {
     console.error(error);
-    msg.textContent = '❌ Übersetzungsfehler. Bitte erneut versuchen.';
+    msg.textContent = `❌ Übersetzungsfehler: ${error.message}`;
   }
 }
 </script>
