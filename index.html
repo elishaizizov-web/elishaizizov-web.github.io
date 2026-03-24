@@ -373,16 +373,20 @@ body {
 .articles-list-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 20px; }
 .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
 
-.article-card { border: 1px solid var(--rule); background: #fdfcfa; overflow: hidden; transition: border-color 0.22s; }
+.article-card { border: 1px solid var(--rule); background: #fdfcfa; overflow: hidden; transition: border-color 0.22s; display: flex; flex-direction: column; position: relative; }
+.article-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gold); transition: width 0.35s ease; }
+.article-card:hover::after { width: 100%; }
 .article-card:hover { border-color: var(--navy); }
 .article-card-img { width: 100%; height: 180px; object-fit: cover; display: block; }
 .article-card-img-placeholder { width: 100%; height: 180px; background: linear-gradient(150deg, #111c2d 0%, #1b2a3b 60%, #1a3050 100%); display: block; position: relative; overflow: hidden; border-bottom: 3px solid var(--gold); }
 .article-card-img-placeholder::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(184,149,42,0.18) 0%, transparent 70%); pointer-events: none; }
 .article-card-img-placeholder::after { content: '✡'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -52%); font-size: 72px; color: rgba(184,149,42,0.55); line-height: 1; text-shadow: 0 0 30px rgba(184,149,42,0.3); }
-.article-card-body { padding: 18px 20px 20px; }
+.article-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
 .article-card-date { font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 7px; }
 .article-card-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 8px; line-height: 1.3; }
-.article-card-excerpt { font-size: 13px; color: var(--text-soft); line-height: 1.75; font-weight: 300; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.article-card-excerpt { font-size: 13px; color: var(--text-soft); line-height: 1.75; font-weight: 300; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+.article-card-readmore { font-family: 'Raleway', sans-serif; font-size: 9.5px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-top: 14px; display: flex; align-items: center; gap: 5px; transition: gap 0.2s; }
+.article-card:hover .article-card-readmore { gap: 9px; }
 .articles-empty { font-size: 14px; color: var(--text-soft); font-style: italic; font-family: 'Playfair Display', serif; }
 .latest-article-label { font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
 
@@ -1075,15 +1079,15 @@ body {
       border: none !important;
       border-radius: 6px !important;
       box-shadow: 0 2px 12px rgba(27,42,59,0.08), 0 1px 3px rgba(0,0,0,0.06) !important;
-      transition: box-shadow 0.25s, transform 0.2s !important;
+      transition: box-shadow 0.25s, transform 0.22s !important;
       overflow: hidden;
       background: #fff !important;
     }
     .article-card:hover {
-      box-shadow: 0 8px 32px rgba(27,42,59,0.15), 0 2px 8px rgba(184,149,42,0.12) !important;
-      transform: translateY(-3px) !important;
+      box-shadow: 0 10px 36px rgba(27,42,59,0.14), 0 2px 8px rgba(184,149,42,0.1) !important;
+      transform: translateY(-2px) !important;
     }
-    .article-card-body { padding: 18px 20px 22px !important; }
+    .article-card-body { padding: 18px 20px 20px !important; }
     .article-card-title { line-height: 1.35 !important; }
 
     /* ── Upgraded section labels ── */
@@ -2270,10 +2274,12 @@ function renderCard(a, noClick) {
   const img = a.image ? `<img class="article-card-img" src="${escHtml(a.image)}" alt="${escHtml(t.title)}" loading="lazy">` : `<div class="article-card-img-placeholder"></div>`;
   const excerpt = stripHtml(t.text).substring(0, 200).trim();
   const excerptHtml = excerpt ? `<p class="article-card-excerpt">${escHtml(excerpt)}${excerpt.length >= 200 ? '…' : ''}</p>` : '';
+  const readMoreLabel = { de: 'Weiterlesen', en: 'Read more', fr: 'Lire la suite', es: 'Leer más', ru: 'Читать', he: 'קרא עוד' }[l] || 'Weiterlesen';
+  const readMoreHtml = noClick ? '' : `<span class="article-card-readmore">${readMoreLabel} <span>→</span></span>`;
   if (noClick) {
     return `<div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
   }
-  return `<a href="/${articleSlug(a)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div></a>`;
+  return `<a href="/${articleSlug(a)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
 
 function showHagim() {
