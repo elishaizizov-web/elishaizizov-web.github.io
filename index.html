@@ -701,52 +701,63 @@ body {
 
 
 /* ── Language tab editor ── */
-.lang-editor-section { margin-bottom: 24px; }
+.lang-editor-section { margin-bottom: 0; }
 .lang-tabs {
   display: flex;
-  border-bottom: 2px solid var(--rule);
-  gap: 0;
-  margin-bottom: 0;
+  gap: 4px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
+  background: #f0f1f3;
+  padding: 5px;
+  border-radius: 10px;
 }
 .lang-tab {
-  padding: 9px 16px;
+  padding: 7px 13px;
   border: none;
   background: transparent;
   cursor: pointer;
   font-family: 'Raleway', sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: #aaa;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: color 0.2s, border-color 0.2s;
+  font-weight: 700;
+  color: #999;
+  border-radius: 7px;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.03em;
 }
-.lang-tab:hover { color: var(--navy); }
-.lang-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+.lang-tab:hover { color: var(--navy); background: #e3e5e9; }
+.lang-tab.active {
+  color: var(--navy);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 .lang-tab.has-content { color: #555; }
 .lang-tab .tab-dot {
   display: inline-block;
-  width: 5px; height: 5px;
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--gold);
-  margin-left: 4px;
-  vertical-align: middle;
+  background: #22c55e;
   opacity: 0;
   transition: opacity 0.2s;
+  flex-shrink: 0;
 }
 .lang-tab.has-content .tab-dot { opacity: 1; }
-.lang-panel { padding-top: 12px; }
+.lang-panel { padding-top: 2px; }
 .lang-panel input[type="text"] {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 11px 13px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
   font-family: 'Raleway', sans-serif;
+  color: var(--navy);
+  transition: border-color 0.2s;
 }
+.lang-panel input[type="text"]:focus { outline: none; border-color: var(--gold); }
 
 /* SOCIAL BAR */
 .social-bar {
@@ -1372,230 +1383,320 @@ body {
 }
 
 
-/* ── ULTRA PREMIUM ADMIN PANEL DESIGN ── */
+/* ── ADMIN PANEL ── */
 .admin-overlay {
-  background: rgba(10, 15, 25, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(8, 12, 22, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 10000;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 12px;
 }
-.admin-overlay.open {
-  display: flex;
-}
+.admin-overlay.open { display: flex; }
 .admin-box {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  background: #f0f1f4;
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.55);
   width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
+  max-width: 940px;
+  max-height: 92vh;
   overflow-y: auto;
   position: relative;
-  padding: 0;
   display: flex;
   flex-direction: column;
 }
 .admin-header-bar {
-  background: #fdfbf7;
-  padding: 24px 32px;
-  border-bottom: 1px solid rgba(184,149,42,0.2);
+  background: linear-gradient(135deg, #0d1b3e 0%, #1c2f60 100%);
+  padding: 18px 26px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 10;
-  border-radius: 16px 16px 0 0;
+  border-radius: 20px 20px 0 0;
+  gap: 12px;
 }
 .admin-header-bar h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  color: var(--navy);
+  font-size: 20px;
+  color: #fff;
   margin: 0;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  flex: 1;
 }
+.admin-draft-badge {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.12);
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: none;
+  white-space: nowrap;
+}
+.admin-draft-badge.visible { display: inline-block; }
 .admin-close-btn {
-  background: transparent;
+  background: rgba(255,255,255,0.15);
   border: none;
-  font-size: 28px;
-  color: var(--navy);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  font-size: 18px;
+  color: #fff;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
   line-height: 1;
-  padding: 0;
-  opacity: 0.5;
-  transition: opacity 0.2s;
 }
-.admin-close-btn:hover { opacity: 1; }
-.admin-body {
-  padding: 32px;
-  background: #fafafa;
+.admin-close-btn:hover { background: rgba(255,255,255,0.28); }
+.admin-body { padding: 20px; }
+.admin-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
 }
-.admin-section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  color: var(--navy);
-  margin: 0 0 24px 0;
-  font-weight: bold;
-  border-bottom: 2px solid rgba(184,149,42,0.3);
-  padding-bottom: 10px;
+.admin-card-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--gold);
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.admin-card-title::before {
+  content: '';
   display: inline-block;
+  width: 3px; height: 14px;
+  background: var(--gold);
+  border-radius: 2px;
+  flex-shrink: 0;
 }
+/* keep old class as alias */
+.admin-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--gold);
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.admin-section-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 14px;
+  background: var(--gold);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+/* Lang progress */
+.lang-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.lang-progress-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.lang-progress-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 11px;
+  border-radius: 20px;
+  background: #f0f1f3;
+  color: #888;
+  transition: all 0.3s;
+}
+.lang-progress-count.partial { background: #fef9c3; color: #b45309; }
+.lang-progress-count.complete { background: #dcfce7; color: #15803d; }
+/* Copy-from-DE button */
+.copy-de-btn {
+  background: #f3f4f6;
+  border: 1px solid #e0e2e7;
+  color: #777;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.18s;
+  letter-spacing: 0.04em;
+}
+.copy-de-btn:hover { background: #e3e5e9; color: var(--navy); border-color: #c6c9d0; }
+/* Form grid */
 .aform-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 14px;
+  margin-bottom: 0;
 }
-@media (max-width: 768px) {
-  .aform-grid { grid-template-columns: 1fr; gap: 16px; }
-  .admin-body { padding: 20px; }
+@media (max-width: 640px) {
+  .aform-grid { grid-template-columns: 1fr; }
+  .admin-body { padding: 12px; }
 }
-.aform-group {
-  display: flex;
-  flex-direction: column;
-}
+.aform-group { display: flex; flex-direction: column; }
 .aform-group label {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #666;
-  margin-bottom: 8px;
+  color: #999;
+  margin-bottom: 6px;
   font-weight: 700;
 }
 .aform-group input[type="text"],
 .aform-group input[type="date"],
 .aform-group select {
-  padding: 14px 16px;
-  border: 1px solid #d1d5db;
+  padding: 11px 13px;
+  border: 2px solid #e5e7eb;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
   font-family: 'Raleway', sans-serif;
   background: #fff;
-  transition: all 0.2s ease;
-  color: #333;
+  transition: border-color 0.2s;
+  color: var(--navy);
 }
-.aform-group input:focus,
-.aform-group select:focus {
+.aform-group input:focus, .aform-group select:focus {
   outline: none;
   border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(184,149,42,0.15);
+  box-shadow: 0 0 0 3px rgba(184,149,42,0.12);
 }
-
-/* Luxury Image Upload */
+/* Image upload */
 .premium-upload-box {
-  border: 2px dashed #c2b082;
-  background: #fdfbf7;
-  border-radius: 12px;
-  padding: 24px;
+  border: 2px dashed #d1d5db;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 18px;
   text-align: center;
-  transition: all 0.3s;
+  transition: all 0.25s;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
+  display: block;
 }
 .premium-upload-box:hover {
   background: #fff;
   border-color: var(--gold);
-  box-shadow: 0 4px 12px rgba(184,149,42,0.1);
+  box-shadow: 0 4px 14px rgba(184,149,42,0.12);
 }
-.premium-upload-icon {
-  font-size: 32px;
-  margin-bottom: 12px;
-}
-.premium-upload-text {
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--navy);
-  margin-bottom: 6px;
-}
-.premium-upload-subtext {
-  font-size: 12px;
-  color: #888;
-}
-#af-image-file {
-  display: none;
-}
+.premium-upload-icon { font-size: 26px; margin-bottom: 7px; }
+.premium-upload-text { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.premium-upload-subtext { font-size: 11px; color: #bbb; }
+#af-image-file { display: none; }
+/* Quill */
 .quill-wrapper {
-  margin-bottom: 30px;
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 2px solid #e5e7eb;
   overflow: hidden;
+  margin-bottom: 0;
+  transition: border-color 0.2s;
 }
+.quill-wrapper:focus-within { border-color: var(--gold); }
 .ql-toolbar.ql-snow {
   border: none !important;
-  border-bottom: 1px solid #ddd !important;
-  background: #fdfdfd;
-  padding: 12px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background: #fafafa;
+  padding: 10px !important;
 }
 .ql-container.ql-snow {
   border: none !important;
-  min-height: 200px;
-  font-size: 16px;
+  min-height: 185px;
+  font-size: 15px;
 }
+/* Publish button */
 .admin-save-btn {
   background: linear-gradient(135deg, var(--gold) 0%, #9e7f22 100%);
   color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 16px 32px;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 14px 32px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(184,149,42,0.3);
-  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(184,149,42,0.32);
+  transition: all 0.25s ease;
   width: 100%;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  margin-top: 20px;
+  letter-spacing: 0.16em;
+  margin-top: 0;
 }
 .admin-save-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(184,149,42,0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(184,149,42,0.42);
 }
-.admin-art-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-top: 20px;
+/* Article list */
+.admin-list-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 13px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Raleway', sans-serif;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+  color: var(--navy);
+  background: #fafafa;
 }
+.admin-list-search:focus { outline: none; border-color: var(--gold); }
+.admin-art-list { display: flex; flex-direction: column; gap: 7px; }
 .admin-art-item {
   background: #fff;
-  border: 1px solid #eaeaea;
-  border-left: 4px solid var(--gold);
+  border: 1px solid #e8eaed;
+  border-left: 3px solid var(--gold);
   border-radius: 8px;
-  padding: 16px 20px;
+  padding: 11px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  transition: box-shadow 0.18s;
 }
+.admin-art-item:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
+.admin-art-info { flex: 1; min-width: 0; }
 .admin-art-title {
   font-weight: 600;
   color: var(--navy);
-  font-size: 15px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+.admin-art-meta { font-size: 11px; color: #aaa; margin-top: 2px; }
+.admin-art-actions { display: flex; gap: 5px; flex-shrink: 0; margin-left: 10px; }
 .admin-art-actions button {
-  background: #f0f0f0;
+  background: #f3f4f6;
   border: none;
-  padding: 8px 16px;
+  padding: 5px 11px;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
-  margin-left: 8px;
-  transition: 0.2s;
+  transition: 0.18s;
+  letter-spacing: 0.04em;
 }
 .admin-art-actions button.edit-btn { color: var(--navy); }
-.admin-art-actions button.edit-btn:hover { background: #e0e0e0; }
-.admin-art-actions button.del-btn { color: #d32f2f; background: #ffebee; }
-.admin-art-actions button.del-btn:hover { background: #ffcdd2; }
+.admin-art-actions button.edit-btn:hover { background: #dbeafe; color: #1d4ed8; }
+.admin-art-actions button.del-btn { color: #dc2626; background: #fef2f2; }
+.admin-art-actions button.del-btn:hover { background: #fee2e2; }
 
 </style>
 
@@ -1848,124 +1949,146 @@ body {
 
 <!-- ── ADMIN PANEL (open via ?admin=1) ───────────────────── -->
 
-
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-box">
 
     <div class="admin-header-bar">
       <h2>Artikel-Verwaltung</h2>
+      <span class="admin-draft-badge" id="admin-draft-badge"></span>
       <button class="admin-close-btn" onclick="toggleAdmin()">&times;</button>
     </div>
 
     <div class="admin-body">
+
       <!-- LOGIN SCREEN -->
-      <div id="admin-login-screen" style="text-align:center; padding:40px 0;">
-        <p style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:24px; color:var(--navy);">Bitte anmelden um fortzufahren</p>
-        <input type="password" id="admin-pw" placeholder="Administrator-Passwort eingeben" style="padding:16px; width:280px; border-radius:8px; border:1px solid #ccc; font-size:16px; display:block; margin:0 auto 20px; outline:none; text-align:center;" onkeyup="if(event.key==='Enter')adminLogin()">
-        <button class="admin-save-btn" style="width:280px;" onclick="adminLogin()">ANMELDEN</button>
-        <p id="admin-login-err" style="display:none; color:#d32f2f; margin-top:16px; font-size:14px; font-weight:bold;"></p>
+      <div id="admin-login-screen" class="admin-card" style="text-align:center; padding:36px 20px;">
+        <p style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:24px; color:var(--navy);">Anmelden um fortzufahren</p>
+        <input type="password" id="admin-pw" placeholder="Passwort eingeben" style="padding:14px 16px; width:260px; border-radius:8px; border:2px solid #e5e7eb; font-size:15px; display:block; margin:0 auto 16px; outline:none; text-align:center; font-family:'Raleway',sans-serif; transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#e5e7eb'" onkeyup="if(event.key==='Enter')adminLogin()">
+        <button class="admin-save-btn" style="width:260px; margin-top:0;" onclick="adminLogin()">ANMELDEN</button>
+        <p id="admin-login-err" style="display:none; color:#dc2626; margin-top:14px; font-size:13px; font-weight:bold;"></p>
       </div>
 
       <!-- ADMIN CONTENT -->
       <div id="admin-content" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-          <span class="admin-section-title" style="margin:0; border:none; padding:0;">✨ Neuen Artikel veröffentlichen</span>
-          <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Abmelden</button>
-        </div>
 
-        <!-- Language tab editor -->
-        <div class="lang-editor-section">
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="de" onclick="switchLangTab('de')">🇩🇪 DE<span class="tab-dot"></span></button>
-            <button class="lang-tab" data-lang="he" onclick="switchLangTab('he')">🇮🇱 עב<span class="tab-dot"></span></button>
-            <button class="lang-tab" data-lang="en" onclick="switchLangTab('en')">🇬🇧 EN<span class="tab-dot"></span></button>
-            <button class="lang-tab" data-lang="fr" onclick="switchLangTab('fr')">🇫🇷 FR<span class="tab-dot"></span></button>
-            <button class="lang-tab" data-lang="es" onclick="switchLangTab('es')">🇪🇸 ES<span class="tab-dot"></span></button>
-            <button class="lang-tab" data-lang="ru" onclick="switchLangTab('ru')">🇷🇺 RU<span class="tab-dot"></span></button>
+        <!-- ── 1. Artikel-Details ── -->
+        <div class="admin-card">
+          <div class="admin-card-title" style="justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:7px;">
+              <span style="display:inline-block;width:3px;height:14px;background:var(--gold);border-radius:2px;"></span>
+              Artikel-Details
+            </span>
+            <button onclick="adminLogout()" style="background:transparent;border:1px solid #ddd;padding:4px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;color:#888;letter-spacing:0.04em;">ABMELDEN</button>
           </div>
-          <div class="lang-panel" id="lpanel-de">
-            <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
-            <div class="quill-wrapper"><div id="q-de"></div></div>
-          </div>
-          <div class="lang-panel" id="lpanel-he" style="display:none;">
-            <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl;text-align:right;" oninput="updateTabIndicator('he')">
-            <div class="quill-wrapper"><div id="q-he"></div></div>
-          </div>
-          <div class="lang-panel" id="lpanel-en" style="display:none;">
-            <input type="text" id="af-title-en" placeholder="Enter English title..." oninput="updateTabIndicator('en')">
-            <div class="quill-wrapper"><div id="q-en"></div></div>
-          </div>
-          <div class="lang-panel" id="lpanel-fr" style="display:none;">
-            <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
-            <div class="quill-wrapper"><div id="q-fr"></div></div>
-          </div>
-          <div class="lang-panel" id="lpanel-es" style="display:none;">
-            <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
-            <div class="quill-wrapper"><div id="q-es"></div></div>
-          </div>
-          <div class="lang-panel" id="lpanel-ru" style="display:none;">
-            <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
-            <div class="quill-wrapper"><div id="q-ru"></div></div>
-          </div>
-        </div>
-
-        <div class="aform-grid">
-          <div class="aform-group">
-            <label>Kategorie</label>
-            <select id="af-cat" onchange="adminToggleCat()">
-              <option value="parasha">Parascha / Tora</option>
-              <option value="hag">Fest / Feiertag</option>
-            </select>
-          </div>
-          <div class="aform-group" id="af-book-wrap">
-            <label>Buch</label>
-            <select id="af-book" onchange="adminUpdateParasha()">
-              <option value="Bereshit">Bereschit</option>
-              <option value="Shemot">Schemot</option>
-              <option value="Vayikra">Wajikra</option>
-              <option value="Bamidbar">Bamidbar</option>
-              <option value="Devarim">Dewarim</option>
-            </select>
-          </div>
-          <div class="aform-group" id="af-parasha-wrap">
-            <label>Parascha</label>
-            <select id="af-parasha"></select>
-          </div>
-          <div class="aform-group" id="af-hag-wrap" style="display:none;">
-            <label>Festname</label>
-            <input type="text" id="af-hag-name" placeholder="z.B. Sukkot, Pessach">
-          </div>
-          <div class="aform-group">
-            <label>Veröffentlichungsdatum</label>
-            <input type="date" id="af-date-input">
+          <div class="aform-grid">
+            <div class="aform-group">
+              <label>Kategorie</label>
+              <select id="af-cat" onchange="adminToggleCat()">
+                <option value="parasha">Parascha / Tora</option>
+                <option value="hag">Fest / Feiertag</option>
+              </select>
+            </div>
+            <div class="aform-group" id="af-book-wrap">
+              <label>Buch</label>
+              <select id="af-book" onchange="adminUpdateParasha()">
+                <option value="Bereshit">Bereschit</option>
+                <option value="Shemot">Schemot</option>
+                <option value="Vayikra">Wajikra</option>
+                <option value="Bamidbar">Bamidbar</option>
+                <option value="Devarim">Dewarim</option>
+              </select>
+            </div>
+            <div class="aform-group" id="af-parasha-wrap">
+              <label>Parascha</label>
+              <select id="af-parasha"></select>
+            </div>
+            <div class="aform-group" id="af-hag-wrap" style="display:none;">
+              <label>Festname</label>
+              <input type="text" id="af-hag-name" placeholder="z.B. Sukkot, Pessach">
+            </div>
+            <div class="aform-group">
+              <label>Veröffentlichungsdatum</label>
+              <input type="date" id="af-date-input">
+            </div>
           </div>
         </div>
 
-        <div class="aform-group" style="margin-bottom:30px;">
-          <label>📸 Artikelbild (Klicken Sie um ein Bild auszuwählen)</label>
+        <!-- ── 2. Bild ── -->
+        <div class="admin-card">
+          <div class="admin-card-title">Artikelbild</div>
           <label for="af-image-file" class="premium-upload-box">
             <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
-            <div class="premium-upload-icon">📁</div>
-            <div class="premium-upload-text">Tippen um Bild hochzuladen</div>
-            <div class="premium-upload-subtext">JPEG, PNG, JPG</div>
-            <p id="upload-status" style="margin-top:10px; font-weight:bold; color:var(--gold); display:none;"></p>
+            <div class="premium-upload-icon">🖼</div>
+            <div class="premium-upload-text">Bild hochladen</div>
+            <div class="premium-upload-subtext">JPEG · PNG · JPG</div>
+            <p id="upload-status" style="margin-top:8px; font-weight:bold; color:var(--gold); display:none; font-size:13px;"></p>
           </label>
           <input type="hidden" id="af-image" oninput="updateImagePreview(this.value)">
           <div id="af-image-preview" style="display:none; margin-top:10px; text-align:center;">
-            <img id="af-image-preview-img" src="" alt="Vorschau" style="max-width:100%; max-height:160px; border-radius:6px; border:1px solid var(--rule); object-fit:cover;">
-            <button type="button" onclick="clearImageUpload()" style="display:block; margin:6px auto 0; background:transparent; border:1px solid #ccc; padding:4px 14px; border-radius:4px; font-size:11px; cursor:pointer;">Bild entfernen</button>
+            <img id="af-image-preview-img" src="" alt="Vorschau" style="max-width:100%; max-height:150px; border-radius:8px; border:1px solid #e5e7eb; object-fit:cover;">
+            <button type="button" onclick="clearImageUpload()" style="display:block; margin:7px auto 0; background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:5px 16px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">✕ Bild entfernen</button>
           </div>
         </div>
 
-
-        <div style="text-align:center;">
-          <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
-          <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy);"></p>
-          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ccc; padding:8px 24px; border-radius:6px; margin-top:10px; cursor:pointer;">Bearbeitung abbrechen</button>
+        <!-- ── 3. Inhalte (Sprachen) ── -->
+        <div class="admin-card">
+          <div class="admin-card-title">Inhalte</div>
+          <div class="lang-progress">
+            <span class="lang-progress-label">Fortschritt:</span>
+            <span class="lang-progress-count" id="lang-progress-count">0 / 6</span>
+          </div>
+          <div class="lang-editor-section">
+            <div class="lang-tabs">
+              <button class="lang-tab active" data-lang="de" onclick="switchLangTab('de')">🇩🇪 DE<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="he" onclick="switchLangTab('he')">🇮🇱 עב<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="en" onclick="switchLangTab('en')">🇬🇧 EN<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="fr" onclick="switchLangTab('fr')">🇫🇷 FR<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="es" onclick="switchLangTab('es')">🇪🇸 ES<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="ru" onclick="switchLangTab('ru')">🇷🇺 RU<span class="tab-dot"></span></button>
+            </div>
+            <div class="lang-panel" id="lpanel-de">
+              <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
+              <div class="quill-wrapper"><div id="q-de"></div></div>
+            </div>
+            <div class="lang-panel" id="lpanel-he" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('he')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl;text-align:right;" oninput="updateTabIndicator('he')">
+              <div class="quill-wrapper"><div id="q-he"></div></div>
+            </div>
+            <div class="lang-panel" id="lpanel-en" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('en')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-en" placeholder="Enter English title..." oninput="updateTabIndicator('en')">
+              <div class="quill-wrapper"><div id="q-en"></div></div>
+            </div>
+            <div class="lang-panel" id="lpanel-fr" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('fr')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
+              <div class="quill-wrapper"><div id="q-fr"></div></div>
+            </div>
+            <div class="lang-panel" id="lpanel-es" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('es')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
+              <div class="quill-wrapper"><div id="q-es"></div></div>
+            </div>
+            <div class="lang-panel" id="lpanel-ru" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('ru')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
+              <div class="quill-wrapper"><div id="q-ru"></div></div>
+            </div>
+          </div>
         </div>
 
-        <div style="margin-top:60px;">
-          <span class="admin-section-title">Veröffentlichte Artikel verwalten</span>
+        <!-- ── 4. Veröffentlichen ── -->
+        <div class="admin-card" style="text-align:center;">
+          <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
+          <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy); font-size:14px;"></p>
+          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ddd; padding:7px 22px; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px; font-weight:700; color:#888; letter-spacing:0.04em;">BEARBEITUNG ABBRECHEN</button>
+        </div>
+
+        <!-- ── 5. Artikel-Liste ── -->
+        <div class="admin-card">
+          <div class="admin-card-title">Veröffentlichte Artikel</div>
+          <input class="admin-list-search" type="text" placeholder="🔍 Artikel suchen..." oninput="adminFilterList(this.value)">
           <div id="admin-art-list" class="admin-art-list"></div>
         </div>
 
@@ -2792,6 +2915,13 @@ function adminLogin() {
     document.getElementById('admin-content').style.display = 'block';
     initQuillEditors();
     adminUpdateParasha();
+    setTodayDate();
+    setupDraftAutoSave();
+    const restored = restoreDraft();
+    if (restored) {
+      const msg = document.getElementById('admin-msg');
+      if (msg) { msg.style.color='#15803d'; msg.textContent='📋 Entwurf wiederhergestellt'; setTimeout(()=>{ if(msg.textContent.includes('wiederhergestellt')) msg.textContent=''; }, 3500); }
+    }
     renderAdminList();
     document.getElementById('admin-pw').value = '';
   } else {
@@ -2929,9 +3059,11 @@ async function adminSave() {
       msg.textContent = '✓ Aktualisiert!';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
+      clearDraft();
     } else {
       const ref = await db.collection('articles').add(docData);
       msg.textContent = '✓ Gespeichert!';
+      clearDraft();
       // Ping Google to index the new article
       fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       const newArticle = { id: ref.id, ...docData };
@@ -2960,19 +3092,118 @@ function updateTabIndicator(lang) {
   const tab = document.querySelector(`.lang-tab[data-lang="${lang}"]`);
   if (!title || !tab) return;
   tab.classList.toggle('has-content', title.value.trim().length > 0);
+  updateLangProgress();
 }
 
 function updateAllTabIndicators() {
   ['de','he','en','fr','es','ru'].forEach(updateTabIndicator);
 }
 
+function updateLangProgress() {
+  let count = 0;
+  ['de','he','en','fr','es','ru'].forEach(l => {
+    if ((document.getElementById('af-title-'+l)?.value||'').trim()) count++;
+  });
+  const el = document.getElementById('lang-progress-count');
+  if (!el) return;
+  el.textContent = count + ' / 6';
+  el.className = 'lang-progress-count' + (count === 6 ? ' complete' : count > 0 ? ' partial' : '');
+}
+
+function copyTitleFromDE(lang) {
+  const de = document.getElementById('af-title-de')?.value || '';
+  const el = document.getElementById('af-title-' + lang);
+  if (el && de) { el.value = de; updateTabIndicator(lang); }
+}
+
+let _draftTimer = null;
+function saveDraft() {
+  const data = {
+    titles: {}, texts: {},
+    cat: document.getElementById('af-cat')?.value||'parasha',
+    book: document.getElementById('af-book')?.value||'Bereshit',
+    parasha: document.getElementById('af-parasha')?.value||'',
+    hag: document.getElementById('af-hag-name')?.value||'',
+    date: document.getElementById('af-date-input')?.value||'',
+    image: document.getElementById('af-image')?.value||''
+  };
+  ['de','he','en','fr','es','ru'].forEach(l => {
+    data.titles[l] = document.getElementById('af-title-'+l)?.value||'';
+    data.texts[l] = quillEditors[l]?.root.innerHTML||'';
+  });
+  if (!data.titles.de && !data.texts.de) return;
+  try { localStorage.setItem('admin_draft', JSON.stringify(data)); } catch(e) {}
+  const badge = document.getElementById('admin-draft-badge');
+  if (badge) {
+    badge.textContent = '✓ Entwurf gespeichert';
+    badge.classList.add('visible');
+    clearTimeout(window._draftBadgeTimer);
+    window._draftBadgeTimer = setTimeout(()=>badge.classList.remove('visible'), 3000);
+  }
+}
+
+function clearDraft() {
+  try { localStorage.removeItem('admin_draft'); } catch(e) {}
+}
+
+function restoreDraft() {
+  try {
+    const raw = localStorage.getItem('admin_draft');
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (!d.titles?.de) return false;
+    ['de','he','en','fr','es','ru'].forEach(l => {
+      const el = document.getElementById('af-title-'+l);
+      if (el && d.titles[l]) el.value = d.titles[l];
+      if (quillEditors[l] && d.texts[l]) quillEditors[l].root.innerHTML = d.texts[l];
+    });
+    if (d.cat) { document.getElementById('af-cat').value = d.cat; adminToggleCat(); }
+    if (d.book) { document.getElementById('af-book').value = d.book; adminUpdateParasha(); }
+    if (d.parasha) setTimeout(()=>{ document.getElementById('af-parasha').value = d.parasha; }, 60);
+    if (d.hag) document.getElementById('af-hag-name').value = d.hag;
+    if (d.date) document.getElementById('af-date-input').value = d.date;
+    else setTodayDate();
+    if (d.image) { document.getElementById('af-image').value = d.image; updateImagePreview(d.image); }
+    updateAllTabIndicators();
+    return true;
+  } catch(e) { return false; }
+}
+
+function setupDraftAutoSave() {
+  const debounced = () => { clearTimeout(_draftTimer); _draftTimer = setTimeout(saveDraft, 1500); };
+  ['de','he','en','fr','es','ru'].forEach(l => {
+    const el = document.getElementById('af-title-'+l);
+    if (el) el.addEventListener('input', debounced);
+    if (quillEditors[l]) quillEditors[l].on('text-change', debounced);
+  });
+  ['af-cat','af-book','af-parasha','af-hag-name','af-date-input'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', debounced);
+  });
+}
+
+function setTodayDate() {
+  const di = document.getElementById('af-date-input');
+  if (di) di.valueAsDate = new Date();
+}
+
+function adminFilterList(query) {
+  const q = (query||'').trim().toLowerCase();
+  document.querySelectorAll('#admin-art-list .admin-art-item').forEach(el => {
+    const title = (el.dataset.title||'');
+    el.style.display = (!q || title.includes(q)) ? '' : 'none';
+  });
+}
+
 function adminClearForm() {
-  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
+  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name']
     .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
   updateImagePreview('');
   const status = document.getElementById('upload-status');
   if (status) status.style.display = 'none';
+  setTodayDate();
+  clearDraft();
   switchLangTab('de');
   updateAllTabIndicators();
 }
@@ -3024,19 +3255,22 @@ async function adminDelete(id) {
 function renderAdminList() {
   const el = document.getElementById('admin-art-list');
   if (!el) return;
-  if (!window._articles.length) { el.innerHTML='<p style="color:#888; font-style:italic;">Noch keine Artikel veröffentlicht.</p>'; return; }
-  el.innerHTML = window._articles.map(a=>`
-    <div class="admin-art-item">
-      <div class="admin-art-title">${a.title||a.id}</div>
-      <div class="admin-art-actions">
-        <button class="edit-btn" onclick="adminEdit('${a.id}')">EDIT</button>
-        <button class="del-btn" onclick="adminDelete('${a.id}')">DELETE</button>
+  if (!window._articles.length) { el.innerHTML='<p style="color:#bbb; font-style:italic; font-size:13px;">Noch keine Artikel veröffentlicht.</p>'; return; }
+  el.innerHTML = window._articles.map(a=>{
+    const meta = [a.date, a.parasha||a.hag].filter(Boolean).join(' · ');
+    return `<div class="admin-art-item" data-title="${(a.title||'').toLowerCase()}">
+      <div class="admin-art-info">
+        <div class="admin-art-title">${a.title||a.id}</div>
+        ${meta ? `<div class="admin-art-meta">${meta}</div>` : ''}
       </div>
-    </div>`).join('');
+      <div class="admin-art-actions">
+        <button class="edit-btn" onclick="adminEdit('${a.id}')">✏ EDIT</button>
+        <button class="del-btn" onclick="adminDelete('${a.id}')">✕ DEL</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 document.addEventListener('DOMContentLoaded', () => {
-  const di = document.getElementById('af-date-input');
-  if (di) di.valueAsDate = new Date();
   loadArticles();
 });
 
