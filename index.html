@@ -700,6 +700,54 @@ body {
 }
 
 
+/* ── Language tab editor ── */
+.lang-editor-section { margin-bottom: 24px; }
+.lang-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--rule);
+  gap: 0;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+.lang-tab {
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaa;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.lang-tab:hover { color: var(--navy); }
+.lang-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+.lang-tab.has-content { color: #555; }
+.lang-tab .tab-dot {
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lang-tab.has-content .tab-dot { opacity: 1; }
+.lang-panel { padding-top: 12px; }
+.lang-panel input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'Raleway', sans-serif;
+}
+
 /* SOCIAL BAR */
 .social-bar {
   background: var(--navy);
@@ -1825,20 +1873,40 @@ body {
           <button onclick="adminLogout()" style="background:transparent; border:1px solid #ccc; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer;">Abmelden</button>
         </div>
 
-        <div class="aform-grid">
-          <div class="aform-group" style="grid-column:1/-1;">
-            <label>Titel (Deutsch)</label>
-            <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben...">
+        <!-- Language tab editor -->
+        <div class="lang-editor-section">
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="de" onclick="switchLangTab('de')">🇩🇪 DE<span class="tab-dot"></span></button>
+            <button class="lang-tab" data-lang="he" onclick="switchLangTab('he')">🇮🇱 עב<span class="tab-dot"></span></button>
+            <button class="lang-tab" data-lang="en" onclick="switchLangTab('en')">🇬🇧 EN<span class="tab-dot"></span></button>
+            <button class="lang-tab" data-lang="fr" onclick="switchLangTab('fr')">🇫🇷 FR<span class="tab-dot"></span></button>
+            <button class="lang-tab" data-lang="es" onclick="switchLangTab('es')">🇪🇸 ES<span class="tab-dot"></span></button>
+            <button class="lang-tab" data-lang="ru" onclick="switchLangTab('ru')">🇷🇺 RU<span class="tab-dot"></span></button>
           </div>
-          <div class="aform-group" style="grid-column:1/-1;">
-            <label style="direction:rtl; text-align:right; display:block;">כותרת (עברית)</label>
-            <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl; text-align:right;">
+          <div class="lang-panel" id="lpanel-de">
+            <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
+            <div class="quill-wrapper"><div id="q-de"></div></div>
           </div>
-          <!-- Hidden translation title inputs (filled by auto-translate) -->
-          <input type="hidden" id="af-title-en">
-          <input type="hidden" id="af-title-fr">
-          <input type="hidden" id="af-title-es">
-          <input type="hidden" id="af-title-ru">
+          <div class="lang-panel" id="lpanel-he" style="display:none;">
+            <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl;text-align:right;" oninput="updateTabIndicator('he')">
+            <div class="quill-wrapper"><div id="q-he"></div></div>
+          </div>
+          <div class="lang-panel" id="lpanel-en" style="display:none;">
+            <input type="text" id="af-title-en" placeholder="Enter English title..." oninput="updateTabIndicator('en')">
+            <div class="quill-wrapper"><div id="q-en"></div></div>
+          </div>
+          <div class="lang-panel" id="lpanel-fr" style="display:none;">
+            <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
+            <div class="quill-wrapper"><div id="q-fr"></div></div>
+          </div>
+          <div class="lang-panel" id="lpanel-es" style="display:none;">
+            <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
+            <div class="quill-wrapper"><div id="q-es"></div></div>
+          </div>
+          <div class="lang-panel" id="lpanel-ru" style="display:none;">
+            <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
+            <div class="quill-wrapper"><div id="q-ru"></div></div>
+          </div>
         </div>
 
         <div class="aform-grid">
@@ -1889,29 +1957,6 @@ body {
           </div>
         </div>
 
-        <div class="aform-group">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <label style="margin:0;">Inhalt (Deutsch)</label>
-            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
-              <input type="password" id="deepl-key-input" placeholder="DeepL API Key" style="font-size:11px; padding:4px 8px; border:1px solid #ccc; border-radius:4px; width:180px;" oninput="localStorage.setItem('deepl_key',this.value)">
-              <button type="button" onclick="autoTranslateFree()" style="background:var(--gold); color:#fff; border:none; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer; white-space:nowrap;">✨ EN / FR / ES / RU übersetzen</button>
-            </div>
-          </div>
-          <div class="quill-wrapper"><div id="q-de"></div></div>
-        </div>
-
-        <div class="aform-group">
-          <label style="direction:rtl; text-align:right; display:block;">תוכן (עברית)</label>
-          <div class="quill-wrapper"><div id="q-he"></div></div>
-        </div>
-
-        <!-- Hidden editors for other languages (filled by auto-translate) -->
-        <div style="display:none;">
-          <div id="q-en"></div>
-          <div id="q-fr"></div>
-          <div id="q-es"></div>
-          <div id="q-ru"></div>
-        </div>
 
         <div style="text-align:center;">
           <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
@@ -2748,8 +2793,6 @@ function adminLogin() {
     initQuillEditors();
     adminUpdateParasha();
     renderAdminList();
-    const savedKey = localStorage.getItem('deepl_key');
-    if (savedKey) document.getElementById('deepl-key-input').value = savedKey;
     document.getElementById('admin-pw').value = '';
   } else {
     err.textContent = 'Falsches Passwort.';
@@ -2902,6 +2945,27 @@ async function adminSave() {
   } catch(e) { msg.textContent = '✗ Error: '+e.message; console.error(e); }
 }
 
+function switchLangTab(lang) {
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.lang-panel').forEach(p => p.style.display = 'none');
+  document.querySelector(`.lang-tab[data-lang="${lang}"]`).classList.add('active');
+  document.getElementById('lpanel-' + lang).style.display = 'block';
+  // RTL for Hebrew editor
+  const heEditor = document.querySelector('#q-he .ql-editor');
+  if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
+}
+
+function updateTabIndicator(lang) {
+  const title = document.getElementById('af-title-' + lang);
+  const tab = document.querySelector(`.lang-tab[data-lang="${lang}"]`);
+  if (!title || !tab) return;
+  tab.classList.toggle('has-content', title.value.trim().length > 0);
+}
+
+function updateAllTabIndicators() {
+  ['de','he','en','fr','es','ru'].forEach(updateTabIndicator);
+}
+
 function adminClearForm() {
   ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name','af-date-input']
     .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
@@ -2909,6 +2973,8 @@ function adminClearForm() {
   updateImagePreview('');
   const status = document.getElementById('upload-status');
   if (status) status.style.display = 'none';
+  switchLangTab('de');
+  updateAllTabIndicators();
 }
 
 function adminCancelEdit() {
@@ -2941,6 +3007,8 @@ async function adminEdit(id) {
     document.getElementById('af-cat').value = 'hag'; adminToggleCat();
     document.getElementById('af-hag-name').value = a.hag;
   }
+  switchLangTab('de');
+  updateAllTabIndicators();
   document.querySelector('.admin-box').scrollTo(0,0);
 }
 
@@ -3019,11 +3087,8 @@ ${a.date ? `<div class="date">${a.date}</div>` : ''}
   w.document.close();
 }
 
-// ════════════════════════════════════════════════════════
-// AUTO TRANSLATE — DeepL Free API (EN / FR / ES / RU)
-// Hebrew is entered manually in the admin form above.
-// ════════════════════════════════════════════════════════
-async function autoTranslateFree() {
+async function autoTranslateFree() { // placeholder — not used
+  return;
   const deTitle = document.getElementById('af-title-de').value.trim();
   const deText  = quillEditors.de ? quillEditors.de.root.innerHTML : '';
   const keyInput = document.getElementById('deepl-key-input');
