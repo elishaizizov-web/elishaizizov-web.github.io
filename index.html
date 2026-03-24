@@ -18,11 +18,11 @@
 <meta name="twitter:image" content="https://elishaizizov.com/logo.png">
 <link rel="canonical" id="seo-canonical" href="https://elishaizizov.com">
 <link rel="alternate" hreflang="de" href="https://elishaizizov.com">
-<link rel="alternate" hreflang="en" href="https://elishaizizov.com">
-<link rel="alternate" hreflang="fr" href="https://elishaizizov.com">
-<link rel="alternate" hreflang="es" href="https://elishaizizov.com">
-<link rel="alternate" hreflang="ru" href="https://elishaizizov.com">
-<link rel="alternate" hreflang="he" href="https://elishaizizov.com">
+<link rel="alternate" hreflang="en" href="https://elishaizizov.com?lang=en">
+<link rel="alternate" hreflang="fr" href="https://elishaizizov.com?lang=fr">
+<link rel="alternate" hreflang="es" href="https://elishaizizov.com?lang=es">
+<link rel="alternate" hreflang="ru" href="https://elishaizizov.com?lang=ru">
+<link rel="alternate" hreflang="he" href="https://elishaizizov.com?lang=he">
 <link rel="alternate" hreflang="x-default" href="https://elishaizizov.com">
 <script type="application/ld+json" id="seo-jsonld">{"@context":"https://schema.org","@type":"Person","name":"Rabbi Elishai Zizov","url":"https://elishaizizov.com","image":"https://elishaizizov.com/logo.png","jobTitle":"Rabbi, Lecturer","worksFor":{"@type":"Organization","name":"Bait Sfaradi Frankfurt am Main"},"address":{"@type":"PostalAddress","addressLocality":"Frankfurt am Main","addressCountry":"DE"},"sameAs":["https://www.instagram.com/elishaizizov","https://www.facebook.com/share/1AdfNooWwL/"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,6 +49,12 @@ body {
   background: #ffffff !important;
   color: #2a2420 !important;
   -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* PAGE NAV */
@@ -846,6 +852,29 @@ body {
 }
 #back-to-top:hover { background: var(--gold); }
 #back-to-top.visible { display: flex; }
+
+/* INLINE SEARCH BAR (articles section) */
+.articles-search-wrap {
+  margin-bottom: 20px;
+}
+.articles-search-wrap input {
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: #fdfcfa;
+  padding: 10px 16px 10px 40px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  border-radius: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239a9185' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 14px center;
+}
+.articles-search-wrap input:focus { border-color: var(--navy); }
+#articles-inline-results { margin-top: 16px; }
 
 /* SEARCH */
 .search-bar {
@@ -2054,8 +2083,15 @@ body {
       <div id="latest-article-card"></div>
     </div>
 
+    <!-- Inline search -->
+    <div class="articles-search-wrap">
+      <input type="search" id="articles-search-input" data-t-ph="search-ph" placeholder="Suche nach Beiträgen..." oninput="inlineSearch(this.value)" autocomplete="off" aria-label="Beiträge durchsuchen">
+    </div>
+    <p class="search-no-results" id="articles-search-no-results">Keine Beiträge gefunden.</p>
+    <div id="articles-inline-results" class="articles-grid" style="display:none"></div>
+
     <!-- Tabs -->
-    <div class="tab-bar">
+    <div class="tab-bar" id="articles-tabs">
       <button class="tab-btn active" id="tab-parasha" onclick="switchTab('parasha')" data-t="tab-p">Paraschot</button>
       <button class="tab-btn" id="tab-hagim" onclick="switchTab('hagim')" data-t="tab-h">Chagim</button>
     </div>
@@ -2185,6 +2221,7 @@ body {
   <!-- date + image -->
   <div class="ap-img-wrap">
     <span id="ap-date"></span>
+    <span id="ap-hebrew-date" style="margin-left:10px; opacity:0.7; font-size:inherit; direction:rtl; unicode-bidi:embed;"></span>
     <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
     <img id="ap-img" src="" alt="" style="display:none">
   </div>
@@ -2414,7 +2451,7 @@ const T = {
     y4: 'Ordination',      s4h: 'Rabbinatsordination, Alter 24', s4d: 'Talmud, Halacha und jüdisches Denken',
     ig: 'Instagram', fb: 'Facebook',
     'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neuester Beitrag',
-    'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.',
+    'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.', 'form-subject': 'Neue Anfrage über elishaizizov.com',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -2430,7 +2467,7 @@ const T = {
     y4: 'Ordination',       s4h: 'Rabbinical Ordination, age 24', s4d: 'Talmud, Halacha and Jewish Thought',
     ig: 'Instagram', fb: 'Facebook',
     'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Article',
-    'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.',
+    'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.', 'form-subject': 'New enquiry via elishaizizov.com',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -2446,7 +2483,7 @@ const T = {
     y4: 'Ordination',       s4h: 'Ordination rabbinique, 24 ans', s4d: 'Talmud, Halacha et pensée juive',
     ig: 'Instagram', fb: 'Facebook',
     'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Rechercher...', 'form-err': 'Échec de l\'envoi. Veuillez réessayer.', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'latest-label': 'Dernier Article',
-    'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.',
+    'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.', 'form-subject': 'Nouvelle demande via elishaizizov.com',
   },
   he: {
     eyebrow: 'רב · מרצה',
@@ -2462,7 +2499,7 @@ const T = {
     y4: 'Ordination',         s4h: 'הסמכה לרבנות בגיל 24',       s4d: 'תלמוד, הלכה ומחשבת ישראל',
     ig: 'Instagram', fb: 'Facebook',
     'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבה אחרונה',
-    'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.',
+    'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.', 'form-subject': 'פנייה חדשה דרך elishaizizov.com',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
@@ -2478,7 +2515,7 @@ const T = {
     y4: 'Ordination',            s4h: 'Ordenación rabínica, 24 años', s4d: 'Talmud, Halacha y pensamiento judío',
     ig: 'Instagram', fb: 'Facebook',
     'nav-search': 'Buscar', 'search-ph': 'Buscar...', 'form-err': 'Error al enviar. Inténtelo de nuevo.', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'latest-label': 'Último Artículo',
-    'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.',
+    'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.', 'form-subject': 'Nueva consulta vía elishaizizov.com',
   },
   ru: {
     eyebrow: 'Раввин · Лектор',
@@ -2494,7 +2531,7 @@ const T = {
     y4: 'Ordination',         s4h: 'Раввинская ординация, 24 года', s4d: 'Талмуд, Halacha и еврейская мысль',
     ig: 'Instagram', fb: 'Facebook',
     'nav-search': 'Поиск', 'search-ph': 'Поиск...', 'form-err': 'Ошибка отправки. Попробуйте ещё раз.', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'latest-label': 'Последняя статья',
-    'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.',
+    'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.', 'form-subject': 'Новый запрос через elishaizizov.com',
   }
 };
 
@@ -2509,6 +2546,10 @@ function setLang(l) {
   document.querySelectorAll('[data-t-ph]').forEach(el => {
     const k = el.getAttribute('data-t-ph');
     if (t[k]) el.placeholder = t[k];
+  });
+  document.querySelectorAll('[data-t-attr]').forEach(el => {
+    const k = el.getAttribute('data-t-attr');
+    if (t[k]) el.value = t[k];
   });
   document.querySelectorAll('.top-lang-btn').forEach(b => {
     const bl = b.id.replace('lb-','');
@@ -2798,6 +2839,38 @@ function stripHtml(html) {
 function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
+// Convert Gregorian date string "DD.MM.YYYY" to Hebrew year string (e.g. "תשפ״ו")
+function toHebrewYear(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('.');
+  if (parts.length < 3) return '';
+  const month = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
+  if (!year || year < 100) return '';
+  // Hebrew year: after Rosh Hashana (approx Sep/Oct) it's year+3761, otherwise year+3760
+  const hebrewYear = year + (month >= 9 ? 3761 : 3760);
+  return hebrewYearToLetters(hebrewYear);
+}
+
+function hebrewYearToLetters(year) {
+  const thou = Math.floor(year / 1000);
+  year = year % 1000;
+  const hundreds = Math.floor(year / 100);
+  year = year % 100;
+  const tens = Math.floor(year / 10);
+  const ones = year % 10;
+  const letters1 = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט'];
+  const letters10 = ['', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ'];
+  const letters100 = ['', 'ק', 'ר', 'ש', 'ת', 'תק', 'תר', 'תש', 'תת', 'תתק'];
+  // avoid yud-heh (יה) and yud-vav (יו) — use ט״ו and ט״ז instead
+  let s = letters100[hundreds] + letters10[tens] + letters1[ones];
+  if (tens === 1 && ones === 5) s = letters100[hundreds] + 'ט״ו';
+  else if (tens === 1 && ones === 6) s = letters100[hundreds] + 'ט״ז';
+  else if (s.length > 1) s = s.slice(0, -1) + '״' + s.slice(-1);
+  else if (s.length === 1) s += '׳';
+  return 'ה׳' + (thou > 5 ? letters1[thou] : '') + s;
+}
+
 function readingTime(html, lang) {
   const words = stripHtml(html).trim().split(/\s+/).filter(Boolean).length;
   const mins = Math.max(1, Math.round(words / 200));
@@ -2858,6 +2931,41 @@ window.addEventListener('scroll', () => {
 });
 
 // Search
+function inlineSearch(q) {
+  const resultsEl = document.getElementById('articles-inline-results');
+  const noResultsEl = document.getElementById('articles-search-no-results');
+  const tabsEl = document.getElementById('articles-tabs');
+  const panelParasha = document.getElementById('panel-parasha');
+  const panelHagim = document.getElementById('panel-hagim');
+  const latestBlock = document.getElementById('latest-article-block');
+  if (!q || !q.trim()) {
+    resultsEl.style.display = 'none';
+    noResultsEl.style.display = 'none';
+    if (tabsEl) tabsEl.style.display = '';
+    if (panelParasha) panelParasha.style.display = '';
+    if (panelHagim) panelHagim.style.display = '';
+    if (latestBlock && latestBlock._wasVisible) latestBlock.style.display = 'block';
+    return;
+  }
+  if (tabsEl) tabsEl.style.display = 'none';
+  if (panelParasha) panelParasha.style.display = 'none';
+  if (panelHagim) panelHagim.style.display = 'none';
+  if (latestBlock) { latestBlock._wasVisible = latestBlock.style.display !== 'none'; latestBlock.style.display = 'none'; }
+  const lower = q.toLowerCase();
+  const results = getArticles().filter(a => {
+    const t = (a.translations && a.translations[currentLang]) ? a.translations[currentLang] : { title: a.title || '', text: a.text || '' };
+    return (t.title || '').toLowerCase().includes(lower) || stripHtml(t.text || '').toLowerCase().includes(lower);
+  });
+  if (results.length === 0) {
+    resultsEl.style.display = 'none';
+    noResultsEl.style.display = 'block';
+  } else {
+    noResultsEl.style.display = 'none';
+    resultsEl.innerHTML = results.map(a => renderCard(a)).join('');
+    resultsEl.style.display = 'grid';
+  }
+}
+
 function searchArticles(q) {
   const articles = getArticles();
   const l = currentLang;
@@ -2897,6 +3005,8 @@ function _renderArticlePage(a, l) {
   const dir   = isRTL ? 'rtl' : 'ltr';
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
+  const hebrewDateEl = document.getElementById('ap-hebrew-date');
+  if (hebrewDateEl) hebrewDateEl.textContent = toHebrewYear(a.date || '');
   const parashaEl = document.getElementById('ap-parasha');
   const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
@@ -2926,7 +3036,7 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-text').style.direction  = dir;
   document.getElementById('ap-text').style.textAlign  = isRTL ? 'right' : 'left';
   const img = document.getElementById('ap-img');
-  if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
+  if (a.image) { img.src = a.image; img.alt = tr.title || a.title || ''; img.style.display = 'block'; } else { img.style.display = 'none'; }
   // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
   const pageUrl   = window.location.origin + '/' + articleSlug(a);
   const langSuffix = l !== 'de' ? '?lang=' + l : '';
