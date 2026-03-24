@@ -2544,6 +2544,14 @@ function setLang(l) {
   const l1h = document.getElementById('hmenu-l1-hagim');
   if (l1h) l1h.textContent = tn.tab_h + ' ›';
   document.querySelectorAll('.hmenu-back-btn').forEach(b => { b.textContent = tn.back; });
+  // If an article is currently open, re-render it in the new language
+  const ap = document.getElementById('article-page');
+  if (ap && ap.style.display !== 'none' && window._currentArticle) {
+    _renderArticlePage(window._currentArticle, l);
+    const slug = articleSlug(window._currentArticle);
+    const langQ = l !== 'de' ? '?lang=' + l : '';
+    window.history.replaceState({ articleId: slug }, '', '/' + slug + langQ);
+  }
 }
 
 // Form submit via Formspree
@@ -2644,7 +2652,7 @@ function getArticles() { return window._articles || []; }
 function getLang() { return currentLang; }
 function getTN() { return TORAH_NAMES[currentLang] || TORAH_NAMES.de; }
 
-// Returns the German display name for a parasha key (e.g. "Vayikra" → "Wajikra")
+// Returns the German display name for a parasha key (used for URL slugs — always German)
 function parashaDisplayName(parashaKey) {
   if (!parashaKey) return '';
   for (const book of Object.keys(TORAH)) {
@@ -2652,6 +2660,27 @@ function parashaDisplayName(parashaKey) {
     if (idx !== -1 && TORAH[book].de_display) return TORAH[book].de_display[idx] || parashaKey;
   }
   return parashaKey;
+}
+
+// Returns parasha name in the given language
+function parashaNameForLang(parashaKey, lang) {
+  if (!parashaKey) return '';
+  for (const book of Object.keys(TORAH)) {
+    const idx = (PARASHA_MAP[book] || []).indexOf(parashaKey);
+    if (idx !== -1) {
+      if (lang === 'he' && TORAH[book].he) return TORAH[book].he[idx] || parashaDisplayName(parashaKey);
+      if (TORAH[book].de_display) return TORAH[book].de_display[idx] || parashaKey;
+    }
+  }
+  return parashaKey;
+}
+
+// Returns hag name in the given language
+function hagNameForLang(hagKey, lang) {
+  if (!hagKey) return '';
+  const idx = HAG_KEYS.indexOf(hagKey);
+  if (idx === -1) return hagKey;
+  return (HAGIM_NAMES[lang] || HAGIM_NAMES.de)[idx] || hagKey;
 }
 
 // Returns a readable URL slug like "wajikra-2026"; falls back to Firestore ID
@@ -2770,8 +2799,15 @@ function escHtml(s) {
 function readingTime(html, lang) {
   const words = stripHtml(html).trim().split(/\s+/).filter(Boolean).length;
   const mins = Math.max(1, Math.round(words / 200));
-  const labels = { de:`${mins} Min.`, en:`${mins} min read`, fr:`${mins} min`, es:`${mins} min`, ru:`${mins} мин.`, he:`${mins} דק'` };
-  return labels[lang] || `${mins} min`;
+  const labels = {
+    de: `Geschätzte Lesezeit: ${mins} Min.`,
+    en: `Estimated reading time: ${mins} min`,
+    fr: `Temps de lecture estimé : ${mins} min`,
+    es: `Tiempo de lectura estimado: ${mins} min`,
+    ru: `Примерное время чтения: ${mins} мин.`,
+    he: `זמן קריאה משוערך: ${mins} דק'`
+  };
+  return labels[lang] || labels.de;
 }
 
 function renderCard(a, noClick) {
@@ -2860,7 +2896,7 @@ function _renderArticlePage(a, l) {
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
   const parashaEl = document.getElementById('ap-parasha');
-  const parashaDisplay = a.parasha ? parashaDisplayName(a.parasha) : (a.hag || '');
+  const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
   parashaEl.style.display = parashaDisplay ? 'block' : 'none';
   a._parashaDisplay = parashaDisplay;
