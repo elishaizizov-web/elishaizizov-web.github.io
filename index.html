@@ -2929,8 +2929,10 @@ function _renderArticlePage(a, l) {
   if (a.image) { img.src = a.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
   // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
   const pageUrl   = window.location.origin + '/' + articleSlug(a);
+  const langSuffix = l !== 'de' ? '?lang=' + l : '';
+  const shareUrl  = pageUrl + langSuffix;
   document.title = (tr.title || a.title || '') + ' — Rabbiner Elishai Zizov';
-  document.querySelector('meta[property="og:url"]')?.setAttribute('content', pageUrl);
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', shareUrl);
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', tr.title || a.title || '');
   const desc = stripHtml(tr.text || a.text || '').trim().substring(0, 200);
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', desc);
@@ -2941,7 +2943,7 @@ function _renderArticlePage(a, l) {
   }
   // Update <meta name="description"> for Google
   document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
-  // Update canonical URL
+  // Update canonical URL (always points to the base URL without lang for SEO)
   document.getElementById('seo-canonical')?.setAttribute('href', pageUrl);
   // JSON-LD structured data for article (helps Google understand content)
   const jsonld = {
@@ -2952,15 +2954,15 @@ function _renderArticlePage(a, l) {
     "datePublished": a.date || '',
     "author": { "@type": "Person", "name": "Rabbi Elishai Zizov", "url": "https://elishaizizov.com" },
     "publisher": { "@type": "Person", "name": "Rabbi Elishai Zizov", "url": "https://elishaizizov.com" },
-    "url": pageUrl,
-    "mainEntityOfPage": { "@type": "WebPage", "@id": pageUrl }
+    "url": shareUrl,
+    "mainEntityOfPage": { "@type": "WebPage", "@id": shareUrl }
   };
   if (a.image) jsonld.image = a.image;
   const jsonldEl = document.getElementById('seo-jsonld');
   if (jsonldEl) jsonldEl.textContent = JSON.stringify(jsonld);
 
-  // share buttons — use article-specific URL
-  const waText = encodeURIComponent((tr.title || a.title || '') + '\n\n' + pageUrl);
+  // share buttons — use article-specific URL with current language
+  const waText = encodeURIComponent((tr.title || a.title || '') + '\n\n' + shareUrl);
   const copyLabels = { de:'Link kopieren', en:'Copy link', fr:'Copier le lien', es:'Copiar enlace', ru:'Скопировать', he:'העתק קישור' };
   const copiedLabels = { de:'✓ Kopiert!', en:'✓ Copied!', fr:'✓ Copié!', es:'✓ Copiado!', ru:'✓ Скопировано!', he:'✓ הועתק!' };
   const printLabels = { de:'Drucken', en:'Print', fr:'Imprimer', es:'Imprimir', ru:'Печатать', he:'הדפס' };
@@ -2973,7 +2975,7 @@ function _renderArticlePage(a, l) {
       WhatsApp
     </a>
     <button class="share-action-btn btn-copy" id="copy-link-btn" onclick="
-      navigator.clipboard.writeText('${pageUrl}').then(()=>{
+      navigator.clipboard.writeText('${shareUrl}').then(()=>{
         const b=document.getElementById('copy-link-btn');
         b.textContent='${copiedLabel}';
         setTimeout(()=>b.textContent='${copyLabel}',2200);
