@@ -1404,7 +1404,7 @@ body {
   width: 100%;
   max-width: 1080px;
   max-height: 94vh;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1415,9 +1415,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  flex-shrink: 0;
   border-radius: 20px 20px 0 0;
   gap: 16px;
 }
@@ -1456,7 +1454,11 @@ body {
   line-height: 1;
 }
 .admin-close-btn:hover { background: rgba(255,255,255,0.28); }
-.admin-body { padding: 28px; }
+.admin-body {
+  padding: 28px;
+  flex: 1;
+  overflow-y: auto;
+}
 .admin-card {
   background: #fff;
   border-radius: 14px;
@@ -1556,7 +1558,7 @@ body {
   .admin-box {
     border-radius: 0;
     max-height: 100dvh;
-    min-height: 100dvh;
+    height: 100dvh;
   }
   .admin-header-bar {
     padding: 14px 18px;
@@ -1725,6 +1727,222 @@ body {
 .admin-art-actions button.edit-btn:hover { background: #dbeafe; color: #1d4ed8; }
 .admin-art-actions button.del-btn { color: #dc2626; background: #fef2f2; }
 .admin-art-actions button.del-btn:hover { background: #fee2e2; }
+
+/* ── EDIT BANNER ── */
+.admin-edit-banner {
+  background: linear-gradient(90deg, #1e3a8a, #2563eb);
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.admin-edit-banner strong { font-weight: 800; }
+.admin-edit-banner-cancel {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.admin-edit-banner-cancel:hover { background: rgba(255,255,255,0.35); }
+
+/* ── STICKY PUBLISH BAR ── */
+.admin-sticky-bar {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+.admin-sticky-langs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.admin-lang-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #f3f4f6;
+  color: #aaa;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+}
+.admin-lang-pill.done { background: #dcfce7; color: #15803d; }
+.admin-sticky-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.admin-sticky-msg {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+}
+.admin-sticky-cancel {
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.admin-sticky-cancel:hover { border-color: #dc2626; color: #dc2626; }
+.admin-publish-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, #9e7f22 100%);
+  color: #fff;
+  border: none;
+  padding: 11px 24px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(184,149,42,0.3);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.admin-publish-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184,149,42,0.4); }
+.admin-publish-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.admin-publish-btn .spinner {
+  display: none;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.admin-publish-btn.loading .spinner { display: inline-block; }
+.admin-publish-btn.loading .btn-label { opacity: 0.7; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TOAST ── */
+.admin-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: #1e293b;
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  z-index: 99999;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.admin-toast.visible { transform: translateX(-50%) translateY(0); }
+.admin-toast.success { background: #15803d; }
+.admin-toast.error { background: #dc2626; }
+.admin-toast.info { background: #1e40af; }
+
+/* ── QUILL EXTRA BAR (word count + fullscreen) ── */
+.quill-extra-bar {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 7px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ql-word-count {
+  font-size: 12px;
+  color: #aaa;
+  font-weight: 600;
+  font-family: 'Raleway', sans-serif;
+}
+.ql-fullscreen-btn {
+  background: transparent;
+  border: 1px solid #e0e2e7;
+  color: #888;
+  font-size: 15px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1;
+}
+.ql-fullscreen-btn:hover { background: #e8e9ec; color: var(--navy); border-color: #c6c9d0; }
+
+/* ── FULLSCREEN QUILL ── */
+.quill-wrapper.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  border-radius: 0 !important;
+  border: none !important;
+  display: flex;
+  flex-direction: column;
+  max-height: 100dvh;
+  background: #fff;
+}
+.quill-wrapper.fullscreen .quill-extra-bar {
+  background: #0d1b3e;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 20px;
+  flex-shrink: 0;
+}
+.quill-wrapper.fullscreen .ql-word-count { color: rgba(255,255,255,0.55); font-size: 13px; }
+.quill-wrapper.fullscreen .ql-fullscreen-btn {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+.quill-wrapper.fullscreen .ql-fullscreen-btn:hover { background: rgba(255,255,255,0.28); }
+.quill-wrapper.fullscreen .ql-toolbar.ql-snow { flex-shrink: 0; }
+.quill-wrapper.fullscreen .ql-container.ql-snow {
+  flex: 1;
+  min-height: 0 !important;
+  overflow-y: auto;
+  font-size: 18px !important;
+  line-height: 1.8;
+  padding: 20px 10%;
+}
+
+/* ── MOBILE STICKY BAR ── */
+@media (max-width: 640px) {
+  .admin-sticky-bar { padding: 10px 14px; gap: 8px; }
+  .admin-sticky-langs { gap: 4px; }
+  .admin-lang-pill { font-size: 10px; padding: 3px 7px; }
+  .admin-publish-btn { padding: 10px 18px; font-size: 12px; }
+  .admin-sticky-cancel { padding: 7px 12px; font-size: 11px; }
+  .admin-edit-banner { padding: 8px 14px; font-size: 13px; }
+}
 
 </style>
 
@@ -1988,6 +2206,9 @@ body {
 
     <div class="admin-body">
 
+      <!-- TOAST -->
+      <div id="admin-toast" class="admin-toast"></div>
+
       <!-- LOGIN SCREEN -->
       <div id="admin-login-screen" class="admin-card" style="text-align:center; padding:48px 28px;">
         <div style="font-size:36px; margin-bottom:16px;">🔑</div>
@@ -2000,6 +2221,12 @@ body {
 
       <!-- ADMIN CONTENT -->
       <div id="admin-content" style="display:none;">
+
+        <!-- Edit mode banner -->
+        <div id="admin-edit-banner" class="admin-edit-banner" style="display:none;">
+          <span>✏ Bearbeitung: <strong id="admin-edit-title-label"></strong></span>
+          <button class="admin-edit-banner-cancel" onclick="adminCancelEdit()">✕ Abbrechen</button>
+        </div>
 
         <!-- ── 1. Artikel-Details ── -->
         <div class="admin-card">
@@ -2078,44 +2305,73 @@ body {
             </div>
             <div class="lang-panel" id="lpanel-de">
               <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
-              <div class="quill-wrapper"><div id="q-de"></div></div>
+              <div class="quill-wrapper" id="qwrap-de">
+                <div class="quill-extra-bar">
+                  <span class="ql-word-count" id="wc-de">0 Wörter</span>
+                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('de')" title="Vollbild">⤢</button>
+                </div>
+                <div id="q-de"></div>
+              </div>
             </div>
             <div class="lang-panel" id="lpanel-he" style="display:none;">
               <button class="copy-de-btn" onclick="copyTitleFromDE('he')">↓ DE-Titel kopieren</button>
               <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl;text-align:right;" oninput="updateTabIndicator('he')">
-              <div class="quill-wrapper"><div id="q-he"></div></div>
+              <div class="quill-wrapper" id="qwrap-he">
+                <div class="quill-extra-bar">
+                  <span class="ql-word-count" id="wc-he">0 Wörter</span>
+                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('he')" title="Vollbild">⤢</button>
+                </div>
+                <div id="q-he"></div>
+              </div>
             </div>
             <div class="lang-panel" id="lpanel-en" style="display:none;">
               <button class="copy-de-btn" onclick="copyTitleFromDE('en')">↓ DE-Titel kopieren</button>
               <input type="text" id="af-title-en" placeholder="Enter English title..." oninput="updateTabIndicator('en')">
-              <div class="quill-wrapper"><div id="q-en"></div></div>
+              <div class="quill-wrapper" id="qwrap-en">
+                <div class="quill-extra-bar">
+                  <span class="ql-word-count" id="wc-en">0 Wörter</span>
+                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('en')" title="Vollbild">⤢</button>
+                </div>
+                <div id="q-en"></div>
+              </div>
             </div>
             <div class="lang-panel" id="lpanel-fr" style="display:none;">
               <button class="copy-de-btn" onclick="copyTitleFromDE('fr')">↓ DE-Titel kopieren</button>
               <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
-              <div class="quill-wrapper"><div id="q-fr"></div></div>
+              <div class="quill-wrapper" id="qwrap-fr">
+                <div class="quill-extra-bar">
+                  <span class="ql-word-count" id="wc-fr">0 Wörter</span>
+                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('fr')" title="Vollbild">⤢</button>
+                </div>
+                <div id="q-fr"></div>
+              </div>
             </div>
             <div class="lang-panel" id="lpanel-es" style="display:none;">
               <button class="copy-de-btn" onclick="copyTitleFromDE('es')">↓ DE-Titel kopieren</button>
               <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
-              <div class="quill-wrapper"><div id="q-es"></div></div>
+              <div class="quill-wrapper" id="qwrap-es">
+                <div class="quill-extra-bar">
+                  <span class="ql-word-count" id="wc-es">0 Wörter</span>
+                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('es')" title="Vollbild">⤢</button>
+                </div>
+                <div id="q-es"></div>
+              </div>
             </div>
             <div class="lang-panel" id="lpanel-ru" style="display:none;">
               <button class="copy-de-btn" onclick="copyTitleFromDE('ru')">↓ DE-Titel kopieren</button>
               <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
-              <div class="quill-wrapper"><div id="q-ru"></div></div>
+              <div class="quill-wrapper" id="qwrap-ru">
+                <div class="quill-extra-bar">
+                  <span class="ql-word-count" id="wc-ru">0 Wörter</span>
+                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('ru')" title="Vollbild">⤢</button>
+                </div>
+                <div id="q-ru"></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- ── 4. Veröffentlichen ── -->
-        <div class="admin-card" style="text-align:center;">
-          <button class="admin-save-btn" onclick="adminSave()">ARTIKEL VERÖFFENTLICHEN</button>
-          <p id="admin-msg" style="margin-top:12px; font-weight:bold; color:var(--navy); font-size:14px;"></p>
-          <button id="admin-cancel-btn" onclick="adminCancelEdit()" style="display:none; background:transparent; border:1px solid #ddd; padding:7px 22px; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px; font-weight:700; color:#888; letter-spacing:0.04em;">BEARBEITUNG ABBRECHEN</button>
-        </div>
-
-        <!-- ── 5. Artikel-Liste ── -->
+        <!-- ── 4. Artikel-Liste ── -->
         <div class="admin-card">
           <div class="admin-card-title">Veröffentlichte Artikel</div>
           <input class="admin-list-search" type="text" placeholder="🔍 Artikel suchen..." oninput="adminFilterList(this.value)">
@@ -2124,6 +2380,20 @@ body {
 
       </div>
     </div>
+
+    <!-- ── STICKY PUBLISH BAR (outside scrollable body) ── -->
+    <div class="admin-sticky-bar" id="admin-sticky-bar" style="display:none;">
+      <div id="admin-sticky-langs" class="admin-sticky-langs"></div>
+      <div class="admin-sticky-right">
+        <span id="admin-msg" class="admin-sticky-msg"></span>
+        <button id="admin-cancel-btn" class="admin-sticky-cancel" onclick="adminCancelEdit()" style="display:none;">✕ Abbrechen</button>
+        <button id="admin-publish-btn" class="admin-publish-btn" onclick="adminSave()">
+          <span class="spinner"></span>
+          <span class="btn-label">VERÖFFENTLICHEN</span>
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2943,17 +3213,17 @@ function adminLogin() {
   if (checkToken(pw)) {
     document.getElementById('admin-login-screen').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
+    document.getElementById('admin-sticky-bar').style.display = 'flex';
     initQuillEditors();
     adminUpdateParasha();
     setTodayDate();
     setupDraftAutoSave();
+    updateStickyLangs();
     const restored = restoreDraft();
-    if (restored) {
-      const msg = document.getElementById('admin-msg');
-      if (msg) { msg.style.color='#15803d'; msg.textContent='📋 Entwurf wiederhergestellt'; setTimeout(()=>{ if(msg.textContent.includes('wiederhergestellt')) msg.textContent=''; }, 3500); }
-    }
+    if (restored) { setTimeout(() => showToast('📋 Entwurf wiederhergestellt', 'info'), 400); }
     renderAdminList();
     document.getElementById('admin-pw').value = '';
+    setTimeout(() => document.getElementById('af-title-de')?.focus(), 300);
   } else {
     err.textContent = 'Falsches Passwort.';
     err.style.display = 'block';
@@ -2965,6 +3235,7 @@ function adminLogin() {
 function adminLogout() {
   document.getElementById('admin-login-screen').style.display = 'block';
   document.getElementById('admin-content').style.display = 'none';
+  document.getElementById('admin-sticky-bar').style.display = 'none';
   document.getElementById('admin-pw').value = '';
 }
 
@@ -3038,6 +3309,7 @@ function initQuillEditors() {
   const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
   ['de','he','en','fr','es','ru'].forEach(l => {
     quillEditors[l] = new Quill('#q-'+l, { theme:'snow', modules:{toolbar} });
+    quillEditors[l].on('text-change', () => updateWordCount(l));
   });
   const heEditor = document.querySelector('#q-he .ql-editor');
   if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
@@ -3061,7 +3333,9 @@ function adminUpdateParasha() {
 async function adminSave() {
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
-  if (!titleDE) { msg.textContent = '⚠ Deutscher Titel erforderlich.'; return; }
+  if (!titleDE) { showToast('⚠ Kein deutscher Titel!', 'error'); return; }
+  const btn = document.getElementById('admin-publish-btn');
+  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
   msg.textContent = 'Speichere…';
   const isHag = document.getElementById('af-cat').value === 'hag';
   const dv    = document.getElementById('af-date-input').value;
@@ -3086,25 +3360,30 @@ async function adminSave() {
   try {
     if (window._editingId) {
       await db.collection('articles').doc(window._editingId).update(docData);
-      msg.textContent = '✓ Aktualisiert!';
+      document.getElementById('admin-edit-banner').style.display = 'none';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
       clearDraft();
+      showToast('✓ Artikel aktualisiert!', 'success');
+      msg.textContent = '';
     } else {
       const ref = await db.collection('articles').add(docData);
-      msg.textContent = '✓ Gespeichert!';
       clearDraft();
-      // Ping Google to index the new article
       fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       const newArticle = { id: ref.id, ...docData };
-      const articleUrl = 'https://elishaizizov.com/' + articleSlug(newArticle);
       fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
-      console.log('New article URL for indexing:', articleUrl);
+      showToast('✓ Artikel veröffentlicht!', 'success');
+      msg.textContent = '';
     }
     adminClearForm();
     await loadArticles();
     renderAdminList();
-  } catch(e) { msg.textContent = '✗ Error: '+e.message; console.error(e); }
+  } catch(e) {
+    showToast('✗ Fehler: ' + e.message, 'error');
+    console.error(e);
+  } finally {
+    if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+  }
 }
 
 function switchLangTab(lang) {
@@ -3138,6 +3417,7 @@ function updateLangProgress() {
   if (!el) return;
   el.textContent = count + ' / 6';
   el.className = 'lang-progress-count' + (count === 6 ? ' complete' : count > 0 ? ' partial' : '');
+  updateStickyLangs();
 }
 
 function copyTitleFromDE(lang) {
@@ -3225,10 +3505,61 @@ function adminFilterList(query) {
   });
 }
 
+// ── TOAST ──
+function showToast(msg, type='success') {
+  const t = document.getElementById('admin-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'admin-toast visible ' + type;
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { t.className = 'admin-toast'; }, 3500);
+}
+
+// ── FULLSCREEN EDITOR ──
+function toggleFullscreenEditor(lang) {
+  const wrap = document.getElementById('qwrap-' + lang);
+  if (!wrap) return;
+  const isFs = wrap.classList.toggle('fullscreen');
+  const btn = wrap.querySelector('.ql-fullscreen-btn');
+  if (btn) { btn.textContent = isFs ? '⤡' : '⤢'; btn.title = isFs ? 'Vollbild beenden (ESC)' : 'Vollbild'; }
+  document.body.style.overflow = isFs ? 'hidden' : '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const fs = document.querySelector('.quill-wrapper.fullscreen');
+    if (fs) { const lang = fs.id.replace('qwrap-',''); toggleFullscreenEditor(lang); }
+  }
+});
+
+// ── WORD COUNT ──
+function updateWordCount(lang) {
+  const q = quillEditors[lang];
+  const el = document.getElementById('wc-' + lang);
+  if (!q || !el) return;
+  const text = q.getText().trim();
+  const words = text ? text.split(/\s+/).filter(w => w).length : 0;
+  el.textContent = words.toLocaleString() + ' Wörter';
+}
+
+// ── STICKY LANG PILLS ──
+const LANG_META = [
+  {code:'de',flag:'🇩🇪'},{code:'he',flag:'🇮🇱'},{code:'en',flag:'🇬🇧'},
+  {code:'fr',flag:'🇫🇷'},{code:'es',flag:'🇪🇸'},{code:'ru',flag:'🇷🇺'}
+];
+function updateStickyLangs() {
+  const el = document.getElementById('admin-sticky-langs');
+  if (!el) return;
+  el.innerHTML = LANG_META.map(l => {
+    const has = (document.getElementById('af-title-'+l.code)?.value||'').trim().length > 0;
+    return `<span class="admin-lang-pill ${has?'done':''}">${l.flag} ${l.code.toUpperCase()} ${has?'✓':'·'}</span>`;
+  }).join('');
+}
+
 function adminClearForm() {
   ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name']
     .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
+  ['de','he','en','fr','es','ru'].forEach(updateWordCount);
   updateImagePreview('');
   const status = document.getElementById('upload-status');
   if (status) status.style.display = 'none';
@@ -3242,6 +3573,8 @@ function adminCancelEdit() {
   window._editingId = null;
   document.getElementById('admin-cancel-btn').style.display = 'none';
   document.getElementById('admin-msg').textContent = '';
+  const banner = document.getElementById('admin-edit-banner');
+  if (banner) banner.style.display = 'none';
   adminClearForm();
 }
 
@@ -3249,7 +3582,9 @@ async function adminEdit(id) {
   window._editingId = id;
   const a = window._articles.find(x => x.id === id);
   if (!a) return;
-  document.getElementById('admin-msg').textContent = '✏ Bearbeitung: ' + (a.title||id);
+  const banner = document.getElementById('admin-edit-banner');
+  const label = document.getElementById('admin-edit-title-label');
+  if (banner && label) { label.textContent = a.title||id; banner.style.display = 'flex'; }
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
   if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
   ['de','he','en','fr','es','ru'].forEach(l => {
@@ -3270,7 +3605,8 @@ async function adminEdit(id) {
   }
   switchLangTab('de');
   updateAllTabIndicators();
-  document.querySelector('.admin-box').scrollTo(0,0);
+  ['de','he','en','fr','es','ru'].forEach(updateWordCount);
+  document.querySelector('.admin-body').scrollTo(0,0);
 }
 
 async function adminDelete(id) {
@@ -3302,6 +3638,13 @@ function renderAdminList() {
 }
 document.addEventListener('DOMContentLoaded', () => {
   loadArticles();
+});
+window.addEventListener('beforeunload', e => {
+  const content = document.getElementById('admin-content');
+  if (content && content.style.display !== 'none') {
+    const hasContent = (document.getElementById('af-title-de')?.value || '').trim();
+    if (hasContent) { e.preventDefault(); e.returnValue = ''; }
+  }
 });
 
 
