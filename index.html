@@ -1552,8 +1552,36 @@ body {
   margin-bottom: 0;
 }
 @media (max-width: 640px) {
-  .aform-grid { grid-template-columns: 1fr; }
-  .admin-body { padding: 16px; }
+  .admin-overlay { padding: 0; align-items: flex-start; }
+  .admin-box {
+    border-radius: 0;
+    max-height: 100dvh;
+    min-height: 100dvh;
+  }
+  .admin-header-bar {
+    padding: 14px 18px;
+    border-radius: 0;
+    gap: 10px;
+  }
+  .admin-header-bar h2 { font-size: 17px; }
+  .admin-draft-badge { display: none !important; }
+  .admin-close-btn { width: 36px; height: 36px; font-size: 19px; }
+  .admin-body { padding: 12px; }
+  .admin-card { padding: 16px 14px; margin-bottom: 12px; border-radius: 10px; }
+  .admin-card-title { margin-bottom: 14px; font-size: 11px; }
+  .aform-grid { grid-template-columns: 1fr; gap: 12px; }
+  .aform-group input[type="text"],
+  .aform-group input[type="date"],
+  .aform-group select { padding: 14px 14px; font-size: 16px; }
+  .lang-tabs { padding: 4px; gap: 3px; }
+  .lang-tab { padding: 8px 11px; font-size: 12px; }
+  .lang-panel input[type="text"] { padding: 14px 14px; font-size: 16px; }
+  .ql-container.ql-snow { min-height: 220px; font-size: 16px; }
+  .admin-save-btn { padding: 16px 24px; font-size: 15px; }
+  .admin-list-search { padding: 13px 14px; font-size: 16px; }
+  .admin-art-item { padding: 12px 14px; }
+  .admin-art-title { font-size: 14px; }
+  .admin-art-actions button { padding: 8px 12px; font-size: 12px; }
 }
 .aform-group { display: flex; flex-direction: column; }
 .aform-group label {
@@ -1961,11 +1989,13 @@ body {
     <div class="admin-body">
 
       <!-- LOGIN SCREEN -->
-      <div id="admin-login-screen" class="admin-card" style="text-align:center; padding:36px 20px;">
-        <p style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:24px; color:var(--navy);">Anmelden um fortzufahren</p>
-        <input type="password" id="admin-pw" placeholder="Passwort eingeben" style="padding:14px 16px; width:260px; border-radius:8px; border:2px solid #e5e7eb; font-size:15px; display:block; margin:0 auto 16px; outline:none; text-align:center; font-family:'Raleway',sans-serif; transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#e5e7eb'" onkeyup="if(event.key==='Enter')adminLogin()">
-        <button class="admin-save-btn" style="width:260px; margin-top:0;" onclick="adminLogin()">ANMELDEN</button>
-        <p id="admin-login-err" style="display:none; color:#dc2626; margin-top:14px; font-size:13px; font-weight:bold;"></p>
+      <div id="admin-login-screen" class="admin-card" style="text-align:center; padding:48px 28px;">
+        <div style="font-size:36px; margin-bottom:16px;">🔑</div>
+        <p style="font-family:'Playfair Display',serif; font-size:22px; margin-bottom:8px; color:var(--navy); font-weight:600;">כניסה לממשק</p>
+        <p style="font-size:14px; color:#aaa; margin-bottom:28px;">הכנס את הסיסמה כדי להמשיך</p>
+        <input type="password" id="admin-pw" placeholder="סיסמה..." style="padding:16px 18px; width:100%; max-width:300px; border-radius:10px; border:2px solid #e5e7eb; font-size:16px; display:block; margin:0 auto 16px; outline:none; text-align:center; font-family:'Raleway',sans-serif; transition:border-color 0.2s; box-sizing:border-box;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#e5e7eb'" onkeyup="if(event.key==='Enter')adminLogin()">
+        <button class="admin-save-btn" style="max-width:300px; margin:0 auto;" onclick="adminLogin()">ANMELDEN</button>
+        <p id="admin-login-err" style="display:none; color:#dc2626; margin-top:16px; font-size:14px; font-weight:bold;"></p>
       </div>
 
       <!-- ADMIN CONTENT -->
