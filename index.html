@@ -2221,7 +2221,7 @@ body {
   <!-- date + image -->
   <div class="ap-img-wrap">
     <span id="ap-date"></span>
-    <span id="ap-hebrew-date" style="margin-left:10px; opacity:0.7; font-size:inherit; direction:rtl; unicode-bidi:embed;"></span>
+
     <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
     <img id="ap-img" src="" alt="" style="display:none">
   </div>
@@ -3005,8 +3005,6 @@ function _renderArticlePage(a, l) {
   const dir   = isRTL ? 'rtl' : 'ltr';
   // content
   document.getElementById('ap-date').textContent  = a.date || '';
-  const hebrewDateEl = document.getElementById('ap-hebrew-date');
-  if (hebrewDateEl) hebrewDateEl.textContent = toHebrewYear(a.date || '');
   const parashaEl = document.getElementById('ap-parasha');
   const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
