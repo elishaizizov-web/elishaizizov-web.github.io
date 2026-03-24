@@ -7,6 +7,8 @@
   var slug = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
   if (slug && slug !== 'index.html') {
     sessionStorage.setItem('redirect_article', slug);
+    var lang = new URLSearchParams(window.location.search).get('lang');
+    if (lang) sessionStorage.setItem('redirect_lang', lang);
   }
   window.location.replace('/');
 </script>
