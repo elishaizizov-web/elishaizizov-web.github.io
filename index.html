@@ -2668,8 +2668,10 @@ function parashaNameForLang(parashaKey, lang) {
   for (const book of Object.keys(TORAH)) {
     const idx = (PARASHA_MAP[book] || []).indexOf(parashaKey);
     if (idx !== -1) {
-      if (lang === 'he' && TORAH[book].he) return TORAH[book].he[idx] || parashaDisplayName(parashaKey);
-      if (TORAH[book].de_display) return TORAH[book].de_display[idx] || parashaKey;
+      if (lang === 'he' && TORAH[book].he) return TORAH[book].he[idx] || parashaKey;
+      if (lang === 'de' && TORAH[book].de_display) return TORAH[book].de_display[idx] || parashaKey;
+      // en, fr, es, ru — standard transliteration (de array contains English-style keys)
+      return TORAH[book].de[idx] || parashaKey;
     }
   }
   return parashaKey;
