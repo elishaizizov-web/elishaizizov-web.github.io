@@ -3457,11 +3457,11 @@ function toggleAdmin() {
 
 
 function adminLogin() {
-  const pw = document.getElementById('admin-pw').value;
+  const pw = document.getElementById('admin-pw').value.trim();
   const err = document.getElementById('admin-login-err');
   err.style.display = 'none';
 
-  if (!pw) { 
+  if (!pw) {
     err.textContent = 'Bitte Passwort eingeben.';
     err.style.display = 'block';
     return;
