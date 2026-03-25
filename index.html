@@ -3298,7 +3298,7 @@ window._articles       = [];
 window._currentArticle = null;
 window._editingId      = null;
 
-async function loadArticles() {
+async function loadArticles(silent) {
   try {
     const snap = await db.collection('articles').orderBy('createdAt','desc').get();
     window._articles = [];
@@ -3322,11 +3322,13 @@ async function loadArticles() {
     }
   } catch(e) {
     console.error('Firestore error:', e);
-    const banner = document.getElementById('offline-banner');
-    if (banner) {
-      const msgs = { de:'Inhalte konnten nicht geladen werden. Bitte Seite neu laden.', en:'Content could not be loaded. Please reload the page.', fr:'Le contenu n\'a pas pu être chargé. Veuillez recharger.', es:'No se pudo cargar el contenido. Recargue la página.', ru:'Не удалось загрузить контент. Обновите страницу.', he:'לא ניתן לטעון את התוכן. אנא רעננו את הדף.' };
-      banner.textContent = msgs[currentLang] || msgs.de;
-      banner.style.display = 'block';
+    if (!silent) {
+      const banner = document.getElementById('offline-banner');
+      if (banner) {
+        const msgs = { de:'Inhalte konnten nicht geladen werden. Bitte Seite neu laden.', en:'Content could not be loaded. Please reload the page.', fr:'Le contenu n\'a pas pu être chargé. Veuillez recharger.', es:'No se pudo cargar el contenido. Recargue la página.', ru:'Не удалось загрузить контент. Обновите страницу.', he:'לא ניתן לטעון את התוכן. אנא רעננו את הדף.' };
+        banner.textContent = msgs[currentLang] || msgs.de;
+        banner.style.display = 'block';
+      }
     }
   }
 }
@@ -3544,6 +3546,9 @@ async function adminSave() {
   try {
     if (window._editingId) {
       await db.collection('articles').doc(window._editingId).update(docData);
+      // Update local cache immediately
+      const idx = window._articles.findIndex(a => a.id === window._editingId);
+      if (idx !== -1) window._articles[idx] = { id: window._editingId, ...docData, createdAt: window._articles[idx].createdAt };
       document.getElementById('admin-edit-banner').style.display = 'none';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
@@ -3554,14 +3559,18 @@ async function adminSave() {
       const ref = await db.collection('articles').add(docData);
       clearDraft();
       fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
-      const newArticle = { id: ref.id, ...docData };
+      // Add to local cache immediately so the article is visible right away
+      const newArticle = { id: ref.id, ...docData, createdAt: { seconds: Date.now()/1000 } };
+      window._articles.unshift(newArticle);
       fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       showToast('✓ Artikel veröffentlicht!', 'success');
       msg.textContent = '';
     }
     adminClearForm();
-    await loadArticles();
+    renderBooks(); renderHagim(); renderLatestArticle();
     renderAdminList();
+    // Reload from server in background to sync — silent=true prevents error banner
+    loadArticles(true).catch(e => console.warn('Background reload failed:', e));
   } catch(e) {
     showToast('✗ Fehler: ' + e.message, 'error');
     console.error(e);
