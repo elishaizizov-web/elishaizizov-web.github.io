@@ -3307,27 +3307,64 @@ window._currentArticle = null;
 window._editingId      = null;
 
 async function loadArticles(silent) {
-  if (!db) {
-    if (!silent) {
-      const banner = document.getElementById('offline-banner');
-      if (banner) { banner.textContent = 'Firebase nicht verfügbar. Bitte Seite neu laden.'; banner.style.display = 'block'; }
-    }
-    return;
+  // Helper: parse articles from Firestore REST API response
+  function parseRestDocs(json) {
+    if (!json.documents) return [];
+    return json.documents.map(d => {
+      const id = d.name.split('/').pop();
+      const fields = d.fields || {};
+      function fv(f) {
+        if (!f) return '';
+        if (f.stringValue !== undefined) return f.stringValue;
+        if (f.integerValue !== undefined) return Number(f.integerValue);
+        if (f.booleanValue !== undefined) return f.booleanValue;
+        if (f.timestampValue !== undefined) return { seconds: Math.floor(new Date(f.timestampValue).getTime()/1000) };
+        if (f.mapValue) {
+          const m = {};
+          Object.entries(f.mapValue.fields||{}).forEach(([k,v]) => { m[k] = fv(v); });
+          return m;
+        }
+        return '';
+      }
+      const obj = { id };
+      Object.entries(fields).forEach(([k,v]) => { obj[k] = fv(v); });
+      return obj;
+    });
   }
-  // Retry up to 3 times with exponential backoff on failure
-  let snap, lastErr;
-  for (let attempt = 0; attempt < 3; attempt++) {
+
+  let articles = null;
+
+  // Try Firebase JS SDK first
+  if (db) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const snap = await db.collection('articles').get();
+        articles = [];
+        snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
+        break;
+      } catch(e) {
+        console.warn('SDK attempt', attempt+1, 'failed:', e.message);
+        if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+      }
+    }
+  }
+
+  // Fallback: Firestore REST API (works even when SDK is blocked)
+  if (!articles) {
     try {
-      snap = await db.collection('articles').get();
-      lastErr = null;
-      break;
+      const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300';
+      const res = await fetch(url);
+      if (res.ok) {
+        const json = await res.json();
+        articles = parseRestDocs(json);
+      }
     } catch(e) {
-      lastErr = e;
-      if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+      console.warn('REST fallback failed:', e.message);
     }
   }
-  if (lastErr) {
-    console.error('Firestore error after retries:', lastErr);
+
+  if (!articles) {
+    console.error('All Firestore methods failed');
     if (!silent) {
       const banner = document.getElementById('offline-banner');
       if (banner) {
@@ -3338,9 +3375,9 @@ async function loadArticles(silent) {
     }
     return;
   }
+
   try {
-    window._articles = [];
-    snap.forEach(doc => window._articles.push({ id: doc.id, ...doc.data() }));
+    window._articles = articles;
     // Sort by createdAt descending; articles without createdAt go to the end
     window._articles.sort((a, b) => {
       const ta = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
