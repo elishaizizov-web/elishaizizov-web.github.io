@@ -3305,8 +3305,31 @@ window._currentArticle = null;
 window._editingId      = null;
 
 async function loadArticles(silent) {
+  // Retry up to 3 times with exponential backoff on failure
+  let snap, lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      snap = await db.collection('articles').get();
+      lastErr = null;
+      break;
+    } catch(e) {
+      lastErr = e;
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+    }
+  }
+  if (lastErr) {
+    console.error('Firestore error after retries:', lastErr);
+    if (!silent) {
+      const banner = document.getElementById('offline-banner');
+      if (banner) {
+        const msgs = { de:'Inhalte konnten nicht geladen werden. Bitte Seite neu laden.', en:'Content could not be loaded. Please reload the page.', fr:'Le contenu n\'a pas pu être chargé. Veuillez recharger.', es:'No se pudo cargar el contenido. Recargue la página.', ru:'Не удалось загрузить контент. Обновите страницу.', he:'לא ניתן לטעון את התוכן. אנא רעננו את הדף.' };
+        banner.textContent = msgs[currentLang] || msgs.de;
+        banner.style.display = 'block';
+      }
+    }
+    return;
+  }
   try {
-    const snap = await db.collection('articles').get();
     window._articles = [];
     snap.forEach(doc => window._articles.push({ id: doc.id, ...doc.data() }));
     // Sort by createdAt descending; articles without createdAt go to the end
@@ -3333,15 +3356,7 @@ async function loadArticles(silent) {
       if (slug) openArticle(slug);
     }
   } catch(e) {
-    console.error('Firestore error:', e);
-    if (!silent) {
-      const banner = document.getElementById('offline-banner');
-      if (banner) {
-        const msgs = { de:'Inhalte konnten nicht geladen werden. Bitte Seite neu laden.', en:'Content could not be loaded. Please reload the page.', fr:'Le contenu n\'a pas pu être chargé. Veuillez recharger.', es:'No se pudo cargar el contenido. Recargue la página.', ru:'Не удалось загрузить контент. Обновите страницу.', he:'לא ניתן לטעון את התוכן. אנא רעננו את הדף.' };
-        banner.textContent = msgs[currentLang] || msgs.de;
-        banner.style.display = 'block';
-      }
-    }
+    console.error('Render error after loading articles:', e);
   }
 }
 
