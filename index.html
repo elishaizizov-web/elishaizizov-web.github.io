@@ -3288,15 +3288,17 @@ const firebaseConfig = {
   measurementId: "G-R4DL0C3PFW"
 };
 
-// Initialize Firebase only once
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+// Initialize Firebase only once — wrapped in try/catch so a Firebase
+// failure never crashes the rest of the page (admin login, UI, etc.)
+let db, storage, auth;
+try {
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  db      = firebase.firestore();
+  storage = firebase.storage();
+  auth    = firebase.auth();
+} catch(e) {
+  console.error('Firebase init failed:', e);
 }
-
-// Global Firebase references
-const db      = firebase.firestore();
-const storage = firebase.storage();
-const auth    = firebase.auth();
 
 
 
@@ -3305,6 +3307,13 @@ window._currentArticle = null;
 window._editingId      = null;
 
 async function loadArticles(silent) {
+  if (!db) {
+    if (!silent) {
+      const banner = document.getElementById('offline-banner');
+      if (banner) { banner.textContent = 'Firebase nicht verfügbar. Bitte Seite neu laden.'; banner.style.display = 'block'; }
+    }
+    return;
+  }
   // Retry up to 3 times with exponential backoff on failure
   let snap, lastErr;
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -3544,6 +3553,7 @@ function adminUpdateParasha() {
 }
 
 async function adminSave() {
+  if (!db) { showToast('✗ Firebase nicht verfügbar!', 'error'); return; }
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
   if (!titleDE) { showToast('⚠ Kein deutscher Titel!', 'error'); return; }
