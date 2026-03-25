@@ -180,68 +180,40 @@ async function fetchAllArticles() {
 }
 
 // ─── HTML GENERATION ─────────────────────────────────────────────────────────
+// Generates a thin redirect page: meta/SEO tags visible to Google in <head>,
+// JS redirect sends real users straight to the SPA.
 function articleHtml(a) {
   const slug    = articleSlug(a);
   const pageUrl = `${SITE_URL}/${slug}`;
 
-  // Default-language content (de)
   const defTitle = a.title || '';
   const defText  = a.text  || '';
+  const topic    = topicNameForLang(a, 'de');
 
-  // Build per-language data
-  const langs = {};
-  for (const l of LANGS) {
-    const tr = (a.translations && a.translations[l]) || {};
-    langs[l] = {
-      title:   tr.title || defTitle,
-      text:    tr.text  || defText,
-      topic:   topicNameForLang(a, l),
-      isRtl:   l === 'he',
-      langUrl: l === 'de' ? pageUrl : `${pageUrl}?lang=${l}`
-    };
-  }
-
-  // SEO values (de default)
-  const seoTitle   = escHtml(langs.de.title);
-  const seoTopic   = escHtml(langs.de.topic);
-  const seoExcerpt = escHtml(stripHtml(langs.de.text).substring(0, 220));
+  const seoTitle   = escHtml(defTitle);
+  const seoTopic   = escHtml(topic);
+  const seoExcerpt = escHtml(stripHtml(defText).substring(0, 220));
   const seoImg     = a.image ? escHtml(a.image) : `${SITE_URL}/logo.png`;
 
-  // hreflang
-  const hreflangs = LANGS.map(l =>
-    `  <link rel="alternate" hreflang="${l}" href="${escHtml(langs[l].langUrl)}">`
-  ).join('\n') +
-  `\n  <link rel="alternate" hreflang="x-default" href="${escHtml(pageUrl)}">`;
+  const hreflangs = LANGS.map(l => {
+    const u = l === 'de' ? pageUrl : `${pageUrl}?lang=${l}`;
+    return `  <link rel="alternate" hreflang="${l}" href="${escHtml(u)}">`;
+  }).join('\n') + `\n  <link rel="alternate" hreflang="x-default" href="${escHtml(pageUrl)}">`;
 
-  // JSON-LD
   const jsonld = {
-    "@context":        "https://schema.org",
-    "@type":           "Article",
-    "headline":        langs.de.title,
-    "description":     stripHtml(langs.de.text).substring(0, 220),
-    "datePublished":   a.date || '',
-    "author":          { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
-    "publisher":       { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
-    "url":             pageUrl,
-    "mainEntityOfPage":{ "@type":"WebPage","@id":pageUrl },
-    "inLanguage":      "de",
-    "about":           langs.de.topic ? { "@type":"Thing","name":langs.de.topic } : undefined
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": defTitle,
+    "description": stripHtml(defText).substring(0, 220),
+    "datePublished": a.date || '',
+    "author": { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
+    "publisher": { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
+    "url": pageUrl,
+    "mainEntityOfPage": { "@type":"WebPage","@id":pageUrl },
+    "inLanguage": "de"
   };
   if (a.image) jsonld.image = a.image;
-  const jsonldStr = JSON.stringify(jsonld, null, 2);
-
-  // Language-version blocks for multilingual SEO
-  const langBlocks = LANGS.filter(l => l !== 'de').map(l => {
-    const d = langs[l];
-    if (!d.title && !d.text) return '';
-    const titleText = escHtml(d.title);
-    const excerpt   = escHtml(stripHtml(d.text).substring(0, 300));
-    return `
-    <div class="lang-variant" lang="${l}" dir="${d.isRtl ? 'rtl' : 'ltr'}" aria-hidden="true">
-      <h2 class="lv-title">${titleText}</h2>
-      <p class="lv-excerpt">${excerpt}${stripHtml(d.text).length > 300 ? '…' : ''}</p>
-    </div>`;
-  }).join('');
+  if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
   return `<!DOCTYPE html>
 <html lang="de">
@@ -262,74 +234,25 @@ function articleHtml(a) {
 <meta name="twitter:image" content="${seoImg}">
 ${hreflangs}
 <script type="application/ld+json">
-${jsonldStr}
+${JSON.stringify(jsonld)}
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:wght@300;400&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--navy:#1b2a3b;--gold:#b8952a;--gold-l:#d4aa40;--text:#2a2420;--soft:#4a4440;--rule:#dcd8d0;--bg:#f8f6f2}
-body{font-family:'Source Serif 4',Georgia,serif;background:#fff;color:var(--text);-webkit-font-smoothing:antialiased;max-width:780px;margin:0 auto;padding:0 24px 64px}
-a{color:inherit;text-decoration:none}
-.site-header{border-bottom:1px solid var(--rule);padding:18px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:40px}
-.site-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:400;color:var(--navy);letter-spacing:.02em}
-.site-name a:hover{color:var(--gold)}
-.lang-nav{display:flex;gap:0}
-.lang-nav a{font-family:'Raleway',sans-serif;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);padding:6px 10px;border:1px solid var(--rule);border-left:none;transition:color .2s,background .2s}
-.lang-nav a:first-child{border-left:1px solid var(--rule)}
-.lang-nav a:hover{color:var(--navy);background:var(--bg)}
-.art-meta{font-family:'Raleway',sans-serif;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:12px}
-.art-meta .sep{margin:0 8px;opacity:.4}
-.art-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);font-weight:500;line-height:1.2;color:var(--navy);margin-bottom:28px;letter-spacing:-.01em}
-.art-divider{border:none;border-top:1px solid var(--rule);margin:24px 0}
-.art-body{font-size:17px;line-height:1.8;color:var(--text)}
-.art-body p{margin-bottom:1em}
-.art-body strong{font-weight:600}
-.art-body em{font-style:italic}
-.art-body h1,.art-body h2,.art-body h3{font-family:'Playfair Display',serif;color:var(--navy);margin:1.4em 0 .6em}
-.art-body ul,.art-body ol{padding-left:1.5em;margin-bottom:1em}
-.art-body li{margin-bottom:.3em}
-.art-body blockquote{border-left:3px solid var(--gold);padding-left:16px;color:var(--soft);margin:1em 0}
-.open-spa{display:inline-flex;align-items:center;gap:8px;margin-top:36px;padding:11px 22px;background:var(--navy);color:#fff;font-family:'Raleway',sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;border:none;transition:background .2s}
-.open-spa:hover{background:var(--gold)}
-.lang-variants{margin-top:48px;border-top:2px solid var(--rule);padding-top:32px}
-.lang-variant{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--rule)}
-.lang-variant:last-child{border-bottom:none}
-.lv-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--navy);margin-bottom:10px}
-.lv-excerpt{font-size:14px;line-height:1.7;color:var(--soft)}
-.site-footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--rule);font-family:'Raleway',sans-serif;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);text-align:center}
-@media(max-width:540px){.lang-nav{display:none}.site-header{justify-content:center}}
-</style>
+<script>
+// Redirect real users to the SPA which loads the full interactive site.
+// Google reads the <head> meta/ld+json above before executing scripts.
+(function(){
+  var lang = new URLSearchParams(location.search).get('lang');
+  if (lang) sessionStorage.setItem('redirect_lang', lang);
+  sessionStorage.setItem('redirect_article', '${escHtml(slug)}');
+  window.location.replace('/');
+})();
+</script>
 </head>
 <body>
-
-<header class="site-header">
-  <p class="site-name"><a href="/">Rabbiner Elishai Zizov</a></p>
-  <nav class="lang-nav" aria-label="Sprachen">
-    ${LANGS.map(l => `<a href="${escHtml(langs[l].langUrl)}" lang="${l}" hreflang="${l}">${l === 'he' ? 'עב' : l.toUpperCase()}</a>`).join('')}
-  </nav>
-</header>
-
-<article>
-  <p class="art-meta">
-    ${a.date ? escHtml(a.date) : ''}${a.date && langs.de.topic ? '<span class="sep">·</span>' : ''}${langs.de.topic ? escHtml(langs.de.topic) : ''}
-  </p>
-  <h1 class="art-title">${escHtml(langs.de.title)}</h1>
-  <hr class="art-divider">
-  <div class="art-body" dir="ltr">${langs.de.text || ''}</div>
-
-  <button class="open-spa" onclick="(function(){sessionStorage.setItem('redirect_article','${escHtml(slug)}');window.location.href='/'})()">
-    ↗ Zur interaktiven Website
-  </button>
-</article>
-
-${langBlocks ? `<section class="lang-variants" aria-label="Weitere Sprachen">${langBlocks}</section>` : ''}
-
-<footer class="site-footer">
-  <a href="/">Rabbiner Elishai Zizov</a> &nbsp;·&nbsp; Frankfurt am Main &nbsp;·&nbsp; © ${new Date().getFullYear()}
-</footer>
-
+<noscript>
+  <h1>${escHtml(defTitle)}</h1>
+  <p>${escHtml(stripHtml(defText).substring(0, 500))}</p>
+  <a href="/">← Rabbiner Elishai Zizov</a>
+</noscript>
 </body>
 </html>`;
 }
