@@ -3403,9 +3403,7 @@ let quillEditors = {};
 // ADMIN LOGIN (Hardcoded Password, No Auth)
 // ════════════════════════════════════════════════════════
 const btoa = window.btoa || function(str) { return str; };
-// Password: "ElishaiAdmin2026!" → reversed → btoa → HASH_VAL
-
-const HASH_VAL = "ITYyMDJuaW1BZElhaHNpbEU=";
+const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
 function checkToken(input) {
   try {
     const scrambled = input.split('').reverse().join('');
