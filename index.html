@@ -2221,7 +2221,6 @@ body {
   <!-- date + image -->
   <div class="ap-img-wrap">
     <span id="ap-date"></span>
-
     <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
     <img id="ap-img" src="" alt="" style="display:none">
   </div>
@@ -2942,8 +2941,10 @@ function inlineSearch(q) {
     resultsEl.style.display = 'none';
     noResultsEl.style.display = 'none';
     if (tabsEl) tabsEl.style.display = '';
-    if (panelParasha) panelParasha.style.display = '';
-    if (panelHagim) panelHagim.style.display = '';
+    // Restore panels based on which tab is active (not blindly to '' which breaks panel-hagim)
+    const activeTab = document.querySelector('#articles-tabs .tab-btn.active')?.id;
+    if (panelParasha) panelParasha.style.display = (!activeTab || activeTab === 'tab-parasha') ? 'block' : 'none';
+    if (panelHagim)   panelHagim.style.display   = activeTab === 'tab-hagim' ? 'block' : 'none';
     if (latestBlock && latestBlock._wasVisible) latestBlock.style.display = 'block';
     return;
   }
