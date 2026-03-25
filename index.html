@@ -1021,14 +1021,11 @@ body {
       letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; margin-top:18px; }
     #ap-title { font-family: 'Playfair Display',serif; font-size: clamp(26px,4vw,38px);
       font-weight: 500; color: var(--text); margin-bottom: 20px; line-height: 1.25; }
-    .ap-img-wrap { position: relative; margin-bottom: 28px; }
-    #ap-img { width:100%; max-height:420px; object-fit:cover; display:block; border-radius:2px; }
-    .ap-meta-line { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; margin-top:4px; }
-    #ap-parasha { font-family:'Raleway',sans-serif; font-size:10px; font-weight:700;
-      letter-spacing:.2em; text-transform:uppercase; color:var(--gold); }
-    .ap-meta-sep { color:var(--text-soft); opacity:0.4; font-size:10px; }
-    #ap-date { font-family:'Raleway',sans-serif; font-size:9px; font-weight:600;
-      letter-spacing:.18em; text-transform:uppercase; color:var(--text-soft); opacity:0.7; }
+    .ap-img-wrap { position: relative; margin-bottom: 32px; }
+    #ap-date { font-family: 'Raleway',sans-serif; font-size: 9px; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--text-soft);
+      display: block; margin-bottom: 8px; opacity: 0.7; }
+    #ap-img { width:100%; max-height:380px; object-fit:cover; display:block; }
     /* print-only logo */
     .ap-print-logo { display: none; }
     #ap-text { font-size:16px; line-height:1.9; color:var(--text-soft); font-weight:300; }
@@ -2219,18 +2216,14 @@ body {
     <p>Rabbiner Elishai Zizov</p>
   </div>
   <nav id="ap-breadcrumb" class="ap-breadcrumb" aria-label="Breadcrumb"></nav>
-  <!-- hero image (shown above title when article has an image) -->
+  <div id="ap-parasha"></div>
+  <h1 id="ap-title"></h1>
+  <!-- date + image -->
   <div class="ap-img-wrap">
+    <span id="ap-date"></span>
+    <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
     <img id="ap-img" src="" alt="" style="display:none">
   </div>
-  <!-- parasha · date · reading time -->
-  <div class="ap-meta-line">
-    <span id="ap-parasha"></span>
-    <span class="ap-meta-sep" id="ap-meta-sep" style="display:none">·</span>
-    <span id="ap-date"></span>
-    <span id="ap-reading-time" class="ap-reading-time"></span>
-  </div>
-  <h1 id="ap-title"></h1>
   <div id="ap-text"></div>
   <div id="ap-share"></div>
   <div id="ap-related"></div>
@@ -3011,15 +3004,14 @@ function _renderArticlePage(a, l) {
   const tr = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
   const isRTL = (l === 'he');
   const dir   = isRTL ? 'rtl' : 'ltr';
-  // content — meta line (parasha · date · reading time)
-  const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
-  a._parashaDisplay = parashaDisplay;
+  // content
+  document.getElementById('ap-date').textContent  = a.date || '';
   const parashaEl = document.getElementById('ap-parasha');
+  const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
-  parashaEl.style.display = parashaDisplay ? '' : 'none';
-  const sepEl = document.getElementById('ap-meta-sep');
-  if (sepEl) sepEl.style.display = (parashaDisplay && a.date) ? '' : 'none';
-  document.getElementById('ap-date').textContent = a.date || '';
+  parashaEl.style.display = parashaDisplay ? 'block' : 'none';
+  a._parashaDisplay = parashaDisplay;
+  // reading time
   const rtEl = document.getElementById('ap-reading-time');
   if (rtEl) rtEl.textContent = readingTime(tr.text || a.text || '', l);
   // breadcrumb
