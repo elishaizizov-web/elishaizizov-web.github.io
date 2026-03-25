@@ -3403,9 +3403,9 @@ let quillEditors = {};
 // ADMIN LOGIN (Hardcoded Password, No Auth)
 // ════════════════════════════════════════════════════════
 const btoa = window.btoa || function(str) { return str; };
-// The encoded password (base64 of "ElishaiAdmin2026!") is "RWxpc2hhaUFkbWluMjAyNiE="
+// Password: "ElishaiAdmin2026!" → reversed → btoa → HASH_VAL
 
-const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
+const HASH_VAL = "ITYyMDJuaW1BZElhaHNpbEU=";
 function checkToken(input) {
   try {
     const scrambled = input.split('').reverse().join('');
