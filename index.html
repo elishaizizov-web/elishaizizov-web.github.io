@@ -275,6 +275,20 @@ body {
   font-style: italic;
 }
 
+/* RTL (Hebrew) timeline fix */
+html[lang="he"] .timeline {
+  padding-left: 0;
+  padding-right: 22px;
+}
+html[lang="he"] .timeline::before {
+  left: auto;
+  right: 0;
+}
+html[lang="he"] .station::before {
+  left: auto;
+  right: -26px;
+}
+
 /* CONTACT */
 .ig-link-clean {
   display: inline-flex;
@@ -315,6 +329,7 @@ body {
   .lang-bar { padding: 0 24px; }
   .lang-back-btn { padding: 6px 20px 6px 4px; }
   .timeline { padding-left: 18px; }
+  html[lang="he"] .timeline { padding-left: 0; padding-right: 18px; }
   .form-row { grid-template-columns: 1fr; }
 }
 
