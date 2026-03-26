@@ -3358,7 +3358,7 @@ async function loadArticles(silent) {
   // Fallback: Firestore REST API (works even when SDK is blocked)
   if (!articles) {
     try {
-      const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300';
+      const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
       const res = await fetch(url);
       if (res.ok) {
         const json = await res.json();
