@@ -2116,15 +2116,20 @@ html[lang="he"] .station::before {
     <span class="section-label" data-t="art-label">Beiträge</span>
 
     <!-- Latest Article -->
+    <!-- v91 build indicator -->
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v91</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
       <button id="articles-retry-btn" onclick="document.getElementById('articles-retry-btn').style.display='none'; loadArticles();" style="display:none; background:#1b2a3b; color:#f7f4ee; border:1px solid #b8952a; border-radius:6px; padding:8px 18px; font-size:13px; cursor:pointer;">↻ Beiträge laden</button>
     </div>
 
-    <div id="latest-article-block" style="display:none; margin-bottom:28px;">
+    <div id="latest-article-block" style="display:block; margin-bottom:28px;">
       <p class="latest-article-label" data-t="latest-label">Neueste Beiträge</p>
-      <div id="latest-article-card"></div>
+      <div id="latest-article-card" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;">
+        <a href="/uN3U5Qcm5SXkdckXvs6E" onclick="event.preventDefault();openArticle('uN3U5Qcm5SXkdckXvs6E')" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;"><div class="article-card-img-placeholder"></div><div class="article-card-body"><span class="article-card-date">25.3.2026</span><h3 class="article-card-title">Wenn das Gebot selbst die Erlösung ist</h3><p class="article-card-excerpt">Es gibt einen Schabbat im Jahr mit einem ungewöhnlichen Namen: Schabbat haGadol. Doch kaum jemand hält inne und stellt eine einfache Frage: Was genau ist daran groß, und warum trägt gerade der Schabba…</p><span class="article-card-readmore">Weiterlesen <span>→</span></span></div></div></a>
+        <a href="/wmS2BpD88cRcRNYzETPt" onclick="event.preventDefault();openArticle('wmS2BpD88cRcRNYzETPt')" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;"><div class="article-card-img-placeholder"></div><div class="article-card-body"><span class="article-card-date">19.3.2026</span><h3 class="article-card-title">Das kleine Alef, das größte Geheimnis der Tora</h3><p class="article-card-excerpt">Öffnet irgendwo auf der Welt eine Torarolle bei der Parascha Wajikra. Lest das erste Wort: וַיִּקְרָא. Und jetzt schaut genau hin. Der letzte Buchstabe, das Alef, ist kleiner als alle anderen Buchstab…</p><span class="article-card-readmore">Weiterlesen <span>→</span></span></div></div></a>
+      </div>
     </div>
 
     <!-- Inline search -->
@@ -2884,7 +2889,8 @@ function renderLatestArticle() {
   const block = document.getElementById('latest-article-block');
   const card = document.getElementById('latest-article-card');
   if (!block || !card) return;
-  if (!articles.length) { block.style.display = 'none'; return; }
+  // Only hide if no articles AND the card has no pre-rendered static HTML
+  if (!articles.length) { if (!card.innerHTML.trim()) block.style.display = 'none'; return; }
   block.style.display = 'block';
   // Show up to 3 most recent articles
   const recent = articles.slice(0, 3);
