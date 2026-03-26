@@ -3360,29 +3360,28 @@ async function loadArticles(silent) {
 
   let articles = null;
 
-  // Try Firebase JS SDK first (single attempt — no slow retry loop)
-  if (db) {
+  // Load directly from Firestore REST API — confirmed working, no SDK issues
+  try {
+    const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
+    const res = await fetch(url);
+    if (res.ok) {
+      const json = await res.json();
+      articles = parseRestDocs(json);
+    } else {
+      console.warn('REST API returned', res.status);
+    }
+  } catch(e) {
+    console.warn('REST fetch failed:', e.message);
+  }
+
+  // Fallback: try Firebase SDK if REST failed
+  if ((!articles || articles.length === 0) && db) {
     try {
-      const snap = await db.collection('articles').get({ source: 'server' });
+      const snap = await db.collection('articles').get();
       articles = [];
       snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
     } catch(e) {
-      console.warn('SDK fetch failed:', e.message);
-      articles = null;
-    }
-  }
-
-  // Fallback: Firestore REST API — also runs if SDK returned 0 docs (cache miss / offline)
-  if (!articles || articles.length === 0) {
-    try {
-      const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
-      const res = await fetch(url);
-      if (res.ok) {
-        const json = await res.json();
-        articles = parseRestDocs(json);
-      }
-    } catch(e) {
-      console.warn('REST fallback failed:', e.message);
+      console.warn('SDK fallback failed:', e.message);
     }
   }
 
