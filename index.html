@@ -2117,7 +2117,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v96</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v97</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
@@ -2702,9 +2702,12 @@ function setLang(l) {
   if (l1h) l1h.textContent = tn.tab_h + ' ›';
   document.querySelectorAll('.hmenu-back-btn').forEach(b => { b.textContent = tn.back; });
   // Re-render whichever hamburger sub-level is currently visible
-  if (document.getElementById('hmenu-books-level')?.style.display !== 'none') hmenuShowParashaBooksLevel();
-  else if (document.getElementById('hmenu-parasha-level')?.style.display !== 'none' && window._hmenuPrevBook) hmenuShowParashaLevel(window._hmenuPrevBook);
-  else if (document.getElementById('hmenu-hagim-level')?.style.display !== 'none') hmenuShowHagimLevel();
+  const _bl = document.getElementById('hmenu-books-level');
+  const _pl = document.getElementById('hmenu-parasha-level');
+  const _hl = document.getElementById('hmenu-hagim-level');
+  if (_bl && _bl.style.display !== 'none') hmenuShowParashaBooksLevel();
+  else if (_pl && _pl.style.display !== 'none' && window._hmenuPrevBook) hmenuShowParashaLevel(window._hmenuPrevBook);
+  else if (_hl && _hl.style.display !== 'none') hmenuShowHagimLevel();
   // If an article is currently open, re-render it in the new language
   const ap = document.getElementById('article-page');
   if (ap && ap.style.display !== 'none' && window._currentArticle) {
