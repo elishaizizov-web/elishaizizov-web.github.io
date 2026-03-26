@@ -1996,9 +1996,8 @@ html[lang="he"] .station::before {
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-  <!-- Quill Rich Text Editor (jsDelivr CDN — more reliable than cdn.quilljs.com) -->
+  <!-- Quill Rich Text Editor CSS (jsDelivr CDN) -->
   <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js" defer></script>
   <!-- jsPDF for PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
@@ -3560,17 +3559,31 @@ function compressImageToBase64(file) {
 function initQuillEditors() {
   if (quillEditors.de) return;
   if (typeof Quill === 'undefined') {
-    // Quill script not yet executed (still loading) — retry in 250ms
-    setTimeout(initQuillEditors, 250);
+    setTimeout(initQuillEditors, 300);
     return;
   }
-  const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
-  ['de','he','en','fr','es','ru'].forEach(l => {
-    quillEditors[l] = new Quill('#q-'+l, { theme:'snow', modules:{toolbar} });
-    quillEditors[l].on('text-change', () => updateWordCount(l));
-  });
-  const heEditor = document.querySelector('#q-he .ql-editor');
-  if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
+  try {
+    const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
+    ['de','he','en','fr','es','ru'].forEach(l => {
+      quillEditors[l] = new Quill('#q-'+l, { theme:'snow', modules:{toolbar} });
+      quillEditors[l].on('text-change', () => updateWordCount(l));
+    });
+    const heEditor = document.querySelector('#q-he .ql-editor');
+    if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
+  } catch(e) {
+    console.error('Quill init failed:', e);
+    // Show plain textarea fallback for each language
+    ['de','he','en','fr','es','ru'].forEach(l => {
+      const wrap = document.getElementById('qwrap-'+l);
+      if (wrap && !wrap.querySelector('textarea')) {
+        const ta = document.createElement('textarea');
+        ta.id = 'q-fallback-'+l;
+        ta.style.cssText = 'width:100%;min-height:220px;padding:12px;font-size:15px;border:none;resize:vertical;font-family:inherit;';
+        ta.placeholder = 'Text hier eingeben...';
+        wrap.appendChild(ta);
+      }
+    });
+  }
 }
 
 function adminToggleCat() {
@@ -4143,5 +4156,7 @@ async function autoTranslateFree() { // placeholder — not used
     </div>
   </div>
 </div>
+<!-- Quill JS loaded here (end of body) so it's always ready before any user interaction -->
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js"></script>
 </body>
 </html>
