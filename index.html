@@ -2544,7 +2544,7 @@ const T = {
     y3: '2020 bis 2023',  s3h: 'Basel',                      s3d: 'Rabbiner und Vortragsredner, Schomre Tora Institut Basel',
     y4: 'Ordination',      s4h: 'Rabbinatsordination, Alter 24', s4d: 'Talmud, Halacha und jüdisches Denken',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neuester Beitrag',
+    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neueste Beiträge',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.', 'form-subject': 'Neue Anfrage über elishaizizov.com',
   },
   en: {
@@ -2560,7 +2560,7 @@ const T = {
     y3: '2020 to 2023',   s3h: 'Basel',                      s3d: 'Rabbi and Lecturer, Schomre Tora Institut Basel',
     y4: 'Ordination',       s4h: 'Rabbinical Ordination, age 24', s4d: 'Talmud, Halacha and Jewish Thought',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Article',
+    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Articles',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.', 'form-subject': 'New enquiry via elishaizizov.com',
   },
   fr: {
@@ -2592,7 +2592,7 @@ const T = {
     y3: '2020 עד 2023',   s3h: 'באזל',                      s3d: 'רב ומרצה, מכון שומרי תורה באזל',
     y4: 'Ordination',         s4h: 'הסמכה לרבנות בגיל 24',       s4d: 'תלמוד, הלכה ומחשבת ישראל',
     ig: 'Instagram', fb: 'Facebook',
-    'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבה אחרונה',
+    'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבות אחרונות',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.', 'form-subject': 'פנייה חדשה דרך elishaizizov.com',
   },
   es: {
@@ -2880,7 +2880,12 @@ function renderLatestArticle() {
   if (!block || !card) return;
   if (!articles.length) { block.style.display = 'none'; return; }
   block.style.display = 'block';
-  card.innerHTML = renderCard(articles[0]);
+  // Show up to 3 most recent articles
+  const recent = articles.slice(0, 3);
+  card.innerHTML = recent.map(a => renderCard(a)).join('');
+  card.style.display = 'grid';
+  card.style.gridTemplateColumns = recent.length > 1 ? 'repeat(auto-fill,minmax(260px,1fr))' : '1fr';
+  card.style.gap = '20px';
 }
 
 function showBooks() {
@@ -3414,9 +3419,9 @@ async function loadArticles(silent) {
 
   let articles = null;
 
-  // Load directly from Firestore REST API — confirmed working, no SDK issues
+  // Load directly from Firestore REST API — no API key needed (public rules)
   try {
-    const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
+    const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300';
     const res = await fetch(url);
     if (res.ok) {
       const json = await res.json();
