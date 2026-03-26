@@ -641,7 +641,7 @@ html[lang="he"] .station::before {
 .hmenu-sub-item {
   display: block; width: 100%; box-sizing: border-box;
   background: none; border: none;
-  color: rgba(247,244,238,0.5);
+  color: rgba(247,244,238,0.75);
   font-family: 'Raleway', sans-serif; font-size: 9.5px; font-weight: 600;
   letter-spacing: 0.2em; text-transform: uppercase;
   padding: 10px 0; cursor: pointer; text-align: left;
@@ -650,7 +650,7 @@ html[lang="he"] .station::before {
 }
 .hmenu-sub-item:last-child { border-bottom: none; }
 .hmenu-sub-item:hover { color: var(--gold-light); padding-left: 4px; }
-.hmenu-sub-item.has-articles { color: rgba(247,244,238,0.85); font-weight: 700; }
+.hmenu-sub-item.has-articles { color: #d4a82a; font-weight: 700; }
 .hmenu-sub-back {
   display: block;
   background: none; border: none;
@@ -2118,6 +2118,9 @@ html[lang="he"] .station::before {
     <!-- Latest Article -->
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
+    <div style="text-align:center; margin-bottom:8px;">
+      <button id="articles-retry-btn" onclick="document.getElementById('articles-retry-btn').style.display='none'; loadArticles();" style="display:none; background:#1b2a3b; color:#f7f4ee; border:1px solid #b8952a; border-radius:6px; padding:8px 18px; font-size:13px; cursor:pointer;">↻ Beiträge laden</button>
+    </div>
 
     <div id="latest-article-block" style="display:none; margin-bottom:28px;">
       <p class="latest-article-label" data-t="latest-label">Neueste Beiträge</p>
@@ -3393,8 +3396,14 @@ try {
 window._articles       = [];
 window._currentArticle = null;
 window._editingId      = null;
+let _loadArticlesInProgress = false;
 
 async function loadArticles(silent) {
+  if (_loadArticlesInProgress) return;
+  _loadArticlesInProgress = true;
+  try { return await _loadArticlesImpl(silent); } finally { _loadArticlesInProgress = false; }
+}
+async function _loadArticlesImpl(silent) {
   // Helper: parse articles from Firestore REST API response
   function parseRestDocs(json) {
     if (!json.documents) return [];
@@ -3459,17 +3468,15 @@ async function loadArticles(silent) {
 
   if (loadingEl) loadingEl.style.display = 'none';
 
-  if (!articles) {
-    console.error('All Firestore methods failed');
-    if (!silent) {
-      const banner = document.getElementById('offline-banner');
-      if (banner) {
-        const msgs = { de:'Inhalte konnten nicht geladen werden. Bitte Seite neu laden.', en:'Content could not be loaded. Please reload the page.', fr:'Le contenu n\'a pas pu être chargé. Veuillez recharger.', es:'No se pudo cargar el contenido. Recargue la página.', ru:'Не удалось загрузить контент. Обновите страницу.', he:'לא ניתן לטעון את התוכן. אנא רעננו את הדף.' };
-        banner.textContent = msgs[currentLang] || msgs.de;
-        banner.style.display = 'block';
-      }
-    }
-    return;
+  const retryBtn = document.getElementById('articles-retry-btn');
+  if (!articles || !articles.length) {
+    console.warn('loadArticles: no articles (null=' + !articles + ')');
+    if (!silent && retryBtn) retryBtn.style.display = 'inline-block';
+    if (!articles) return;
+    // articles is [] — fall through; renderLatestArticle will hide the block
+  } else {
+    // Articles loaded — hide retry button
+    if (retryBtn) retryBtn.style.display = 'none';
   }
 
   try {
