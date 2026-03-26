@@ -3453,17 +3453,18 @@ function toggleAdmin() {
 
 
 function adminLogin() {
-  const pw = document.getElementById('admin-pw').value.trim();
+  try {
+  const pw = (document.getElementById('admin-pw') || {}).value || '';
+  const trimmed = pw.trim();
   const err = document.getElementById('admin-login-err');
-  err.style.display = 'none';
+  if (err) err.style.display = 'none';
 
-  if (!pw) {
-    err.textContent = 'Bitte Passwort eingeben.';
-    err.style.display = 'block';
+  if (!trimmed) {
+    if (err) { err.textContent = 'Bitte Passwort eingeben.'; err.style.display = 'block'; }
     return;
   }
 
-  if (checkToken(pw)) {
+  if (checkToken(trimmed)) {
     document.getElementById('admin-login-screen').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
     document.getElementById('admin-sticky-bar').style.display = 'flex';
@@ -3478,8 +3479,12 @@ function adminLogin() {
     document.getElementById('admin-pw').value = '';
     setTimeout(() => document.getElementById('af-title-de')?.focus(), 300);
   } else {
-    err.textContent = 'Falsches Passwort.';
-    err.style.display = 'block';
+    if (err) { err.textContent = 'Falsches Passwort.'; err.style.display = 'block'; }
+  }
+  } catch(e) {
+    const err2 = document.getElementById('admin-login-err');
+    if (err2) { err2.textContent = 'Fehler: ' + e.message; err2.style.display = 'block'; }
+    console.error('adminLogin error:', e);
   }
 }
 
