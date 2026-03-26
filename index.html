@@ -1676,7 +1676,7 @@ html[lang="he"] .station::before {
 .premium-upload-text { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
 .premium-upload-subtext { font-size: 12px; color: #bbb; }
 #af-image-file { display: none; }
-/* Quill */
+/* Custom editor (replaces Quill — no external CDN needed) */
 .quill-wrapper {
   background: #fff;
   border-radius: 9px;
@@ -1686,17 +1686,41 @@ html[lang="he"] .station::before {
   transition: border-color 0.2s;
 }
 .quill-wrapper:focus-within { border-color: var(--gold); }
-.ql-toolbar.ql-snow {
-  border: none !important;
-  border-bottom: 1px solid #e5e7eb !important;
+.editor-toolbar {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  padding: 6px 10px 6px 4px;
+  border-bottom: 1px solid #e5e7eb;
   background: #fafafa;
-  padding: 14px !important;
+  align-items: center;
 }
-.ql-container.ql-snow {
-  border: none !important;
-  min-height: 280px;
-  font-size: 16px;
+.editor-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #555;
+  line-height: 1.4;
+  min-width: 28px;
 }
+.editor-btn:hover { background: #f0f0f0; border-color: #bbb; }
+.custom-editor {
+  min-height: 260px;
+  padding: 14px 16px;
+  font-size: 15px;
+  outline: none;
+  line-height: 1.75;
+  color: #222;
+  font-family: inherit;
+}
+.custom-editor:focus { outline: none; }
+.custom-editor h2, .custom-editor h3 { margin: 12px 0 6px; }
+.custom-editor p { margin: 0 0 8px; }
+.custom-editor ul, .custom-editor ol { padding-left: 22px; margin: 0 0 8px; }
+
 /* Publish button */
 .admin-save-btn {
   background: linear-gradient(135deg, var(--gold) 0%, #9e7f22 100%);
@@ -1969,12 +1993,14 @@ html[lang="he"] .station::before {
   padding: 5px 10px;
 }
 .quill-wrapper.fullscreen .ql-fullscreen-btn:hover { background: rgba(255,255,255,0.28); }
-.quill-wrapper.fullscreen .ql-toolbar.ql-snow { flex-shrink: 0; }
-.quill-wrapper.fullscreen .ql-container.ql-snow {
+.quill-wrapper.fullscreen .editor-toolbar { flex-shrink: 0; background: #1a2a4a; border-color: rgba(255,255,255,0.15); }
+.quill-wrapper.fullscreen .editor-btn { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff; }
+.quill-wrapper.fullscreen .editor-btn:hover { background: rgba(255,255,255,0.25); }
+.quill-wrapper.fullscreen .custom-editor {
   flex: 1;
-  min-height: 0 !important;
+  min-height: 0;
   overflow-y: auto;
-  font-size: 18px !important;
+  font-size: 18px;
   line-height: 1.8;
   padding: 20px 10%;
 }
@@ -1996,8 +2022,6 @@ html[lang="he"] .station::before {
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-  <!-- Quill Rich Text Editor CSS (jsDelivr CDN) -->
-  <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
   <!-- jsPDF for PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
@@ -3558,32 +3582,45 @@ function compressImageToBase64(file) {
 
 function initQuillEditors() {
   if (quillEditors.de) return;
-  if (typeof Quill === 'undefined') {
-    setTimeout(initQuillEditors, 300);
-    return;
-  }
-  try {
-    const toolbar = [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']];
-    ['de','he','en','fr','es','ru'].forEach(l => {
-      quillEditors[l] = new Quill('#q-'+l, { theme:'snow', modules:{toolbar} });
-      quillEditors[l].on('text-change', () => updateWordCount(l));
-    });
-    const heEditor = document.querySelector('#q-he .ql-editor');
-    if (heEditor) { heEditor.style.direction = 'rtl'; heEditor.style.textAlign = 'right'; }
-  } catch(e) {
-    console.error('Quill init failed:', e);
-    // Show plain textarea fallback for each language
-    ['de','he','en','fr','es','ru'].forEach(l => {
-      const wrap = document.getElementById('qwrap-'+l);
-      if (wrap && !wrap.querySelector('textarea')) {
-        const ta = document.createElement('textarea');
-        ta.id = 'q-fallback-'+l;
-        ta.style.cssText = 'width:100%;min-height:220px;padding:12px;font-size:15px;border:none;resize:vertical;font-family:inherit;';
-        ta.placeholder = 'Text hier eingeben...';
-        wrap.appendChild(ta);
-      }
-    });
-  }
+  const LANGS = ['de','he','en','fr','es','ru'];
+  LANGS.forEach(l => {
+    const el = document.getElementById('q-'+l);
+    if (!el) return;
+    // Make it a rich contenteditable area
+    el.contentEditable = 'true';
+    el.className = 'custom-editor';
+    if (l === 'he') { el.dir = 'rtl'; el.style.textAlign = 'right'; }
+    // Inject formatting toolbar into the extra-bar
+    const bar = document.getElementById('qwrap-'+l)?.querySelector('.quill-extra-bar');
+    if (bar && !bar.querySelector('.editor-toolbar')) {
+      const tb = document.createElement('div');
+      tb.className = 'editor-toolbar';
+      const btns = [
+        ['B','bold','<b>B</b>'],['I','italic','<i>I</i>'],['U','underline','<u>U</u>'],
+        ['H','formatBlock|h3','H3'],['•','insertUnorderedList','•'],['1.','insertOrderedList','1.'],
+        ['✕','removeFormat','✕']
+      ];
+      btns.forEach(([,cmd,html]) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'editor-btn'; b.innerHTML = html;
+        const [c,arg] = cmd.split('|');
+        b.addEventListener('mousedown', ev => { ev.preventDefault(); el.focus(); document.execCommand(c, false, arg||null); });
+        b.addEventListener('touchend', ev => { ev.preventDefault(); el.focus(); document.execCommand(c, false, arg||null); });
+        tb.appendChild(b);
+      });
+      bar.insertBefore(tb, bar.firstChild);
+    }
+    // Quill-compatible wrapper
+    quillEditors[l] = {
+      root: el,
+      _cb: [],
+      on(ev, fn) { if (ev === 'text-change') this._cb.push(fn); },
+      getText() { const d = document.createElement('div'); d.innerHTML = el.innerHTML; return d.textContent||''; },
+      setText(t) { el.innerHTML = t || ''; }
+    };
+    el.addEventListener('input', () => quillEditors[l]._cb.forEach(fn => fn()));
+    quillEditors[l].on('text-change', () => updateWordCount(l));
+  });
 }
 
 function adminToggleCat() {
@@ -3865,7 +3902,7 @@ async function adminEdit(id) {
   const label = document.getElementById('admin-edit-title-label');
   if (banner && label) { label.textContent = a.title||id; banner.style.display = 'flex'; }
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
-  if (!quillEditors.de) { initQuillEditors(); await new Promise(r=>setTimeout(r,300)); }
+  if (!quillEditors.de) { initQuillEditors(); }
   ['de','he','en','fr','es','ru'].forEach(l => {
     const tr = (a.translations&&a.translations[l]) ? a.translations[l] : {};
     const el = document.getElementById('af-title-'+l);
@@ -4156,7 +4193,5 @@ async function autoTranslateFree() { // placeholder — not used
     </div>
   </div>
 </div>
-<!-- Quill JS loaded here (end of body) so it's always ready before any user interaction -->
-<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js"></script>
 </body>
 </html>
