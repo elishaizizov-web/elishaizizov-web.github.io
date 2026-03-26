@@ -2382,10 +2382,19 @@ html[lang="he"] .station::before {
               <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
               <div class="quill-wrapper" id="qwrap-de">
                 <div class="quill-extra-bar">
-                  <span class="ql-word-count" id="wc-de">0 Wörter</span>
-                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('de')" title="Vollbild">⤢</button>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-de">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('de')" title="Vollbild">⤢</button>
+                  </div>
                 </div>
-                <div id="q-de"></div>
+                <div id="q-de" class="custom-editor" contenteditable="true"></div>
               </div>
             </div>
             <div class="lang-panel" id="lpanel-he" style="display:none;">
@@ -2393,10 +2402,19 @@ html[lang="he"] .station::before {
               <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl;text-align:right;" oninput="updateTabIndicator('he')">
               <div class="quill-wrapper" id="qwrap-he">
                 <div class="quill-extra-bar">
-                  <span class="ql-word-count" id="wc-he">0 Wörter</span>
-                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('he')" title="Vollbild">⤢</button>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-he">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('he')" title="Vollbild">⤢</button>
+                  </div>
                 </div>
-                <div id="q-he"></div>
+                <div id="q-he" class="custom-editor" contenteditable="true" dir="rtl" style="text-align:right;"></div>
               </div>
             </div>
             <div class="lang-panel" id="lpanel-en" style="display:none;">
@@ -2404,10 +2422,19 @@ html[lang="he"] .station::before {
               <input type="text" id="af-title-en" placeholder="Enter English title..." oninput="updateTabIndicator('en')">
               <div class="quill-wrapper" id="qwrap-en">
                 <div class="quill-extra-bar">
-                  <span class="ql-word-count" id="wc-en">0 Wörter</span>
-                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('en')" title="Vollbild">⤢</button>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-en">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('en')" title="Vollbild">⤢</button>
+                  </div>
                 </div>
-                <div id="q-en"></div>
+                <div id="q-en" class="custom-editor" contenteditable="true"></div>
               </div>
             </div>
             <div class="lang-panel" id="lpanel-fr" style="display:none;">
@@ -2415,10 +2442,19 @@ html[lang="he"] .station::before {
               <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
               <div class="quill-wrapper" id="qwrap-fr">
                 <div class="quill-extra-bar">
-                  <span class="ql-word-count" id="wc-fr">0 Wörter</span>
-                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('fr')" title="Vollbild">⤢</button>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-fr">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('fr')" title="Vollbild">⤢</button>
+                  </div>
                 </div>
-                <div id="q-fr"></div>
+                <div id="q-fr" class="custom-editor" contenteditable="true"></div>
               </div>
             </div>
             <div class="lang-panel" id="lpanel-es" style="display:none;">
@@ -2426,10 +2462,19 @@ html[lang="he"] .station::before {
               <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
               <div class="quill-wrapper" id="qwrap-es">
                 <div class="quill-extra-bar">
-                  <span class="ql-word-count" id="wc-es">0 Wörter</span>
-                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('es')" title="Vollbild">⤢</button>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-es">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('es')" title="Vollbild">⤢</button>
+                  </div>
                 </div>
-                <div id="q-es"></div>
+                <div id="q-es" class="custom-editor" contenteditable="true"></div>
               </div>
             </div>
             <div class="lang-panel" id="lpanel-ru" style="display:none;">
@@ -2437,10 +2482,19 @@ html[lang="he"] .station::before {
               <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
               <div class="quill-wrapper" id="qwrap-ru">
                 <div class="quill-extra-bar">
-                  <span class="ql-word-count" id="wc-ru">0 Wörter</span>
-                  <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('ru')" title="Vollbild">⤢</button>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-ru">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('ru')" title="Vollbild">⤢</button>
+                  </div>
                 </div>
-                <div id="q-ru"></div>
+                <div id="q-ru" class="custom-editor" contenteditable="true"></div>
               </div>
             </div>
           </div>
@@ -3581,35 +3635,10 @@ function compressImageToBase64(file) {
 
 function initQuillEditors() {
   if (quillEditors.de) return;
-  const LANGS = ['de','he','en','fr','es','ru'];
-  LANGS.forEach(l => {
+  ['de','he','en','fr','es','ru'].forEach(l => {
     const el = document.getElementById('q-'+l);
     if (!el) return;
-    // Make it a rich contenteditable area
-    el.contentEditable = 'true';
-    el.className = 'custom-editor';
-    if (l === 'he') { el.dir = 'rtl'; el.style.textAlign = 'right'; }
-    // Inject formatting toolbar into the extra-bar
-    const bar = document.getElementById('qwrap-'+l)?.querySelector('.quill-extra-bar');
-    if (bar && !bar.querySelector('.editor-toolbar')) {
-      const tb = document.createElement('div');
-      tb.className = 'editor-toolbar';
-      const btns = [
-        ['B','bold','<b>B</b>'],['I','italic','<i>I</i>'],['U','underline','<u>U</u>'],
-        ['H','formatBlock|h3','H3'],['•','insertUnorderedList','•'],['1.','insertOrderedList','1.'],
-        ['✕','removeFormat','✕']
-      ];
-      btns.forEach(([,cmd,html]) => {
-        const b = document.createElement('button');
-        b.type = 'button'; b.className = 'editor-btn'; b.innerHTML = html;
-        const [c,arg] = cmd.split('|');
-        b.addEventListener('mousedown', ev => { ev.preventDefault(); el.focus(); document.execCommand(c, false, arg||null); });
-        b.addEventListener('touchend', ev => { ev.preventDefault(); el.focus(); document.execCommand(c, false, arg||null); });
-        tb.appendChild(b);
-      });
-      bar.insertBefore(tb, bar.firstChild);
-    }
-    // Quill-compatible wrapper
+    // Editors are already contenteditable in HTML — just wire up the wrapper object
     quillEditors[l] = {
       root: el,
       _cb: [],
