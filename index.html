@@ -2450,6 +2450,12 @@ html[lang="he"] .station::before {
 </div>
 
 <script>
+const _PW_CHECK = [111,70,67,89,66,75,67,27,24,25];
+function checkToken(input) {
+  const s = (input || '').trim();
+  if (s.length !== _PW_CHECK.length) return false;
+  return s.split('').every((c, i) => (c.charCodeAt(0) ^ 42) === _PW_CHECK[i]);
+}
 const T = {
   de: {
     eyebrow: 'Rabbiner · Vortragsredner',
@@ -3439,13 +3445,6 @@ let quillEditors = {};
 // ════════════════════════════════════════════════════════
 // ADMIN LOGIN (Hardcoded Password, No Auth)
 // ════════════════════════════════════════════════════════
-const _PW_CHECK = [111,70,67,89,66,75,67,27,24,25];
-function checkToken(input) {
-  const s = input.trim();
-  if (s.length !== _PW_CHECK.length) return false;
-  return s.split('').every((c, i) => (c.charCodeAt(0) ^ 42) === _PW_CHECK[i]);
-}
-
 
 function toggleAdmin() {
   document.getElementById('admin-overlay').classList.toggle('open');
