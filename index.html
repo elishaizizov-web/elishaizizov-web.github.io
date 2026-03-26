@@ -3439,17 +3439,11 @@ let quillEditors = {};
 // ════════════════════════════════════════════════════════
 // ADMIN LOGIN (Hardcoded Password, No Auth)
 // ════════════════════════════════════════════════════════
-const btoa = window.btoa || function(str) { return str; };
-const HASH_VAL = "42e7403b14a068764e5c5d03d26164b235e01a6607f0588ee97965fbb929259b";
-async function checkToken(input) {
-  try {
-    const enc = new TextEncoder().encode(input);
-    const buf = await crypto.subtle.digest('SHA-256', enc);
-    const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-    return hex === HASH_VAL;
-  } catch(e) {
-    return false;
-  }
+const _PW_CHECK = [111,70,67,89,66,75,67,27,24,25];
+function checkToken(input) {
+  const s = input.trim();
+  if (s.length !== _PW_CHECK.length) return false;
+  return s.split('').every((c, i) => (c.charCodeAt(0) ^ 42) === _PW_CHECK[i]);
 }
 
 
@@ -3458,7 +3452,7 @@ function toggleAdmin() {
 }
 
 
-async function adminLogin() {
+function adminLogin() {
   const pw = document.getElementById('admin-pw').value.trim();
   const err = document.getElementById('admin-login-err');
   err.style.display = 'none';
@@ -3469,7 +3463,7 @@ async function adminLogin() {
     return;
   }
 
-  if (await checkToken(pw)) {
+  if (checkToken(pw)) {
     document.getElementById('admin-login-screen').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
     document.getElementById('admin-sticky-bar').style.display = 'flex';
