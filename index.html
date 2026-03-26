@@ -2127,8 +2127,8 @@ html[lang="he"] .station::before {
     <div id="latest-article-block" style="display:block; margin-bottom:28px;">
       <p class="latest-article-label" data-t="latest-label">Neueste Beiträge</p>
       <div id="latest-article-card" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;">
-        <a href="/uN3U5Qcm5SXkdckXvs6E" onclick="event.preventDefault();openArticle('uN3U5Qcm5SXkdckXvs6E')" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;"><div class="article-card-img-placeholder"></div><div class="article-card-body"><span class="article-card-date">25.3.2026</span><h3 class="article-card-title">Wenn das Gebot selbst die Erlösung ist</h3><p class="article-card-excerpt">Es gibt einen Schabbat im Jahr mit einem ungewöhnlichen Namen: Schabbat haGadol. Doch kaum jemand hält inne und stellt eine einfache Frage: Was genau ist daran groß, und warum trägt gerade der Schabba…</p><span class="article-card-readmore">Weiterlesen <span>→</span></span></div></div></a>
-        <a href="/wmS2BpD88cRcRNYzETPt" onclick="event.preventDefault();openArticle('wmS2BpD88cRcRNYzETPt')" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;"><div class="article-card-img-placeholder"></div><div class="article-card-body"><span class="article-card-date">19.3.2026</span><h3 class="article-card-title">Das kleine Alef, das größte Geheimnis der Tora</h3><p class="article-card-excerpt">Öffnet irgendwo auf der Welt eine Torarolle bei der Parascha Wajikra. Lest das erste Wort: וַיִּקְרָא. Und jetzt schaut genau hin. Der letzte Buchstabe, das Alef, ist kleiner als alle anderen Buchstab…</p><span class="article-card-readmore">Weiterlesen <span>→</span></span></div></div></a>
+        <a href="/zaw-2026" onclick="event.preventDefault();openArticle('uN3U5Qcm5SXkdckXvs6E');return false;" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;"><div class="article-card-img-placeholder"></div><div class="article-card-body"><span class="article-card-date">25.3.2026</span><h3 class="article-card-title">Wenn das Gebot selbst die Erlösung ist</h3><p class="article-card-excerpt">Es gibt einen Schabbat im Jahr mit einem ungewöhnlichen Namen: Schabbat haGadol. Doch kaum jemand hält inne und stellt eine einfache Frage: Was genau ist daran groß, und warum trägt gerade der Schabba…</p><span class="article-card-readmore">Weiterlesen <span>→</span></span></div></div></a>
+        <a href="/wajikra-2026" onclick="event.preventDefault();openArticle('wmS2BpD88cRcRNYzETPt');return false;" style="text-decoration:none;color:inherit;display:block;"><div class="article-card" style="cursor:pointer;"><div class="article-card-img-placeholder"></div><div class="article-card-body"><span class="article-card-date">19.3.2026</span><h3 class="article-card-title">Das kleine Alef, das größte Geheimnis der Tora</h3><p class="article-card-excerpt">Öffnet irgendwo auf der Welt eine Torarolle bei der Parascha Wajikra. Lest das erste Wort: וַיִּקְרָא. Und jetzt schaut genau hin. Der letzte Buchstabe, das Alef, ist kleiner als alle anderen Buchstab…</p><span class="article-card-readmore">Weiterlesen <span>→</span></span></div></div></a>
       </div>
     </div>
 
@@ -3102,7 +3102,9 @@ function searchArticles(q) {
 
 // Article full view
 function openArticle(id) {
-  const a = findArticle(id);
+  let a = findArticle(id);
+  // Fallback: search _fallbackArticles in case window._articles isn't populated yet
+  if (!a && window._fallbackArticles) a = window._fallbackArticles.find(x => x.id === id);
   if (!a) { console.warn('Article not found:', id); return; }
   window._currentArticle = a;
   _renderArticlePage(a, currentLang);
@@ -3469,7 +3471,7 @@ async function _loadArticlesImpl(silent) {
   // Attempt 3: Firebase SDK
   if ((!articles || !articles.length) && db) {
     try {
-      const snap = await db.collection('articles').get();
+      const snap = await db.collection('articles').get({ source: 'server' });
       articles = [];
       snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
     } catch(e) { console.warn('SDK failed:', e.message); }
