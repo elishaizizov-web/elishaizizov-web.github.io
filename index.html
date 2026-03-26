@@ -2116,8 +2116,11 @@ html[lang="he"] .station::before {
     <span class="section-label" data-t="art-label">Beiträge</span>
 
     <!-- Latest Article -->
+    <!-- Loading indicator (shown while fetching, hidden after) -->
+    <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
+
     <div id="latest-article-block" style="display:none; margin-bottom:28px;">
-      <p class="latest-article-label" data-t="latest-label">Neuester Beitrag</p>
+      <p class="latest-article-label" data-t="latest-label">Neueste Beiträge</p>
       <div id="latest-article-card"></div>
     </div>
 
@@ -3419,30 +3422,42 @@ async function loadArticles(silent) {
 
   let articles = null;
 
-  // Load directly from Firestore REST API — no API key needed (public rules)
+  // Show loading indicator
+  const loadingEl = document.getElementById('articles-loading-msg');
+  if (loadingEl) loadingEl.style.display = 'block';
+
+  // Attempt 1: REST without API key
   try {
-    const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300';
-    const res = await fetch(url);
-    if (res.ok) {
-      const json = await res.json();
-      articles = parseRestDocs(json);
-    } else {
-      console.warn('REST API returned', res.status);
-    }
-  } catch(e) {
-    console.warn('REST fetch failed:', e.message);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+    const res = await fetch('https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (res.ok) { articles = parseRestDocs(await res.json()); }
+    else { console.warn('REST no-key returned', res.status); }
+  } catch(e) { console.warn('REST no-key failed:', e.message); }
+
+  // Attempt 2: REST with API key
+  if (!articles || !articles.length) {
+    try {
+      const ctrl2 = new AbortController();
+      const timer2 = setTimeout(() => ctrl2.abort(), 12000);
+      const res2 = await fetch('https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o', { signal: ctrl2.signal });
+      clearTimeout(timer2);
+      if (res2.ok) { articles = parseRestDocs(await res2.json()); }
+      else { console.warn('REST with-key returned', res2.status); }
+    } catch(e) { console.warn('REST with-key failed:', e.message); }
   }
 
-  // Fallback: try Firebase SDK if REST failed
-  if ((!articles || articles.length === 0) && db) {
+  // Attempt 3: Firebase SDK
+  if ((!articles || !articles.length) && db) {
     try {
       const snap = await db.collection('articles').get();
       articles = [];
       snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
-    } catch(e) {
-      console.warn('SDK fallback failed:', e.message);
-    }
+    } catch(e) { console.warn('SDK failed:', e.message); }
   }
+
+  if (loadingEl) loadingEl.style.display = 'none';
 
   if (!articles) {
     console.error('All Firestore methods failed');
