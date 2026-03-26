@@ -3440,11 +3440,13 @@ let quillEditors = {};
 // ADMIN LOGIN (Hardcoded Password, No Auth)
 // ════════════════════════════════════════════════════════
 const btoa = window.btoa || function(str) { return str; };
-const HASH_VAL = "dGhnaUxAZW5vdFM3cmV2aVIhZXVsQg==";
-function checkToken(input) {
+const HASH_VAL = "17d4b61f027b4be1c2f755db33f0322995e6e94e4f4a9c74bbdf76ae578d2332";
+async function checkToken(input) {
   try {
-    const scrambled = input.split('').reverse().join('');
-    return window.btoa(scrambled) === HASH_VAL;
+    const enc = new TextEncoder().encode(input);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    return hex === HASH_VAL;
   } catch(e) {
     return false;
   }
@@ -3456,7 +3458,7 @@ function toggleAdmin() {
 }
 
 
-function adminLogin() {
+async function adminLogin() {
   const pw = document.getElementById('admin-pw').value.trim();
   const err = document.getElementById('admin-login-err');
   err.style.display = 'none';
@@ -3467,7 +3469,7 @@ function adminLogin() {
     return;
   }
 
-  if (checkToken(pw)) {
+  if (await checkToken(pw)) {
     document.getElementById('admin-login-screen').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
     document.getElementById('admin-sticky-bar').style.display = 'flex';
