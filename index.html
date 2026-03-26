@@ -3337,23 +3337,20 @@ async function loadArticles(silent) {
 
   let articles = null;
 
-  // Try Firebase JS SDK first
+  // Try Firebase JS SDK first (single attempt — no slow retry loop)
   if (db) {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const snap = await db.collection('articles').get();
-        articles = [];
-        snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
-        break;
-      } catch(e) {
-        console.warn('SDK attempt', attempt+1, 'failed:', e.message);
-        if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
-      }
+    try {
+      const snap = await db.collection('articles').get({ source: 'server' });
+      articles = [];
+      snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
+    } catch(e) {
+      console.warn('SDK fetch failed:', e.message);
+      articles = null;
     }
   }
 
-  // Fallback: Firestore REST API (works even when SDK is blocked)
-  if (!articles) {
+  // Fallback: Firestore REST API — also runs if SDK returned 0 docs (cache miss / offline)
+  if (!articles || articles.length === 0) {
     try {
       const url = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=300&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
       const res = await fetch(url);
