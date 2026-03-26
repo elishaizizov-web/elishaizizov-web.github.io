@@ -3390,6 +3390,8 @@ async function loadArticles(silent) {
     renderBooks();
     renderHagim();
     renderLatestArticle();
+    // If admin is open, refresh the list too
+    if (document.getElementById('admin-content')?.style.display !== 'none') renderAdminList();
     // Support: sessionStorage redirect (from 404.html), path-based, and old ?article= links
     const redirectSlug = sessionStorage.getItem('redirect_article');
     if (redirectSlug) {
@@ -3898,8 +3900,11 @@ function renderAdminList() {
     </div>`;
   }).join('');
 }
+// Load articles immediately (DOM elements needed are defined before this script)
+// Also via DOMContentLoaded as safety net for late-parsed elements
+loadArticles();
 document.addEventListener('DOMContentLoaded', () => {
-  loadArticles();
+  if (!window._articles.length) loadArticles();
 });
 window.addEventListener('beforeunload', e => {
   const content = document.getElementById('admin-content');
