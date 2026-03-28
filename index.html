@@ -1043,8 +1043,9 @@ html[lang="he"] .station::before {
     #ap-img { width:100%; max-height:380px; object-fit:cover; display:block; }
     /* print-only logo */
     .ap-print-logo { display: none; }
-    #ap-text { font-size:16px; line-height:1.9; color:var(--text-soft); font-weight:300; }
-    #ap-text p { margin-bottom:18px; }
+    #ap-text { font-size:16px; line-height:1.9; color:var(--text-soft); font-weight:300; font-family:'Source Serif 4',Georgia,serif; }
+    #ap-text p { margin-bottom:18px; font-size:16px; line-height:1.9; color:var(--text-soft); font-weight:300; font-family:'Source Serif 4',Georgia,serif; }
+    #ap-text span { font-family:'Source Serif 4',Georgia,serif !important; font-size:16px !important; color:inherit !important; }
     #ap-text h1,#ap-text h2,#ap-text h3 { font-family:'Playfair Display',serif; color:var(--text); margin:28px 0 10px; }
     #ap-text strong { font-weight:600; color:var(--text); }
     #ap-text em { font-style:italic; }
@@ -2117,7 +2118,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v98</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v99</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
@@ -3183,6 +3184,9 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
   const cleanedText = (tr.text || '')
+    .replace(/font-family:[^;"']*/gi, '')
+    .replace(/font-size:\s*\d+(\.\d+)?(px|pt|em|rem)[^;"']*/gi, '')
+    .replace(/color:\s*(?:rgb\([^)]+\)|#[0-9a-fA-F]{3,6}|[a-z]+)[^;"']*/gi, '')
     .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>')
     .replace(/<p><br\s*\/?><\/p>/gi, '<div class="art-spacer"></div>');
   document.getElementById('ap-text').innerHTML  = cleanedText;
