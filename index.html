@@ -3292,7 +3292,11 @@ function _renderArticlePage(a, l) {
           if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
         }
         if (firstCharIdx >= 0) {
-          firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+          const firstChar = html[firstCharIdx];
+          const isHebrewOrArabic = /[\u0590-\u05FF\u0600-\u06FF]/.test(firstChar);
+          if (!isHebrewOrArabic) {
+            firstP.innerHTML = '<span class="drop-cap">' + firstChar + '</span>' + html.slice(firstCharIdx + 1);
+          }
         }
       }
     }
