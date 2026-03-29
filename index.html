@@ -1070,8 +1070,12 @@ html[lang="he"] .station::before {
       padding:0;
       display:block;
     }
+    .drop-cap-rtl {
+      float:right; margin:0.08em 0 -0.05em 0.07em;
+    }
     @media(max-width:640px){
       .drop-cap { font-size:4.2em; line-height:0.72; margin:0.06em 0.07em -0.02em 0; }
+      .drop-cap-rtl { margin:0.06em 0 -0.02em 0.07em; }
     }
     /* Lead paragraph — same weight as rest, only slightly larger */
     #ap-text > p:first-child { font-size:1.02em !important; color:var(--text-soft) !important; font-weight:300 !important; }
@@ -2153,7 +2157,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v108</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v109</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
@@ -3266,18 +3270,30 @@ function _renderArticlePage(a, l) {
   apTextEl.style.textAlign = isRTL ? 'right' : 'left';
   apTextEl.classList.toggle('ap-rtl', isRTL);
   // Drop cap: find first non-empty <p> and wrap first letter in span
-  if (!isRTL) {
+  {
     const firstP = Array.from(apTextEl.querySelectorAll('p')).find(p => p.textContent.trim().length > 1);
     if (firstP) {
       const html = firstP.innerHTML;
       let firstCharIdx = -1, inTag = false;
-      for (let i = 0; i < html.length; i++) {
-        if (html[i] === '<') { inTag = true; continue; }
-        if (html[i] === '>') { inTag = false; continue; }
-        if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
-      }
-      if (firstCharIdx >= 0) {
-        firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+      if (isRTL) {
+        // Hebrew: find last visible character (rightmost = first in RTL)
+        for (let i = html.length - 1; i >= 0; i--) {
+          if (html[i] === '>') { inTag = true; continue; }
+          if (html[i] === '<') { inTag = false; continue; }
+          if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
+        }
+        if (firstCharIdx >= 0) {
+          firstP.innerHTML = html.slice(0, firstCharIdx) + '<span class="drop-cap drop-cap-rtl">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+        }
+      } else {
+        for (let i = 0; i < html.length; i++) {
+          if (html[i] === '<') { inTag = true; continue; }
+          if (html[i] === '>') { inTag = false; continue; }
+          if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
+        }
+        if (firstCharIdx >= 0) {
+          firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+        }
       }
     }
   }
