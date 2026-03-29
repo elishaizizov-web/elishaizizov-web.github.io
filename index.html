@@ -1060,9 +1060,18 @@ html[lang="he"] .station::before {
     }
     /* Drop cap — injected as <span> by JS */
     .drop-cap {
-      font-family:'Playfair Display',serif; font-size:4.8em; font-weight:700;
-      color:var(--navy); float:left; line-height:0.75; margin:0.06em 0.09em 0 0; padding:0;
-      display:inline;
+      font-family:'Playfair Display',serif;
+      font-size:5.8em;
+      font-weight:700;
+      color:var(--navy);
+      float:left;
+      line-height:0.68;
+      margin:0.08em 0.07em -0.05em 0;
+      padding:0;
+      display:block;
+    }
+    @media(max-width:640px){
+      .drop-cap { font-size:4.2em; line-height:0.72; margin:0.06em 0.07em -0.02em 0; }
     }
     /* Lead paragraph — same weight as rest, only slightly larger */
     #ap-text > p:first-child { font-size:1.02em !important; color:var(--text-soft) !important; font-weight:300 !important; }
@@ -2144,7 +2153,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v107</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v108</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
