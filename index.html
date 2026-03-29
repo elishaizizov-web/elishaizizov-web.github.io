@@ -27,7 +27,7 @@
 <script type="application/ld+json" id="seo-jsonld">{"@context":"https://schema.org","@type":"Person","name":"Rabbi Elishai Zizov","url":"https://elishaizizov.com","image":"https://elishaizizov.com/logo.png","jobTitle":"Rabbi, Lecturer","worksFor":{"@type":"Organization","name":"Bait Sfaradi Frankfurt am Main"},"address":{"@type":"PostalAddress","addressLocality":"Frankfurt am Main","addressCountry":"DE"},"sameAs":["https://www.instagram.com/elishaizizov","https://www.facebook.com/share/1AdfNooWwL/"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1060,7 +1060,7 @@ html[lang="he"] .station::before {
     }
     /* Drop cap — injected as <span> by JS */
     .drop-cap {
-      font-family:'Playfair Display','Frank Ruhl Libre','David Libre',serif !important;
+      font-family:'Playfair Display',serif !important;
       font-size:5.8em !important;
       font-weight:700 !important;
       color:var(--navy) !important;
@@ -2157,7 +2157,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v112</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v110</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
@@ -3269,20 +3269,31 @@ function _renderArticlePage(a, l) {
   apTextEl.style.direction = dir;
   apTextEl.style.textAlign = isRTL ? 'right' : 'left';
   apTextEl.classList.toggle('ap-rtl', isRTL);
-  // Drop cap: find first visible character in first non-empty <p>
+  // Drop cap: find first non-empty <p> and wrap first letter in span
   {
     const firstP = Array.from(apTextEl.querySelectorAll('p')).find(p => p.textContent.trim().length > 1);
     if (firstP) {
       const html = firstP.innerHTML;
       let firstCharIdx = -1, inTag = false;
-      for (let i = 0; i < html.length; i++) {
-        if (html[i] === '<') { inTag = true; continue; }
-        if (html[i] === '>') { inTag = false; continue; }
-        if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
-      }
-      if (firstCharIdx >= 0) {
-        const cls = isRTL ? 'drop-cap drop-cap-rtl' : 'drop-cap';
-        firstP.innerHTML = '<span class="' + cls + '">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+      if (isRTL) {
+        // Hebrew: find last visible character (rightmost = first in RTL)
+        for (let i = html.length - 1; i >= 0; i--) {
+          if (html[i] === '>') { inTag = true; continue; }
+          if (html[i] === '<') { inTag = false; continue; }
+          if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
+        }
+        if (firstCharIdx >= 0) {
+          firstP.innerHTML = html.slice(0, firstCharIdx) + '<span class="drop-cap drop-cap-rtl">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+        }
+      } else {
+        for (let i = 0; i < html.length; i++) {
+          if (html[i] === '<') { inTag = true; continue; }
+          if (html[i] === '>') { inTag = false; continue; }
+          if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
+        }
+        if (firstCharIdx >= 0) {
+          firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+        }
       }
     }
   }
