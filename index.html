@@ -1060,12 +1060,12 @@ html[lang="he"] .station::before {
     }
     /* Drop cap — injected as <span> by JS */
     .drop-cap {
-      font-family:'Playfair Display',serif; font-size:5em; font-weight:700;
-      color:var(--navy); float:left; line-height:0.72; margin:0.04em 0.1em 0 0; padding:0;
-      display:block;
+      font-family:'Playfair Display',serif; font-size:4.8em; font-weight:700;
+      color:var(--navy); float:left; line-height:0.75; margin:0.06em 0.09em 0 0; padding:0;
+      display:inline;
     }
-    /* Lead paragraph */
-    #ap-text > p:first-child { font-size:1.06em !important; color:var(--text) !important; font-weight:400 !important; }
+    /* Lead paragraph — same weight as rest, only slightly larger */
+    #ap-text > p:first-child { font-size:1.02em !important; color:var(--text-soft) !important; font-weight:300 !important; }
     /* Hebrew text — heavier weight, different spacing */
     #ap-text.ap-rtl p { font-weight:400 !important; line-height:1.95 !important; }
     /* Gold ornamental divider */
@@ -2144,7 +2144,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v104</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v107</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
