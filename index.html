@@ -1058,19 +1058,22 @@ html[lang="he"] .station::before {
       #ap-text { font-size:19px; }
       #ap-text p { font-size:19px !important; }
     }
-    /* Drop cap — class added by JS for LTR only */
-    #ap-text.ap-dropcap > p:first-child::first-letter {
-      font-family:'Playfair Display',serif; font-size:5.2em; font-weight:700;
-      color:var(--navy); float:left; line-height:0.72; margin:0.04em 0.11em 0 0; padding:0;
+    /* Drop cap — injected as <span> by JS */
+    .drop-cap {
+      font-family:'Playfair Display',serif; font-size:5em; font-weight:700;
+      color:var(--navy); float:left; line-height:0.72; margin:0.04em 0.1em 0 0; padding:0;
+      display:block;
     }
     /* Lead paragraph */
-    #ap-text > p:first-child { font-size:1.06em !important; color:var(--text) !important; font-weight:350 !important; }
+    #ap-text > p:first-child { font-size:1.06em !important; color:var(--text) !important; font-weight:400 !important; }
+    /* Hebrew text — heavier weight, different spacing */
+    #ap-text.ap-rtl p { font-weight:400 !important; line-height:1.95 !important; }
     /* Gold ornamental divider */
     .ap-divider { display:flex; align-items:center; gap:14px; margin:28px 0 34px; }
     .ap-divider::before,.ap-divider::after { content:''; flex:1; height:1px; background:var(--gold); opacity:0.3; }
     .ap-divider-inner { color:var(--gold); font-size:13px; letter-spacing:0.45em; opacity:0.6; white-space:nowrap; }
-    /* End mark */
-    .ap-end-mark { text-align:center; color:var(--gold); font-size:16px; letter-spacing:0.6em; margin-top:40px; opacity:0.55; }
+    /* End rule */
+    .ap-end-rule { border:none; border-top:1px solid var(--rule); margin:40px auto 0; width:60%; opacity:0.5; }
     /* Image */
     #ap-img { box-shadow:0 8px 32px rgba(0,0,0,0.14); }
     /* ── SHARE / ACTION BAR ─── */
@@ -2141,7 +2144,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v103</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v104</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
@@ -3249,10 +3252,26 @@ function _renderArticlePage(a, l) {
     .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>')
     .replace(/<p><br\s*\/?><\/p>/gi, '<div class="art-spacer"></div>');
   const apTextEl = document.getElementById('ap-text');
-  apTextEl.innerHTML = cleanedText + '<div class="ap-end-mark">✦</div>';
+  apTextEl.innerHTML = cleanedText + '<hr class="ap-end-rule">';
   apTextEl.style.direction = dir;
   apTextEl.style.textAlign = isRTL ? 'right' : 'left';
-  apTextEl.classList.toggle('ap-dropcap', !isRTL);
+  apTextEl.classList.toggle('ap-rtl', isRTL);
+  // Drop cap: find first non-empty <p> and wrap first letter in span
+  if (!isRTL) {
+    const firstP = Array.from(apTextEl.querySelectorAll('p')).find(p => p.textContent.trim().length > 1);
+    if (firstP) {
+      const html = firstP.innerHTML;
+      let firstCharIdx = -1, inTag = false;
+      for (let i = 0; i < html.length; i++) {
+        if (html[i] === '<') { inTag = true; continue; }
+        if (html[i] === '>') { inTag = false; continue; }
+        if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
+      }
+      if (firstCharIdx >= 0) {
+        firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
+      }
+    }
+  }
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.alt = tr.title || a.title || ''; img.style.display = 'block'; } else { img.style.display = 'none'; }
   // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
@@ -4140,39 +4159,72 @@ function downloadArticlePDF() {
   const title = tr.title || a.title || '';
   const text  = tr.text  || a.text  || '';
   const isRTL = (l === 'he');
-
   const logoUrl = window.location.origin + '/logo.png';
-  const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html lang="${l}" dir="${isRTL?'rtl':'ltr'}"><head>
-<meta charset="UTF-8">
-<title>${title.replace(/</g,'&lt;')}</title>
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+  // Build drop cap for PDF
+  let pdfText = text;
+  if (!isRTL) {
+    pdfText = pdfText.replace(/^(\s*<p[^>]*>)(\s*)([^<\s])/, (m, tag, sp, ch) =>
+      tag + sp + '<span class="drop-cap">' + ch + '</span>');
+  }
+
+  const htmlStr = `<!DOCTYPE html><html lang="${l}" dir="${isRTL?'rtl':'ltr'}"><head>
+<meta charset="UTF-8"><title>${title.replace(/</g,'&lt;')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Raleway:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Source Serif 4',Georgia,serif;color:#1a1a1a;background:#fff;padding:20mm 22mm;font-size:11.5pt;line-height:1.75}
-  .pdf-logo{text-align:center;padding-bottom:16px;margin-bottom:20px;border-bottom:1.5px solid #b8952a}
-  .pdf-logo img{height:70px;width:auto;display:block;margin:0 auto 6px}
-  .pdf-logo-name{font-family:'Raleway',sans-serif;font-size:9pt;letter-spacing:.2em;text-transform:uppercase;color:#444}
-  .parasha{font-family:'Raleway',sans-serif;font-size:9pt;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:8px;margin-top:18px}
-  h1{font-size:20pt;font-weight:700;margin-bottom:18px;line-height:1.3}
-  .date{font-size:8.5pt;color:#888;letter-spacing:.12em;font-family:'Raleway',sans-serif;text-transform:uppercase;margin-bottom:10px}
-  img.article-img{max-width:100%;height:auto;display:block;margin-bottom:18px}
-  p{margin-bottom:12px}
-  .footer{margin-top:40px;padding-top:12px;border-top:1px solid #ddd;text-align:center;font-size:8pt;color:#999;font-family:'Raleway',sans-serif;letter-spacing:.08em}
-  @media print{body{padding:15mm 18mm}@page{margin:0}}
+  body{font-family:'Source Serif 4',Georgia,serif;color:#1a1a1a;background:#fff;padding:18mm 22mm;font-size:11.5pt;line-height:1.8;direction:${isRTL?'rtl':'ltr'}}
+  .pdf-header{text-align:center;padding-bottom:14px;margin-bottom:22px;border-bottom:1.5px solid #b8952a}
+  .pdf-header img{height:60px;width:auto;display:block;margin:0 auto 6px}
+  .pdf-site{font-family:'Raleway',sans-serif;font-size:8pt;letter-spacing:.22em;text-transform:uppercase;color:#888}
+  .parasha{font-family:'Raleway',sans-serif;font-size:8.5pt;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin:16px 0 8px}
+  h1{font-family:'Playfair Display',serif;font-size:22pt;font-weight:700;margin-bottom:14px;line-height:1.2;color:#1a2744}
+  .divider{display:flex;align-items:center;gap:10px;margin:14px 0 18px}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:#b8952a;opacity:.35}
+  .divider span{color:#b8952a;font-size:10pt;letter-spacing:.35em;opacity:.6}
+  .date{font-size:8pt;color:#999;letter-spacing:.12em;font-family:'Raleway',sans-serif;text-transform:uppercase;margin-bottom:14px}
+  img.art-img{max-width:100%;max-height:200px;object-fit:cover;display:block;margin-bottom:16px;width:100%}
+  p{margin-bottom:10px;font-size:11.5pt;line-height:1.8;font-weight:300}
+  .drop-cap{font-family:'Playfair Display',serif;font-size:4.5em;font-weight:700;color:#1a2744;float:left;line-height:0.72;margin:0.04em 0.1em 0 0}
+  .footer{margin-top:36px;padding-top:10px;border-top:1px solid #e5e7eb;text-align:center;font-size:7.5pt;color:#aaa;font-family:'Raleway',sans-serif;letter-spacing:.1em}
+  @media print{body{padding:12mm 16mm}@page{size:A4;margin:0}}
 </style></head><body>
-<div class="pdf-logo">
+<div class="pdf-header">
   <img src="${logoUrl}" crossorigin="anonymous">
+  <div class="pdf-site">elishaizizov.com</div>
 </div>
 ${a._parashaDisplay ? `<div class="parasha">${a._parashaDisplay}</div>` : ''}
 <h1>${title.replace(/</g,'&lt;')}</h1>
-${a.image ? `<img class="article-img" src="${a.image}" crossorigin="anonymous">` : ''}
+<div class="divider"><span>✦ &nbsp; ✦ &nbsp; ✦</span></div>
 ${a.date ? `<div class="date">${a.date}</div>` : ''}
-<div>${text}</div>
+${a.image ? `<img class="art-img" src="${a.image}" crossorigin="anonymous">` : ''}
+<div>${pdfText}</div>
 <div class="footer">Rabbiner Elishai Zizov &mdash; elishaizizov.com</div>
 <script>window.onload=function(){window.print();}<\/script>
-</body></html>`);
-  w.document.close();
+</body></html>`;
+
+  // Try popup (desktop/Android); fall back to srcdoc iframe for iOS Safari
+  let opened = false;
+  try {
+    const w = window.open('', '_blank');
+    if (w) {
+      w.document.write(htmlStr);
+      w.document.close();
+      opened = true;
+    }
+  } catch(e) {}
+
+  if (!opened) {
+    const frame = document.createElement('iframe');
+    frame.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:none;';
+    document.body.appendChild(frame);
+    frame.srcdoc = htmlStr;
+    frame.addEventListener('load', function() {
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+      setTimeout(() => frame.remove(), 2000);
+    });
+  }
 }
 
 async function autoTranslateFree() { // placeholder — not used
