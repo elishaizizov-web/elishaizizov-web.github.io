@@ -981,7 +981,7 @@ html[lang="he"] .station::before {
   margin: 0 0 0.6em 0;
 }
 .art-spacer {
-  height: 0.15em;
+  height: 0.6em;
 }
 .article-full-share {
   margin-top: 28px;
@@ -1034,48 +1034,25 @@ html[lang="he"] .station::before {
       padding: 10px 0 14px; margin-bottom: 0; }
     #ap-parasha { font-family:'Raleway',sans-serif; font-size:12px; font-weight:700;
       letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; margin-top:18px; }
-    #ap-title { font-family: 'Playfair Display',serif; font-size: clamp(30px,4.5vw,52px);
-      font-weight: 600; color: var(--text); margin-bottom: 24px; line-height: 1.2; }
-    .ap-img-wrap { position: relative; margin-bottom: 0; }
+    #ap-title { font-family: 'Playfair Display',serif; font-size: clamp(26px,4vw,38px);
+      font-weight: 500; color: var(--text); margin-bottom: 20px; line-height: 1.25; }
+    .ap-img-wrap { position: relative; margin-bottom: 32px; }
     #ap-date { font-family: 'Raleway',sans-serif; font-size: 9px; font-weight: 600;
       letter-spacing: .18em; text-transform: uppercase; color: var(--text-soft);
-      display: block; margin-bottom: 12px; opacity: 0.7; }
-    #ap-img { width:100%; max-height:480px; object-fit:cover; display:block; }
+      display: block; margin-bottom: 8px; opacity: 0.7; }
+    #ap-img { width:100%; max-height:380px; object-fit:cover; display:block; }
     /* print-only logo */
     .ap-print-logo { display: none; }
     /* Reading progress bar */
     #ap-progress { position:fixed; top:0; left:0; height:3px; background:var(--gold); width:0%; z-index:9999; transition:width 0.15s linear; pointer-events:none; opacity:0; }
     #ap-progress.visible { opacity:1; }
-    #ap-text { font-size:16px; line-height:1.8; color:var(--text-soft); font-weight:300; font-family:'Source Serif 4',Georgia,serif; }
-    #ap-text p { margin-bottom:10px !important; font-size:16px !important; line-height:1.8 !important; color:var(--text-soft) !important; font-weight:300 !important; font-family:'Source Serif 4',Georgia,serif !important; }
+    #ap-text { font-size:16px; line-height:1.9; color:var(--text-soft); font-weight:300; font-family:'Source Serif 4',Georgia,serif; }
+    #ap-text p { margin-bottom:18px !important; font-size:16px !important; line-height:1.9 !important; color:var(--text-soft) !important; font-weight:300 !important; font-family:'Source Serif 4',Georgia,serif !important; }
     #ap-text span { font-family:'Source Serif 4',Georgia,serif !important; font-size:inherit !important; font-weight:300 !important; color:var(--text-soft) !important; }
     #ap-text h1,#ap-text h2,#ap-text h3 { font-family:'Playfair Display',serif; color:var(--text); margin:28px 0 10px; }
     #ap-text strong, #ap-text b { font-weight:600 !important; color:var(--text) !important; }
     #ap-text em { font-style:italic; }
-    #ap-text blockquote { border-left:3px solid var(--gold); margin:24px 0; padding:14px 22px; color:var(--text); font-style:italic; background:rgba(184,149,42,0.04); }
-    /* Larger text on desktop/tablet */
-    @media(min-width:768px) {
-      #ap-text { font-size:19px; }
-      #ap-text p { font-size:19px !important; }
-    }
-    /* Drop cap — injected as <span> by JS */
-    .drop-cap {
-      font-family:'Playfair Display',serif; font-size:5em; font-weight:700;
-      color:var(--navy); float:left; line-height:0.72; margin:0.04em 0.1em 0 0; padding:0;
-      display:block;
-    }
-    /* Lead paragraph */
-    #ap-text > p:first-child { font-size:1.06em !important; color:var(--text) !important; font-weight:400 !important; }
-    /* Hebrew text — heavier weight, different spacing */
-    #ap-text.ap-rtl p { font-weight:400 !important; line-height:1.95 !important; }
-    /* Gold ornamental divider */
-    .ap-divider { display:flex; align-items:center; gap:14px; margin:28px 0 34px; }
-    .ap-divider::before,.ap-divider::after { content:''; flex:1; height:1px; background:var(--gold); opacity:0.3; }
-    .ap-divider-inner { color:var(--gold); font-size:13px; letter-spacing:0.45em; opacity:0.6; white-space:nowrap; }
-    /* End rule */
-    .ap-end-rule { border:none; border-top:1px solid var(--rule); margin:40px auto 0; width:60%; opacity:0.5; }
-    /* Image */
-    #ap-img { box-shadow:0 8px 32px rgba(0,0,0,0.14); }
+    #ap-text blockquote { border-left:3px solid var(--gold); margin:24px 0; padding:12px 20px; color:var(--text-soft); font-style:italic; }
     /* ── SHARE / ACTION BAR ─── */
     #ap-share {
       margin-top: 52px; padding-top: 32px;
@@ -2144,7 +2121,7 @@ html[lang="he"] .station::before {
 
     <!-- Latest Article -->
     <!-- v91 build indicator -->
-    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v104</div>
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v105</div>
     <!-- Loading indicator (shown while fetching, hidden after) -->
     <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
     <div style="text-align:center; margin-bottom:8px;">
@@ -2306,7 +2283,6 @@ html[lang="he"] .station::before {
     <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
     <img id="ap-img" src="" alt="" style="display:none">
   </div>
-  <div class="ap-divider"><span class="ap-divider-inner">✦ &nbsp; ✦ &nbsp; ✦</span></div>
   <div id="ap-text"></div>
   <div id="ap-share"></div>
   <div id="ap-related"></div>
@@ -3252,26 +3228,9 @@ function _renderArticlePage(a, l) {
     .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>')
     .replace(/<p><br\s*\/?><\/p>/gi, '<div class="art-spacer"></div>');
   const apTextEl = document.getElementById('ap-text');
-  apTextEl.innerHTML = cleanedText + '<hr class="ap-end-rule">';
+  apTextEl.innerHTML = cleanedText;
   apTextEl.style.direction = dir;
   apTextEl.style.textAlign = isRTL ? 'right' : 'left';
-  apTextEl.classList.toggle('ap-rtl', isRTL);
-  // Drop cap: find first non-empty <p> and wrap first letter in span
-  if (!isRTL) {
-    const firstP = Array.from(apTextEl.querySelectorAll('p')).find(p => p.textContent.trim().length > 1);
-    if (firstP) {
-      const html = firstP.innerHTML;
-      let firstCharIdx = -1, inTag = false;
-      for (let i = 0; i < html.length; i++) {
-        if (html[i] === '<') { inTag = true; continue; }
-        if (html[i] === '>') { inTag = false; continue; }
-        if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
-      }
-      if (firstCharIdx >= 0) {
-        firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
-      }
-    }
-  }
   const img = document.getElementById('ap-img');
   if (a.image) { img.src = a.image; img.alt = tr.title || a.title || ''; img.style.display = 'block'; } else { img.style.display = 'none'; }
   // Update OG meta tags so WhatsApp/Telegram use the article URL when shared
