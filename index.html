@@ -3895,11 +3895,12 @@ async function adminSave() {
       // Update local cache immediately
       const idx = window._articles.findIndex(a => a.id === window._editingId);
       if (idx !== -1) window._articles[idx] = { id: window._editingId, ...docData, createdAt: window._articles[idx].createdAt };
+      const updatedArticle = window._articles[idx] || { id: window._editingId, ...docData };
       document.getElementById('admin-edit-banner').style.display = 'none';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
       clearDraft();
-      updateSitemapOnGitHub();
+      updateSitemapOnGitHub(updatedArticle);
       showToast('✓ Artikel aktualisiert!', 'success');
       msg.textContent = '';
     } else {
@@ -3908,7 +3909,7 @@ async function adminSave() {
       // Add to local cache immediately so the article is visible right away
       const newArticle = { id: ref.id, ...docData, createdAt: { seconds: Date.now()/1000 } };
       window._articles.unshift(newArticle);
-      updateSitemapOnGitHub();
+      updateSitemapOnGitHub(newArticle);
       showToast('✓ Artikel veröffentlicht!', 'success');
       msg.textContent = '';
     }
@@ -4230,28 +4231,129 @@ function generateSitemapXml(articles) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
 }
 
-async function updateSitemapOnGitHub() {
+async function updateSitemapOnGitHub(newArticle) {
   try {
     const token = await getGitHubToken();
     if (!token) return;
     const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+
+    // 1. Update sitemap.xml
     const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${SITEMAP_PATH}`;
-    // Get current file SHA
     let sha = null;
     try {
       const res = await fetch(apiUrl, { headers });
       if (res.ok) { const data = await res.json(); sha = data.sha; }
     } catch(e) {}
-    // Generate new sitemap
     const xml = generateSitemapXml(window._articles || []);
-    const content = btoa(unescape(encodeURIComponent(xml)));
-    const body = { message: 'Auto-update sitemap.xml', content, branch: 'main' };
-    if (sha) body.sha = sha;
-    await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
-    // Ping search engines
+    const sitemapBody = { message: 'Auto-update sitemap.xml', content: btoa(unescape(encodeURIComponent(xml))), branch: 'main' };
+    if (sha) sitemapBody.sha = sha;
+    await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(sitemapBody) });
+
+    // 2. Create static SEO page for the new/updated article
+    if (newArticle) await createArticleStaticPage(newArticle, headers);
+
+    // 3. Ping search engines
     fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode:'no-cors' }).catch(()=>{});
     fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode:'no-cors' }).catch(()=>{});
   } catch(e) { console.warn('Sitemap update failed:', e); }
+}
+
+function stripHtml(html) {
+  return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+async function createArticleStaticPage(a, headers) {
+  try {
+    const slug = articleSlug(a);
+    if (!slug) return;
+    const langs = ['de','he','en','fr','es','ru'];
+    const langLabels = { de:'Deutsch', he:'עברית', en:'English', fr:'Français', es:'Español', ru:'Русский' };
+    const openLabel = { de:'Vollständigen Artikel lesen', he:'לקריאת המאמר המלא', en:'Read full article', fr:'Lire l\'article complet', es:'Leer artículo completo', ru:'Читать полностью' };
+
+    for (const lang of langs) {
+      const tr = (a.translations && a.translations[lang]) ? a.translations[lang] : { title: a.title || '', text: a.text || '' };
+      const title = (tr.title || a.title || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      if (!title) continue;
+      const isRTL = lang === 'he';
+      const dir = isRTL ? 'rtl' : 'ltr';
+      const textRaw = stripHtml(tr.text || a.text || '');
+      const excerpt = textRaw.slice(0, 220).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const fullText = (tr.text || a.text || '').replace(/<script[^>]*>.*?<\/script>/gi,'');
+      const canonical = lang === 'de' ? `https://elishaizizov.com/${slug}` : `https://elishaizizov.com/${slug}?lang=${lang}`;
+      const parasha = a.hag ? a.hag : (a.parasha ? a.parasha : '');
+      const langSwitcher = langs.map(l => {
+        const lUrl = l === 'de' ? `/${slug}` : `/${slug}?lang=${l}`;
+        const active = l === lang ? 'font-weight:700;text-decoration:underline;' : '';
+        return `<a href="${lUrl}" style="color:#b8952a;text-decoration:none;${active}">${langLabels[l]}</a>`;
+      }).join(' &nbsp;·&nbsp; ');
+
+      const html = `<!DOCTYPE html>
+<html lang="${lang}" dir="${dir}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title} — Rabbiner Elishai Zizov</title>
+<meta name="description" content="${excerpt}">
+<link rel="canonical" href="${canonical}">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${excerpt}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="${canonical}">
+<meta property="og:image" content="${a.image || 'https://elishaizizov.com/logo.png'}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Serif 4',Georgia,serif;color:#1a1a1a;background:#faf9f7;direction:${dir}}
+.wrap{max-width:720px;margin:0 auto;padding:28px 20px 60px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid #e5e7eb;margin-bottom:28px;flex-wrap:wrap;gap:8px}
+.logo{height:44px;width:auto}
+.open-btn{background:#1a2744;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:600;letter-spacing:.06em;cursor:pointer;text-decoration:none;display:inline-block}
+.open-btn:hover{background:#b8952a}
+.eyebrow{font-family:'Raleway',sans-serif;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#b8952a;margin-bottom:10px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,34px);font-weight:700;line-height:1.25;color:#1a2744;margin-bottom:14px}
+.meta{font-family:'Raleway',sans-serif;font-size:11px;color:#999;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px}
+.article-body{font-size:16px;line-height:1.85;color:#444;font-weight:300}
+.article-body p{margin-bottom:12px}
+.lang-bar{margin-top:36px;padding-top:16px;border-top:1px solid #e5e7eb;font-family:'Raleway',sans-serif;font-size:12px;color:#999;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <a href="/"><img src="/logo.png" class="logo" alt="Rabbiner Elishai Zizov"></a>
+    <a href="/${slug}${lang !== 'de' ? '?lang=' + lang : ''}" class="open-btn" onclick="openFull(event,'${slug}','${lang}')">${openLabel[lang] || 'Read full article'} →</a>
+  </div>
+  ${parasha ? `<div class="eyebrow">${parasha}</div>` : ''}
+  <h1>${title}</h1>
+  ${a.date ? `<div class="meta">${a.date}</div>` : ''}
+  ${a.image ? `<img src="${a.image}" style="width:100%;max-height:320px;object-fit:cover;border-radius:8px;margin-bottom:24px;" alt="${title}">` : ''}
+  <div class="article-body">${fullText}</div>
+  <div class="lang-bar">${langSwitcher}</div>
+</div>
+<script>
+function openFull(e,slug,lang){
+  e.preventDefault();
+  if(lang&&lang!=='de') sessionStorage.setItem('redirect_lang',lang);
+  sessionStorage.setItem('redirect_article',slug);
+  window.location.href='/';
+}
+</script>
+</body>
+</html>`;
+
+      const filePath = `${slug}${lang === 'de' ? '' : '-' + lang}/index.html`;
+      const fileUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`;
+      let fileSha = null;
+      try {
+        const r = await fetch(fileUrl, { headers });
+        if (r.ok) { const d = await r.json(); fileSha = d.sha; }
+      } catch(e) {}
+      const fileBody = { message: `SEO page: ${slug} [${lang}]`, content: btoa(unescape(encodeURIComponent(html))), branch: 'main' };
+      if (fileSha) fileBody.sha = fileSha;
+      await fetch(fileUrl, { method: 'PUT', headers, body: JSON.stringify(fileBody) });
+    }
+  } catch(e) { console.warn('Static page creation failed:', e); }
 }
 
 async function checkGitHubTokenSetup() {
