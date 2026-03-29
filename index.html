@@ -2071,7 +2071,7 @@ html[lang="he"] .station::before {
 
 <div class="logo-band">
   <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
-  <a href="/" onclick="goHome(event)" style="display:flex;align-items:center;cursor:pointer;"><img src="logo.png" alt="Rabbiner Elishai Zizov"></a>
+  <img src="logo.png" alt="Rabbiner Elishai Zizov">
   <span class="logo-band-spacer"></span>
 </div>
 
@@ -3410,12 +3410,6 @@ function closeArticle(e) { /* handled by full-page nav */ }
 
 
 // Hamburger menu
-function goHome(e) {
-  e.preventDefault();
-  closeArticle();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 function toggleMenu() {
   const isOpen = document.getElementById('hmenu').classList.toggle('open');
   document.getElementById('hmenu-overlay').classList.toggle('open');
