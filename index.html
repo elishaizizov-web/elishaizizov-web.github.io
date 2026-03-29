@@ -2586,17 +2586,6 @@ html[lang="he"] .station::before {
           <div id="admin-art-list" class="admin-art-list"></div>
         </div>
 
-        <!-- ── 5. GitHub SEO Settings ── -->
-        <div class="admin-card" id="admin-github-card" style="display:none;">
-          <div class="admin-card-title">SEO – GitHub Token</div>
-          <p style="font-size:12px;color:#888;margin-bottom:8px;">Einmalig eintragen – danach wird die Sitemap automatisch aktualisiert.</p>
-          <div style="display:flex;gap:8px;">
-            <input type="password" id="admin-gh-token-input" placeholder="ghp_..." style="flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;">
-            <button onclick="saveGitHubToken()" style="background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;">Speichern</button>
-          </div>
-          <div id="admin-gh-token-status" style="font-size:12px;margin-top:6px;color:#888;"></div>
-        </div>
-
       </div>
     </div>
 
@@ -3741,7 +3730,6 @@ function adminLogin() {
     const restored = restoreDraft();
     if (restored) { setTimeout(() => showToast('📋 Entwurf wiederhergestellt', 'info'), 400); }
     renderAdminList();
-    checkGitHubTokenSetup();
     document.getElementById('admin-pw').value = '';
     setTimeout(() => document.getElementById('af-title-de')?.focus(), 300);
   } else {
@@ -3899,16 +3887,16 @@ async function adminSave() {
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
       clearDraft();
-      updateSitemapOnGitHub();
       showToast('✓ Artikel aktualisiert!', 'success');
       msg.textContent = '';
     } else {
       const ref = await db.collection('articles').add(docData);
       clearDraft();
+      fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       // Add to local cache immediately so the article is visible right away
       const newArticle = { id: ref.id, ...docData, createdAt: { seconds: Date.now()/1000 } };
       window._articles.unshift(newArticle);
-      updateSitemapOnGitHub();
+      fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode: 'no-cors' }).catch(()=>{});
       showToast('✓ Artikel veröffentlicht!', 'success');
       msg.textContent = '';
     }
@@ -4187,80 +4175,6 @@ window.addEventListener('beforeunload', e => {
 
 
 // ════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════
-// GITHUB SITEMAP AUTO-UPDATE
-// ════════════════════════════════════════════════════════
-const GITHUB_REPO = 'elishaizizov-web/elishaizizov-web.github.io';
-const SITEMAP_PATH = 'sitemap.xml';
-
-async function saveGitHubToken() {
-  const input = document.getElementById('admin-gh-token-input');
-  const status = document.getElementById('admin-gh-token-status');
-  const token = (input?.value || '').trim();
-  if (!token.startsWith('ghp_')) { status.textContent = '✗ Ungültiges Token-Format'; status.style.color='#c00'; return; }
-  try {
-    await db.collection('settings').doc('github').set({ token });
-    status.textContent = '✓ Token gespeichert!'; status.style.color='green';
-    input.value = '';
-  } catch(e) { status.textContent = '✗ Fehler: ' + e.message; status.style.color='#c00'; }
-}
-
-async function getGitHubToken() {
-  try {
-    const doc = await db.collection('settings').doc('github').get();
-    return doc.exists ? doc.data().token : null;
-  } catch(e) { return null; }
-}
-
-function generateSitemapXml(articles) {
-  const today = new Date().toISOString().split('T')[0];
-  const langs = ['de','he','en','fr','es','ru'];
-  let urls = `  <url><loc>https://elishaizizov.com/</loc><lastmod>${today}</lastmod><priority>1.0</priority></url>\n`;
-  articles.forEach(a => {
-    const slug = articleSlug(a);
-    if (!slug) return;
-    langs.forEach(lang => {
-      const loc = lang === 'de'
-        ? `https://elishaizizov.com/${slug}`
-        : `https://elishaizizov.com/${slug}?lang=${lang}`;
-      const prio = lang === 'de' ? '0.8' : '0.6';
-      urls += `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><priority>${prio}</priority></url>\n`;
-    });
-  });
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
-}
-
-async function updateSitemapOnGitHub() {
-  try {
-    const token = await getGitHubToken();
-    if (!token) return;
-    const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
-    const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${SITEMAP_PATH}`;
-    // Get current file SHA
-    let sha = null;
-    try {
-      const res = await fetch(apiUrl, { headers });
-      if (res.ok) { const data = await res.json(); sha = data.sha; }
-    } catch(e) {}
-    // Generate new sitemap
-    const xml = generateSitemapXml(window._articles || []);
-    const content = btoa(unescape(encodeURIComponent(xml)));
-    const body = { message: 'Auto-update sitemap.xml', content, branch: 'main' };
-    if (sha) body.sha = sha;
-    await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
-    // Ping search engines
-    fetch('https://www.google.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode:'no-cors' }).catch(()=>{});
-    fetch('https://www.bing.com/ping?sitemap=https://elishaizizov.com/sitemap.xml', { mode:'no-cors' }).catch(()=>{});
-  } catch(e) { console.warn('Sitemap update failed:', e); }
-}
-
-async function checkGitHubTokenSetup() {
-  const card = document.getElementById('admin-github-card');
-  if (!card) return;
-  const token = await getGitHubToken();
-  card.style.display = token ? 'none' : 'block';
-}
-
 // PDF DOWNLOAD — opens a print-ready window (handles all Unicode/German chars)
 // ════════════════════════════════════════════════════════
 function downloadArticlePDF() {
