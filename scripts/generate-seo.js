@@ -169,10 +169,24 @@ function parseFirestoreDoc(doc) {
 async function fetchAllArticles() {
   const docs = [];
   let token = null;
-  const base = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/articles?key=${API_KEY}&pageSize=300`;
+  // Try without API key first (works if Firestore rules allow public read)
+  // Fall back to with API key if needed
+  const baseNoKey = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/articles?pageSize=300`;
+  const baseWithKey = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/articles?key=${API_KEY}&pageSize=300`;
+
+  // Determine which base URL works
+  let base = baseNoKey;
+  try {
+    const test = await httpsGet(baseNoKey + '&pageSize=1');
+    if (test.error) base = baseWithKey;
+  } catch(e) {
+    base = baseWithKey;
+  }
+
   do {
     const url  = token ? `${base}&pageToken=${token}` : base;
     const data = await httpsGet(url);
+    if (data.error) throw new Error('Firestore error: ' + JSON.stringify(data.error));
     if (data.documents) docs.push(...data.documents.map(parseFirestoreDoc));
     token = data.nextPageToken || null;
   } while (token);
