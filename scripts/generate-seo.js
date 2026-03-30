@@ -213,6 +213,7 @@ function articleHtmlForLang(a, lang) {
   const seoExcerpt = escHtml(stripHtml(text).substring(0, 220));
   const seoImg     = a.image ? escHtml(a.image) : (SITE_URL + '/logo.png');
   const htmlDir    = lang === 'he' ? 'rtl' : 'ltr';
+  const siteName   = lang === 'he' ? '\u05d4\u05e8\u05d1 \u05d0\u05dc\u05d9\u05e9\u05d9 \u05d6\u05d9\u05d6\u05d5\u05d1' : 'Rabbiner Elishai Zizov';
 
   const hreflangs = LANGS.map(function(l) {
     const u = l === 'de' ? (SITE_URL + '/' + slug) : (SITE_URL + '/' + slug + '-' + l);
@@ -225,8 +226,8 @@ function articleHtmlForLang(a, lang) {
     "headline": title,
     "description": stripHtml(text).substring(0, 220),
     "datePublished": a.date || '',
-    "author": { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
-    "publisher": { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
+    "author": { "@type":"Person","name":siteName,"url":SITE_URL },
+    "publisher": { "@type":"Person","name":siteName,"url":SITE_URL },
     "url": pageUrl,
     "mainEntityOfPage": { "@type":"WebPage","@id":pageUrl },
     "inLanguage": lang
@@ -241,7 +242,7 @@ function articleHtmlForLang(a, lang) {
     '<head>\n' +
     '<meta charset="UTF-8">\n' +
     '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-    '<title>' + seoTitle + (seoTopic ? ' \u2014 ' + seoTopic : '') + ' \u2014 Rabbiner Elishai Zizov</title>\n' +
+    '<title>' + seoTitle + (seoTopic ? ' \u2014 ' + seoTopic : '') + ' \u2014 ' + siteName + '</title>\n' +
     '<meta name="description" content="' + seoExcerpt + '">\n' +
     '<link rel="canonical" href="' + escHtml(pageUrl) + '">\n' +
     '<meta property="og:title" content="' + seoTitle + '">\n' +
