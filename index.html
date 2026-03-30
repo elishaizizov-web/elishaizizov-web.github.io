@@ -3106,7 +3106,7 @@ function renderCard(a, noClick) {
   }
   const slug = articleSlug(a);
   const langParam = l !== 'de' ? '?lang=' + l : '';
-  return `<a href="/${slug}${langParam}" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
+  return `<a href="/${slug}${langParam}" data-article-id="${escHtml(a.id)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
 
 function showHagim() {
@@ -3217,12 +3217,15 @@ function openArticle(id) {
   const langQ = currentLang !== 'de' ? '?lang=' + currentLang : '';
   window.history.pushState({ articleId: slug }, '', '/' + slug + langQ);
   // switch views
-  document.querySelector('.logo-band').style.display    = 'none';
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
+  // Hide logo-band for one frame during scrollTo to prevent flash, then restore
+  const _lb = document.querySelector('.logo-band');
+  _lb.style.visibility = 'hidden';
   window.scrollTo(0, 0);
+  requestAnimationFrame(function() { _lb.style.visibility = ''; });
 }
 
 // Global delegated handler — catches both tap (touchend) and click on any article card
@@ -3395,7 +3398,6 @@ function closeArticlePage() {
   document.getElementById('lang-back-btn').style.display = 'none';
   const prog = document.getElementById('ap-progress');
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
-  document.querySelector('.logo-band').style.display     = 'flex';
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
   window.history.pushState({}, '', '/');
