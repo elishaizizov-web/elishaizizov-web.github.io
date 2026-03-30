@@ -3217,7 +3217,6 @@ function openArticle(id) {
   const langQ = currentLang !== 'de' ? '?lang=' + currentLang : '';
   window.history.pushState({ articleId: slug }, '', '/' + slug + langQ);
   // switch views
-  document.querySelector('.logo-band').style.display    = 'none';
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
@@ -3395,7 +3394,6 @@ function closeArticlePage() {
   document.getElementById('lang-back-btn').style.display = 'none';
   const prog = document.getElementById('ap-progress');
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
-  document.querySelector('.logo-band').style.display     = 'flex';
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
   window.history.pushState({}, '', '/');
