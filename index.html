@@ -3496,13 +3496,25 @@ function hmenuShowParashaLevel(book) {
     if (currentLang === 'de' && TORAH[book] && TORAH[book].de_display && TORAH[book].de_display[i]) label = TORAH[book].de_display[i];
     else if (currentLang === 'he' && TORAH[book] && TORAH[book].he && TORAH[book].he[i]) label = TORAH[book].he[i];
     else if (TORAH[book] && TORAH[book][currentLang] && TORAH[book][currentLang][i]) label = TORAH[book][currentLang][i];
-    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showParasha('${p}','${p}')">${label}</button>`;
+    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); hmenuSelectParasha('${book}','${p}','${p}')">${label}</button>`;
   }).join('');
   window._hmenuPrevBook = book;
 }
 function hmenuBackToBooks() {
   document.getElementById('hmenu-parasha-level').style.display = 'none';
   hmenuShowParashaBooksLevel();
+}
+function hmenuSelectParasha(book, pKey, pDisplay) {
+  switchTab('parasha');
+  document.getElementById('torah-nav').style.display = 'none';
+  currentBook = book;
+  showParasha(pKey, pDisplay);
+  document.getElementById('articles-section').scrollIntoView({behavior:'smooth'});
+}
+function hmenuSelectHag(hagKey, display) {
+  switchTab('hagim');
+  showHag(hagKey, display);
+  document.getElementById('articles-section').scrollIntoView({behavior:'smooth'});
 }
 function hmenuShowHagimLevel() {
   document.getElementById('hmenu-l1').style.display = 'none';
@@ -3513,7 +3525,7 @@ function hmenuShowHagimLevel() {
   list.innerHTML = HAG_KEYS.map((k, i) => {
     const hasArt = getArticles().some(a => a.hag === k);
     const label = names[i] || k;
-    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); showHag('${k}','${label}')">${label}</button>`;
+    return `<button class="hmenu-sub-item${hasArt ? ' has-articles' : ''}" onclick="closeMenu(); hmenuSelectHag('${k}','${label}')">${label}</button>`;
   }).join('');
 }
 function updateHmenuLangs(l) {
