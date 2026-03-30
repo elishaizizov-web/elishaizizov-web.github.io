@@ -2320,7 +2320,7 @@ html[lang="he"] .station::before {
     <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
     <img id="ap-img" src="" alt="" style="display:none">
   </div>
-  <div class="ap-divider"><span class="ap-divider-inner">✦ &nbsp; ✦ &nbsp; ✦</span></div>
+  <div class="ap-divider" style="display:none"><span class="ap-divider-inner">✦ &nbsp; ✦ &nbsp; ✦</span></div>
   <div id="ap-text"></div>
   <div id="ap-share"></div>
   <div id="ap-related"></div>
@@ -4409,7 +4409,6 @@ function downloadArticlePDF() {
 </div>
 ${a._parashaDisplay ? `<div class="parasha">${a._parashaDisplay}</div>` : ''}
 <h1>${title.replace(/</g,'&lt;')}</h1>
-<div class="divider"><span>✦ &nbsp; ✦ &nbsp; ✦</span></div>
 ${a.date ? `<div class="date">${a.date}</div>` : ''}
 ${a.image ? `<img class="art-img" src="${a.image}" crossorigin="anonymous">` : ''}
 <div>${pdfText}</div>
