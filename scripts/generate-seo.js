@@ -196,104 +196,109 @@ async function fetchAllArticles() {
 // ─── HTML GENERATION ─────────────────────────────────────────────────────────
 // Generates a thin redirect page: meta/SEO tags visible to Google in <head>,
 // JS redirect sends real users straight to the SPA.
-function articleHtml(a) {
-  const slug    = articleSlug(a);
-  const pageUrl = `${SITE_URL}/${slug}`;
+// lang: 'de' | 'en' | 'fr' | 'es' | 'ru' | 'he'
+// German uses /{slug}/, all others use /{slug}-{lang}/
+function articleHtmlForLang(a, lang) {
+  const slug     = articleSlug(a);
+  const langSlug = lang === 'de' ? slug : (slug + '-' + lang);
+  const pageUrl  = SITE_URL + '/' + langSlug;
+  const deUrl    = SITE_URL + '/' + slug;
 
-  const defTitle = a.title || '';
-  const defText  = a.text  || '';
-  const topic    = topicNameForLang(a, 'de');
+  const title = (lang !== 'de' && a['title_' + lang]) ? a['title_' + lang] : (a.title || '');
+  const text  = (lang !== 'de' && a['text_'  + lang]) ? a['text_'  + lang] : (a.text  || '');
+  const topic = topicNameForLang(a, lang);
 
-  const seoTitle   = escHtml(defTitle);
+  const seoTitle   = escHtml(title);
   const seoTopic   = escHtml(topic);
-  const seoExcerpt = escHtml(stripHtml(defText).substring(0, 220));
-  const seoImg     = a.image ? escHtml(a.image) : `${SITE_URL}/logo.png`;
+  const seoExcerpt = escHtml(stripHtml(text).substring(0, 220));
+  const seoImg     = a.image ? escHtml(a.image) : (SITE_URL + '/logo.png');
+  const htmlDir    = lang === 'he' ? 'rtl' : 'ltr';
 
-  const hreflangs = LANGS.map(l => {
-    const u = l === 'de' ? pageUrl : `${pageUrl}?lang=${l}`;
-    return `  <link rel="alternate" hreflang="${l}" href="${escHtml(u)}">`;
-  }).join('\n') + `\n  <link rel="alternate" hreflang="x-default" href="${escHtml(pageUrl)}">`;
+  const hreflangs = LANGS.map(function(l) {
+    const u = l === 'de' ? (SITE_URL + '/' + slug) : (SITE_URL + '/' + slug + '-' + l);
+    return '  <link rel="alternate" hreflang="' + l + '" href="' + escHtml(u) + '">';
+  }).join('\n') + '\n  <link rel="alternate" hreflang="x-default" href="' + escHtml(deUrl) + '">';
 
   const jsonld = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": defTitle,
-    "description": stripHtml(defText).substring(0, 220),
+    "headline": title,
+    "description": stripHtml(text).substring(0, 220),
     "datePublished": a.date || '',
     "author": { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
     "publisher": { "@type":"Person","name":"Rabbi Elishai Zizov","url":SITE_URL },
     "url": pageUrl,
     "mainEntityOfPage": { "@type":"WebPage","@id":pageUrl },
-    "inLanguage": "de"
+    "inLanguage": lang
   };
   if (a.image) jsonld.image = a.image;
   if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
-  return `<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${seoTitle}${seoTopic ? ' — ' + seoTopic : ''} — Rabbiner Elishai Zizov</title>
-<meta name="description" content="${seoExcerpt}">
-<link rel="canonical" href="${escHtml(pageUrl)}">
-<meta property="og:title" content="${seoTitle}">
-<meta property="og:description" content="${seoExcerpt}">
-<meta property="og:type" content="article">
-<meta property="og:url" content="${escHtml(pageUrl)}">
-<meta property="og:image" content="${seoImg}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${seoTitle}">
-<meta name="twitter:description" content="${seoExcerpt}">
-<meta name="twitter:image" content="${seoImg}">
-${hreflangs}
-<script type="application/ld+json">
-${JSON.stringify(jsonld)}
-</script>
-<script>
-// Redirect real users to the SPA which loads the full interactive site.
-// Google reads the <head> meta/ld+json above before executing scripts.
-(function(){
-  var lang = new URLSearchParams(location.search).get('lang');
-  if (lang) sessionStorage.setItem('redirect_lang', lang);
-  sessionStorage.setItem('redirect_article', '${escHtml(slug)}');
-  window.location.replace('/');
-})();
-</script>
-</head>
-<body>
-<noscript>
-  <h1>${escHtml(defTitle)}</h1>
-  <p>${escHtml(stripHtml(defText).substring(0, 500))}</p>
-  <a href="/">← Rabbiner Elishai Zizov</a>
-</noscript>
-</body>
-</html>`;
+  const safeSlug = slug.replace(/'/g, "\\'");
+
+  return '<!DOCTYPE html>\n' +
+    '<html lang="' + lang + '" dir="' + htmlDir + '">\n' +
+    '<head>\n' +
+    '<meta charset="UTF-8">\n' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+    '<title>' + seoTitle + (seoTopic ? ' \u2014 ' + seoTopic : '') + ' \u2014 Rabbiner Elishai Zizov</title>\n' +
+    '<meta name="description" content="' + seoExcerpt + '">\n' +
+    '<link rel="canonical" href="' + escHtml(pageUrl) + '">\n' +
+    '<meta property="og:title" content="' + seoTitle + '">\n' +
+    '<meta property="og:description" content="' + seoExcerpt + '">\n' +
+    '<meta property="og:type" content="article">\n' +
+    '<meta property="og:url" content="' + escHtml(pageUrl) + '">\n' +
+    '<meta property="og:image" content="' + seoImg + '">\n' +
+    '<meta name="twitter:card" content="summary_large_image">\n' +
+    '<meta name="twitter:title" content="' + seoTitle + '">\n' +
+    '<meta name="twitter:description" content="' + seoExcerpt + '">\n' +
+    '<meta name="twitter:image" content="' + seoImg + '">\n' +
+    hreflangs + '\n' +
+    '<script type="application/ld+json">\n' +
+    JSON.stringify(jsonld) + '\n' +
+    '</script>\n' +
+    '<script>\n' +
+    '(function(){\n' +
+    "  sessionStorage.setItem('redirect_lang', '" + lang + "');\n" +
+    "  sessionStorage.setItem('redirect_article', '" + safeSlug + "');\n" +
+    "  window.location.replace('/');\n" +
+    '})();\n' +
+    '</script>\n' +
+    '</head>\n' +
+    '<body>\n' +
+    '<noscript>\n' +
+    '  <h1>' + escHtml(title) + '</h1>\n' +
+    '  <p>' + escHtml(stripHtml(text).substring(0, 500)) + '</p>\n' +
+    '  <a href="/">\u2190 Rabbiner Elishai Zizov</a>\n' +
+    '</noscript>\n' +
+    '</body>\n' +
+    '</html>';
 }
 
 // ─── SITEMAP ─────────────────────────────────────────────────────────────────
 function buildSitemap(articles) {
   const today = new Date().toISOString().split('T')[0];
   const urls = [
-    `  <url><loc>${SITE_URL}/</loc><lastmod>${today}</lastmod><priority>1.0</priority></url>`
+    '  <url><loc>' + SITE_URL + '/</loc><lastmod>' + today + '</lastmod><priority>1.0</priority></url>'
   ];
   for (const a of articles) {
     const slug = articleSlug(a);
     if (!slug) continue;
-    const loc = `${SITE_URL}/${slug}`;
+    const loc = SITE_URL + '/' + slug;
     // Date from "DD.MM.YYYY" → "YYYY-MM-DD"
     let lastmod = today;
     if (a.date) {
       const parts = a.date.split('.');
-      if (parts.length === 3) lastmod = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+      if (parts.length === 3) lastmod = parts[2] + '-' + parts[1].padStart(2,'0') + '-' + parts[0].padStart(2,'0');
     }
-    urls.push(`  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><priority>0.8</priority></url>`);
-    // Language variants
-    for (const l of LANGS.filter(l => l !== 'de')) {
-      urls.push(`  <url><loc>${loc}?lang=${l}</loc><lastmod>${lastmod}</lastmod><priority>0.6</priority></url>`);
+    urls.push('  <url><loc>' + loc + '</loc><lastmod>' + lastmod + '</lastmod><priority>0.8</priority></url>');
+    // Language-specific pages (/{slug}-{lang}/)
+    for (const l of LANGS.filter(function(l) { return l !== 'de'; })) {
+      const langLoc = SITE_URL + '/' + slug + '-' + l;
+      urls.push('  <url><loc>' + langLoc + '</loc><lastmod>' + lastmod + '</lastmod><priority>0.7</priority></url>');
     }
   }
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`;
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls.join('\n') + '\n</urlset>\n';
 }
 
 // ─── FILE MANAGEMENT ─────────────────────────────────────────────────────────
@@ -336,14 +341,18 @@ async function main() {
 
   for (const a of articles) {
     const slug = articleSlug(a);
-    if (!slug) { console.warn(`  Skipping article with no slug: ${a.id}`); continue; }
-    currentSlugs.push(slug);
+    if (!slug) { console.warn('  Skipping article with no slug: ' + a.id); continue; }
 
-    const dir  = path.join(ROOT, slug);
-    const file = path.join(dir, 'index.html');
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(file, articleHtml(a), 'utf8');
-    console.log(`  Generated: /${slug}/`);
+    // Generate a page for each language
+    for (const lang of LANGS) {
+      const langSlug = lang === 'de' ? slug : (slug + '-' + lang);
+      currentSlugs.push(langSlug);
+      const dir  = path.join(ROOT, langSlug);
+      const file = path.join(dir, 'index.html');
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(file, articleHtmlForLang(a, lang), 'utf8');
+    }
+    console.log('  Generated: /' + slug + '/ + 5 language variants');
   }
 
   // Remove dirs for deleted articles
@@ -353,7 +362,7 @@ async function main() {
   // Sitemap
   const sitemapPath = path.join(ROOT, 'sitemap.xml');
   fs.writeFileSync(sitemapPath, buildSitemap(articles), 'utf8');
-  console.log(`  Updated: sitemap.xml (${articles.length + 1} entries)`);
+  console.log('  Updated: sitemap.xml (' + (articles.length * LANGS.length + 1) + ' entries)');
 
   console.log('Done.');
 }
