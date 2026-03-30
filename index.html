@@ -3221,7 +3221,11 @@ function openArticle(id) {
   document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
+  // Hide logo-band for one frame during scrollTo to prevent flash, then restore
+  const _lb = document.querySelector('.logo-band');
+  _lb.style.visibility = 'hidden';
   window.scrollTo(0, 0);
+  requestAnimationFrame(function() { _lb.style.visibility = ''; });
 }
 
 // Global delegated handler — catches both tap (touchend) and click on any article card
