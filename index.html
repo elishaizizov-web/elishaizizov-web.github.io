@@ -2071,7 +2071,7 @@ html[lang="he"] .station::before {
 
 <div class="logo-band">
   <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
-  <img src="logo.png" alt="Rabbiner Elishai Zizov">
+  <a href="/" onclick="event.preventDefault();closeArticlePage();window.scrollTo({top:0,behavior:'smooth'});" style="display:contents;cursor:pointer;"><img src="logo.png" alt="Rabbiner Elishai Zizov"></a>
   <span class="logo-band-spacer"></span>
 </div>
 
