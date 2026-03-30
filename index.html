@@ -3216,14 +3216,12 @@ function openArticle(id) {
   const slug = articleSlug(a);
   const langQ = currentLang !== 'de' ? '?lang=' + currentLang : '';
   window.history.pushState({ articleId: slug }, '', '/' + slug + langQ);
-  // scroll to top instantly before switching views — prevents homepage flash
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
   // switch views
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
+  window.scrollTo(0, 0);
 }
 
 // Global delegated handler — catches both tap (touchend) and click on any article card
