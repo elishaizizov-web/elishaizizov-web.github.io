@@ -1005,15 +1005,10 @@ html[lang="he"] .station::before {
     .article-full-overlay { display: none !important; }
     #article-page {
       display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      overflow-y: auto;
-      background: var(--bg, #faf9f7);
-      z-index: 90;
+      max-width: 820px;
+      margin: 0 auto;
       padding: 0 64px 80px;
-      box-sizing: border-box;
     }
-    #article-page > *:not(#ap-progress) { max-width: 820px; margin-left: auto; margin-right: auto; }
     @media(max-width:640px){ #article-page{ padding:0 24px 60px; } }
     .ap-back {
       background: none; border: none;
@@ -1169,7 +1164,7 @@ html[lang="he"] .station::before {
     @media print {
       body > *:not(#article-page) { display:none !important; }
       .logo-band { display:none !important; }
-      #article-page { display:block !important; position:static !important; overflow:visible !important; padding:0; margin:0; }
+      #article-page { display:block !important; padding:0; margin:0; }
       .ap-back, #ap-share, .ap-lang-bar, .print-btn-wrap, .admin-fab { display:none !important; }
       .ap-print-logo { display:block !important; text-align:center; margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid #ddd; }
       .ap-print-logo img { width:110px; height:auto; }
@@ -3221,13 +3216,12 @@ function openArticle(id) {
   const slug = articleSlug(a);
   const langQ = currentLang !== 'de' ? '?lang=' + currentLang : '';
   window.history.pushState({ articleId: slug }, '', '/' + slug + langQ);
-  // switch views — article-page is position:fixed so no scroll needed
+  // switch views
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
-  const ap = document.getElementById('article-page');
-  ap.style.display = 'block';
-  ap.scrollTop = 0;
+  document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
+  window.scrollTo(0, 0);
 }
 
 // Global delegated handler — catches both tap (touchend) and click on any article card
