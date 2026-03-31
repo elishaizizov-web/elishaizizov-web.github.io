@@ -3342,8 +3342,9 @@ function _renderArticlePage(a, l) {
 
   // share buttons — use article-specific URL with current language
   const _articleTitle = encodeURIComponent(tr.title || a.title || '');
-  const _url   = encodeURIComponent(shareUrl);
-  const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + _url;
+  // For Facebook: use the language-specific static page (/{slug}-{lang}/) which has correct OG tags
+  const fbStaticUrl = l === 'de' ? pageUrl : (pageUrl + '-' + l);
+  const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(fbStaticUrl);
   const xUrl   = 'https://twitter.com/intent/tweet?url=' + _url + '&text=' + _articleTitle;
   const thrUrl = 'https://www.threads.net/intent/post?text=' + encodeURIComponent((tr.title || a.title || '') + '\n\n' + shareUrl);
   const waText = encodeURIComponent((tr.title || a.title || '') + '\n\n' + shareUrl);
@@ -4274,15 +4275,15 @@ function generateArticleStaticPage(a, lang) {
   var excerpt = textRaw.slice(0, 220).replace(/</g,'&lt;').replace(/>/g,'&gt;');
   var fullText = (tr.text || a.text || '').replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
   var slug = articleSlug(a);
-  var canonical = lang === 'de' ? 'https://elishaizizov.com/' + slug : 'https://elishaizizov.com/' + slug + '?lang=' + lang;
+  var canonical = lang === 'de' ? 'https://elishaizizov.com/' + slug : 'https://elishaizizov.com/' + slug + '-' + lang;
   var parasha = a.hag ? a.hag : (a.parasha ? a.parasha : '');
   var imgTag = a.image ? '<img src="' + a.image + '" style="width:100%;max-height:320px;object-fit:cover;border-radius:8px;margin-bottom:24px;" alt="' + title + '">' : '';
   var parashaDiv = parasha ? '<div class="eyebrow">' + parasha + '</div>' : '';
   var dateDiv = a.date ? '<div class="meta">' + a.date + '</div>' : '';
   var btnLabel = openLabel[lang] || 'Read full article';
-  var btnHref = lang === 'de' ? '/' + slug : '/' + slug + '?lang=' + lang;
+  var btnHref = lang === 'de' ? '/' + slug : '/' + slug + '-' + lang;
   var langBar = langs.map(function(l) {
-    var lUrl = l === 'de' ? '/' + slug : '/' + slug + '?lang=' + l;
+    var lUrl = l === 'de' ? '/' + slug : '/' + slug + '-' + l;
     var style = l === lang ? 'color:#b8952a;text-decoration:underline;font-weight:700;' : 'color:#b8952a;text-decoration:none;';
     return '<a href="' + lUrl + '" style="' + style + '">' + langLabels[l] + '</a>';
   }).join(' &nbsp;&middot;&nbsp; ');
