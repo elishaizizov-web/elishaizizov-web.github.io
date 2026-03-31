@@ -2819,33 +2819,6 @@ function switchTab(tab) {
   document.getElementById('art-empty-msg').style.display = 'none';
 }
 
-// Hagim functions
-function showHagim() {
-  document.getElementById('hagim-nav').style.display = 'grid';
-  document.getElementById('hag-articles-list').style.display = 'none';
-}
-
-function showHag(hag) {
-  const articles = getArticles().filter(a => a.hag === hag);
-  document.getElementById('hagim-nav').style.display = 'none';
-  document.getElementById('hag-articles-list').style.display = 'block';
-  document.getElementById('hag-articles-title').textContent = hag;
-  const grid = document.getElementById('hag-articles-grid');
-  const empty = document.getElementById('art-empty-msg');
-  if (articles.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; }
-  else {
-    empty.style.display = 'none';
-    grid.innerHTML = articles.map(a => `
-      <div class="article-card">
-        ${a.image ? `<img class="article-card-img" src="${a.image}" alt="${a.title}">` : `<div class="article-card-img-placeholder"></div>`}
-        <div class="article-card-body">
-          <span class="article-card-date">${a.date}</span>
-          <h3 class="article-card-title">${a.title}</h3>
-          <p class="article-card-excerpt">${a.text}</p>
-        </div>
-      </div>`).join('');
-  }
-}
 
 // Torah & Hagim navigation — multilingual
 const TORAH_NAMES = {
@@ -3199,7 +3172,7 @@ function openArticle(id) {
   let a = findArticle(id);
   // Fallback: search _fallbackArticles in case window._articles isn't populated yet
   if (!a && window._fallbackArticles) a = window._fallbackArticles.find(x => x.id === id);
-  if (!a) { console.warn('Article not found:', id); return; }
+  if (!a) { console.warn('Article not found:', id); return false; }
   window._currentArticle = a;
   _renderArticlePage(a, currentLang);
   // URL — use clean path like /wajikra-2026
@@ -3216,6 +3189,7 @@ function openArticle(id) {
   _lb.style.visibility = 'hidden';
   window.scrollTo(0, 0);
   requestAnimationFrame(function() { _lb.style.visibility = ''; });
+  return true;
 }
 
 // Global delegated handler — catches both tap (touchend) and click on any article card
@@ -3224,9 +3198,10 @@ function openArticle(id) {
     const el = e.target.closest('[data-article-id]');
     if (!el) return;
     try {
-      openArticle(el.getAttribute('data-article-id'));
-      e.preventDefault();
-      e.stopPropagation();
+      if (openArticle(el.getAttribute('data-article-id'))) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     } catch(err) {
       console.warn('openArticle failed, falling back to href navigation:', err);
     }
