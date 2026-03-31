@@ -1103,10 +1103,11 @@ html[lang="he"] .station::before {
       letter-spacing: 0.38em; text-transform: uppercase;
       color: var(--text-soft); opacity: 0.45; white-space: nowrap; flex-shrink: 0;
     }
-    .ap-share-row { display: flex; gap: 10px; flex-wrap: nowrap; align-items: center; overflow-x: auto; padding-bottom: 2px; }
+    .ap-share-row { display: flex; gap: 10px; flex-wrap: nowrap; align-items: center; overflow-x: auto; padding-bottom: 4px; padding-right: 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .ap-share-row::-webkit-scrollbar { display: none; }
     .share-icon-btn {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 50px; height: 50px; border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       background: var(--navy); color: #fff; border: none;
       cursor: pointer; text-decoration: none; flex-shrink: 0;
       transition: background 0.25s ease, transform 0.2s ease;
