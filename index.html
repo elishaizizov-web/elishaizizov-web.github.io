@@ -3356,6 +3356,7 @@ function _renderArticlePage(a, l) {
 
   // share buttons — use article-specific URL with current language
   const _articleTitle = encodeURIComponent(tr.title || a.title || '');
+  const _url = encodeURIComponent(shareUrl);
   // For Facebook: use the language-specific static page (/{slug}-{lang}/) which has correct OG tags
   const fbStaticUrl = l === 'de' ? pageUrl : (pageUrl + '-' + l);
   const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(fbStaticUrl);
