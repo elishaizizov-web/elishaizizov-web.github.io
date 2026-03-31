@@ -3394,6 +3394,13 @@ function closeOverlay() { closeArticlePage(); }
 
 function closeArticle(e) { /* handled by full-page nav */ }
 
+// Navigation scroll helper — closes article page first if open, then scrolls
+function navScrollTo(id) {
+  if (document.getElementById('article-page').style.display !== 'none') closeArticlePage();
+  var el = document.getElementById(id);
+  if (el) setTimeout(function() { el.scrollIntoView({behavior:'smooth'}); }, 50);
+}
+
 
 // Hamburger menu
 function toggleMenu() {
@@ -4535,11 +4542,11 @@ async function autoTranslateFree() { // placeholder — not used
 
 <footer class="site-footer">
   <nav class="footer-nav">
-    <a class="footer-nav-link" href="#bio" onclick="document.getElementById('bio').scrollIntoView({behavior:'smooth'});return false;" data-t="nav-bio">Biografie</a>
+    <a class="footer-nav-link" href="#bio" onclick="navScrollTo('bio');return false;" data-t="nav-bio">Biografie</a>
     <span class="footer-nav-sep">·</span>
-    <a class="footer-nav-link" href="#articles-section" onclick="document.getElementById('articles-section').scrollIntoView({behavior:'smooth'});return false;" data-t="nav-art">Beiträge</a>
+    <a class="footer-nav-link" href="#articles-section" onclick="navScrollTo('articles-section');return false;" data-t="nav-art">Beiträge</a>
     <span class="footer-nav-sep">·</span>
-    <a class="footer-nav-link" href="#anfragen" onclick="document.getElementById('anfragen').scrollIntoView({behavior:'smooth'});return false;" data-t="nav-form">Anfragen</a>
+    <a class="footer-nav-link" href="#anfragen" onclick="navScrollTo('anfragen');return false;" data-t="nav-form">Anfragen</a>
   </nav>
   <p class="footer-name">Rabbiner Elishai Zizov</p>
   <p class="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2025 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
@@ -4585,7 +4592,7 @@ async function autoTranslateFree() { // placeholder — not used
       </div>
     </div>
 
-    <button class="hmenu-item" onclick="closeMenu(); document.getElementById('anfragen').scrollIntoView({behavior:'smooth'})" data-t="nav-form">Anfragen</button>
+    <button class="hmenu-item" onclick="closeMenu(); navScrollTo('anfragen')" data-t="nav-form">Anfragen</button>
   </div>
 
   <div class="hmenu-divider"></div>
