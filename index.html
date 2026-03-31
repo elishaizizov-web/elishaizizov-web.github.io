@@ -3407,7 +3407,7 @@ function toggleMenu() {
   const isOpen = document.getElementById('hmenu').classList.toggle('open');
   document.getElementById('hmenu-overlay').classList.toggle('open');
   document.getElementById('hamburger-btn').setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  if (isOpen) setTimeout(() => document.getElementById('hmenu-search-input')?.focus(), 300);
+  if (isOpen) setTimeout(() => document.getElementById('hmenu-search-input')?.focus({ preventScroll: true }), 300);
 }
 function closeMenu() {
   document.getElementById('hmenu').classList.remove('open');
@@ -3494,16 +3494,20 @@ function hmenuBackToBooks() {
   hmenuShowParashaBooksLevel();
 }
 function hmenuSelectParasha(book, pKey, pDisplay) {
+  closeMenu();
+  if (document.getElementById('article-page').style.display !== 'none') closeArticlePage();
   switchTab('parasha');
   document.getElementById('torah-nav').style.display = 'none';
   currentBook = book;
   showParasha(pKey, pDisplay);
-  document.getElementById('articles-section').scrollIntoView({behavior:'smooth'});
+  setTimeout(function() { document.getElementById('articles-section').scrollIntoView({behavior:'smooth'}); }, 50);
 }
 function hmenuSelectHag(hagKey, display) {
+  closeMenu();
+  if (document.getElementById('article-page').style.display !== 'none') closeArticlePage();
   switchTab('hagim');
   showHag(hagKey, display);
-  document.getElementById('articles-section').scrollIntoView({behavior:'smooth'});
+  setTimeout(function() { document.getElementById('articles-section').scrollIntoView({behavior:'smooth'}); }, 50);
 }
 function hmenuShowHagimLevel() {
   document.getElementById('hmenu-l1').style.display = 'none';
