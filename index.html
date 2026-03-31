@@ -135,6 +135,9 @@ body {
   justify-content: space-between;
   padding: 6px 16px;
   border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  z-index: 250;
 }
 .logo-band-spacer {
   width: 40px;
@@ -3407,7 +3410,6 @@ function toggleMenu() {
   const isOpen = document.getElementById('hmenu').classList.toggle('open');
   document.getElementById('hmenu-overlay').classList.toggle('open');
   document.getElementById('hamburger-btn').setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  if (isOpen) setTimeout(() => document.getElementById('hmenu-search-input')?.focus({ preventScroll: true }), 300);
 }
 function closeMenu() {
   document.getElementById('hmenu').classList.remove('open');
