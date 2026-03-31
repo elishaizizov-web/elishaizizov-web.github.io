@@ -213,7 +213,11 @@ function articleHtmlForLang(a, lang) {
   const seoExcerpt = escHtml(stripHtml(text).substring(0, 220));
   const seoImg     = a.image ? escHtml(a.image) : (SITE_URL + '/logo.png');
   const htmlDir    = lang === 'he' ? 'rtl' : 'ltr';
+  const isRTL      = lang === 'he';
   const siteName   = lang === 'he' ? '\u05d4\u05e8\u05d1 \u05d0\u05dc\u05d9\u05e9\u05d9 \u05d6\u05d9\u05d6\u05d5\u05d1' : 'Rabbiner Elishai Zizov';
+
+  const backLabels = { de:'← Zur\u00fcck', en:'← Back', fr:'← Retour', es:'← Volver', ru:'\u2190 \u041d\u0430\u0437\u0430\u0434', he:'\u2190 \u05d7\u05d6\u05e8\u05d4' };
+  const backLabel  = backLabels[lang] || backLabels.de;
 
   const hreflangs = LANGS.map(function(l) {
     const u = l === 'de' ? (SITE_URL + '/' + slug) : (SITE_URL + '/' + slug + '-' + l);
@@ -237,6 +241,10 @@ function articleHtmlForLang(a, lang) {
 
   const safeSlug = slug.replace(/'/g, "\\'");
 
+  // Full article text for Google to index (preserve HTML but sanitise)
+  const bodyText = text ? text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'') : '';
+  const articleAlign = isRTL ? 'right' : 'left';
+
   return '<!DOCTYPE html>\n' +
     '<html lang="' + lang + '" dir="' + htmlDir + '">\n' +
     '<head>\n' +
@@ -251,27 +259,53 @@ function articleHtmlForLang(a, lang) {
     '<meta property="og:url" content="' + escHtml(pageUrl) + '">\n' +
     '<meta property="og:image" content="' + seoImg + '">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
-    '<meta name="twitter:title" content="' + seoTitle + '">\n' +
-    '<meta name="twitter:description" content="' + seoExcerpt + '">\n' +
-    '<meta name="twitter:image" content="' + seoImg + '">\n' +
     hreflangs + '\n' +
-    '<script type="application/ld+json">\n' +
-    JSON.stringify(jsonld) + '\n' +
-    '</script>\n' +
+    '<script type="application/ld+json">\n' + JSON.stringify(jsonld) + '\n</script>\n' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">\n' +
+    '<style>\n' +
+    '*{box-sizing:border-box;margin:0;padding:0}\n' +
+    'body{font-family:Georgia,serif;background:#f7f4ee;color:#1a1a1a;line-height:1.8}\n' +
+    '.seo-header{background:#1b2a3b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}\n' +
+    '.seo-header a{color:#d4aa40;font-family:Raleway,sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none}\n' +
+    '.seo-header .site-name{color:#fff;font-family:Raleway,sans-serif;font-size:13px;font-weight:600;letter-spacing:.1em}\n' +
+    '.seo-wrap{max-width:740px;margin:0 auto;padding:40px 24px 80px}\n' +
+    '.seo-topic{font-family:Raleway,sans-serif;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#b8952a;margin-bottom:16px}\n' +
+    '.seo-title{font-family:"Playfair Display",Georgia,serif;font-size:clamp(26px,5vw,42px);font-weight:700;line-height:1.2;color:#1b2a3b;margin-bottom:18px;text-align:' + articleAlign + '}\n' +
+    '.seo-date{font-family:Raleway,sans-serif;font-size:11px;color:#888;margin-bottom:28px}\n' +
+    '.seo-img{width:100%;max-height:420px;object-fit:cover;border-radius:4px;margin-bottom:32px;display:block}\n' +
+    '.seo-body{font-size:' + (isRTL ? '17px' : '16px') + ';line-height:' + (isRTL ? '2.0' : '1.85') + ';text-align:' + articleAlign + ';direction:' + htmlDir + '}\n' +
+    '.seo-body p{margin-bottom:1.4em}\n' +
+    '.seo-body h2,.seo-body h3{font-family:"Playfair Display",serif;color:#1b2a3b;margin:1.6em 0 .6em}\n' +
+    '.seo-footer{margin-top:48px;padding-top:24px;border-top:1px solid #ddd;text-align:center}\n' +
+    '.seo-footer a{font-family:Raleway,sans-serif;font-size:12px;color:#b8952a;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none}\n' +
+    '</style>\n' +
     '<script>\n' +
     '(function(){\n' +
-    "  sessionStorage.setItem('redirect_lang', '" + lang + "');\n" +
-    "  sessionStorage.setItem('redirect_article', '" + safeSlug + "');\n" +
-    "  window.location.replace('/');\n" +
+    "  // Only redirect if user navigated here from within the SPA\n" +
+    "  var ref = document.referrer;\n" +
+    "  if (ref && ref.indexOf(window.location.origin) === 0 && ref.indexOf('/' + '" + safeSlug + "') === -1) {\n" +
+    "    sessionStorage.setItem('redirect_lang', '" + lang + "');\n" +
+    "    sessionStorage.setItem('redirect_article', '" + safeSlug + "');\n" +
+    "    window.location.replace('/');\n" +
+    '  }\n' +
     '})();\n' +
     '</script>\n' +
     '</head>\n' +
     '<body>\n' +
-    '<noscript>\n' +
-    '  <h1>' + escHtml(title) + '</h1>\n' +
-    '  <p>' + escHtml(stripHtml(text).substring(0, 500)) + '</p>\n' +
-    '  <a href="/">\u2190 Rabbiner Elishai Zizov</a>\n' +
-    '</noscript>\n' +
+    '<header class="seo-header">\n' +
+    '  <a href="/">' + escHtml(backLabel) + '</a>\n' +
+    '  <span class="site-name">' + escHtml(siteName) + '</span>\n' +
+    '</header>\n' +
+    '<main class="seo-wrap">\n' +
+    (seoTopic ? '  <p class="seo-topic">' + seoTopic + '</p>\n' : '') +
+    '  <h1 class="seo-title">' + seoTitle + '</h1>\n' +
+    (a.date ? '  <p class="seo-date">' + escHtml(a.date) + '</p>\n' : '') +
+    (a.image ? '  <img class="seo-img" src="' + seoImg + '" alt="' + seoTitle + '" loading="eager">\n' : '') +
+    '  <div class="seo-body">' + bodyText + '</div>\n' +
+    '  <div class="seo-footer"><a href="/">' + escHtml(siteName) + '</a></div>\n' +
+    '</main>\n' +
     '</body>\n' +
     '</html>';
 }
