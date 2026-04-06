@@ -1026,7 +1026,7 @@ html[lang="he"] .station::before {
     .ap-breadcrumb { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:14px; margin-top:6px; }
     .ap-breadcrumb-item { font-family:'Raleway',sans-serif; font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--text-soft); opacity:0.55; }
     .ap-breadcrumb-sep { font-size:9px; color:var(--text-soft); opacity:0.3; }
-    .ap-related { margin-top:52px; padding-top:32px; border-top:1px solid var(--rule); }
+    .ap-related { margin-top:64px; padding-top:32px; border-top:1px solid var(--rule); }
     .ap-related-title { font-family:'Raleway',sans-serif; font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--text-soft); margin-bottom:20px; opacity:0.7; }
     .ap-lang-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; }
     .ap-lang-btn { background: none; border: 1px solid var(--rule); font-family: 'Raleway', sans-serif;
@@ -1094,7 +1094,7 @@ html[lang="he"] .station::before {
     /* Image */
     #ap-img { box-shadow:0 8px 32px rgba(0,0,0,0.14); }
     /* ── SHARE / ACTION BAR ─── */
-    #ap-share { margin-top: 52px; padding-top: 28px; border-top: 1px solid var(--rule); }
+    #ap-share { margin-top: 52px; padding-top: 28px; padding-bottom: 20px; border-top: 1px solid var(--rule); }
     .ap-share-header {
       display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
     }
@@ -2949,8 +2949,8 @@ function renderLatestArticle() {
   // Only hide if no articles AND the card has no pre-rendered static HTML
   if (!articles.length) { if (!card.innerHTML.trim()) block.style.display = 'none'; return; }
   block.style.display = 'block';
-  // Show up to 3 most recent articles
-  const recent = articles.slice(0, 3);
+  // Show up to 4 most recent articles
+  const recent = articles.slice(0, 4);
   card.innerHTML = recent.map(a => renderCard(a)).join('');
   card.style.display = 'grid';
   card.style.gridTemplateColumns = recent.length > 1 ? 'repeat(auto-fill,minmax(260px,1fr))' : '1fr';
