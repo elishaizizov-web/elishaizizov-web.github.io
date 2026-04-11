@@ -239,8 +239,6 @@ function articleHtmlForLang(a, lang) {
   if (a.image) jsonld.image = a.image;
   if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
-  const safeSlug = slug.replace(/'/g, "\\'");
-
   // Full article text for Google to index (preserve HTML but sanitise)
   const bodyText = text ? text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'') : '';
   const articleAlign = isRTL ? 'right' : 'left';
@@ -281,17 +279,6 @@ function articleHtmlForLang(a, lang) {
     '.seo-footer{margin-top:48px;padding-top:24px;border-top:1px solid #ddd;text-align:center}\n' +
     '.seo-footer a{font-family:Raleway,sans-serif;font-size:12px;color:#b8952a;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none}\n' +
     '</style>\n' +
-    '<script>\n' +
-    '(function(){\n' +
-    "  // Only redirect if user navigated here from within the SPA\n" +
-    "  var ref = document.referrer;\n" +
-    "  if (ref && ref.indexOf(window.location.origin) === 0 && ref.indexOf('/' + '" + safeSlug + "') === -1) {\n" +
-    "    sessionStorage.setItem('redirect_lang', '" + lang + "');\n" +
-    "    sessionStorage.setItem('redirect_article', '" + safeSlug + "');\n" +
-    "    window.location.replace('/');\n" +
-    '  }\n' +
-    '})();\n' +
-    '</script>\n' +
     '</head>\n' +
     '<body>\n' +
     '<header class="seo-header">\n' +
@@ -373,10 +360,21 @@ async function main() {
 
   const prevSlugs    = readGeneratedSlugs();
   const currentSlugs = [];
+  const usedBaseSlugs = {};
 
   for (const a of articles) {
-    const slug = articleSlug(a);
+    let slug = articleSlug(a);
     if (!slug) { console.warn('  Skipping article with no slug: ' + a.id); continue; }
+
+    // Deduplicate slugs: if same base slug used before, append -2, -3, etc.
+    const baseSlug = slug;
+    if (usedBaseSlugs[baseSlug] === undefined) {
+      usedBaseSlugs[baseSlug] = 1;
+    } else {
+      usedBaseSlugs[baseSlug]++;
+      slug = baseSlug + '-' + usedBaseSlugs[baseSlug];
+      console.log('  Duplicate slug detected: ' + baseSlug + ' → ' + slug);
+    }
 
     // Generate a page for each language
     for (const lang of LANGS) {
