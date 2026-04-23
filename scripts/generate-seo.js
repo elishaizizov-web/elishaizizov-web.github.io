@@ -20,7 +20,7 @@ const PROJECT_ID = 'elishai-zizov';
 const API_KEY    = 'AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
 const SITE_URL   = 'https://elishaizizov.com';
 const ROOT       = path.join(__dirname, '..');   // repo root = web root
-const LANGS      = ['de','en','fr','es','ru','he'];
+const LANGS      = ['de','en','he'];
 
 // ─── TORAH DATA (mirrors index.html) ─────────────────────────────────────────
 const TORAH = {
