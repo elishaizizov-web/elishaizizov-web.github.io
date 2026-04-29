@@ -30,6 +30,7 @@ const T = {
     ig: 'Instagram', fb: 'Facebook',
     'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neueste Beiträge',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.', 'form-subject': 'Neue Anfrage über elishaizizov.com',
+    'cta': 'Beiträge lesen', 'footer-nav': 'Navigation', 'footer-social': 'Folgen',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -46,6 +47,7 @@ const T = {
     ig: 'Instagram', fb: 'Facebook',
     'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Articles',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.', 'form-subject': 'New enquiry via elishaizizov.com',
+    'cta': 'Read Articles', 'footer-nav': 'Navigation', 'footer-social': 'Follow',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -62,6 +64,7 @@ const T = {
     ig: 'Instagram', fb: 'Facebook',
     'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Rechercher...', 'form-err': 'Échec de l\'envoi. Veuillez réessayer.', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'latest-label': 'Dernier Article',
     'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.', 'form-subject': 'Nouvelle demande via elishaizizov.com',
+    'cta': 'Lire les articles', 'footer-nav': 'Navigation', 'footer-social': 'Suivre',
   },
   he: {
     eyebrow: 'רב · מרצה',
@@ -78,6 +81,7 @@ const T = {
     ig: 'Instagram', fb: 'Facebook',
     'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבות אחרונות',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.', 'form-subject': 'פנייה חדשה דרך elishaizizov.com',
+    'cta': 'קרא כתבות', 'footer-nav': 'ניווט', 'footer-social': 'עקבו',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
@@ -94,6 +98,7 @@ const T = {
     ig: 'Instagram', fb: 'Facebook',
     'nav-search': 'Buscar', 'search-ph': 'Buscar...', 'form-err': 'Error al enviar. Inténtelo de nuevo.', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'latest-label': 'Último Artículo',
     'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.', 'form-subject': 'Nueva consulta vía elishaizizov.com',
+    'cta': 'Leer artículos', 'footer-nav': 'Navegación', 'footer-social': 'Seguir',
   },
   ru: {
     eyebrow: 'Раввин · Лектор',
@@ -110,6 +115,7 @@ const T = {
     ig: 'Instagram', fb: 'Facebook',
     'nav-search': 'Поиск', 'search-ph': 'Поиск...', 'form-err': 'Ошибка отправки. Попробуйте ещё раз.', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'latest-label': 'Последняя статья',
     'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.', 'form-subject': 'Новый запрос через elishaizizov.com',
+    'cta': 'Читать статьи', 'footer-nav': 'Навигация', 'footer-social': 'Подписаться',
   }
 };
 

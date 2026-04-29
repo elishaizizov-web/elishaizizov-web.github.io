@@ -61,6 +61,10 @@
         <p class="header-eyebrow" data-t="eyebrow">Rabbiner · Vortragsredner</p>
         <h1 class="header-name" data-t="title">Rabbiner Elishai Zizov</h1>
         <p class="header-hebrew" data-t="hebrew">הרב אלישי זיזוב</p>
+        <a href="/articles.html" class="hero-cta-btn">
+          <span data-t="cta">Beiträge lesen</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       </div>
     </div>
   </div>
@@ -134,15 +138,31 @@
 </div>
 
 <footer class="site-footer">
-  <nav class="footer-nav">
-    <a class="footer-nav-link" href="/" data-t="nav-bio">Biografie</a>
-    <span class="footer-nav-sep">·</span>
-    <a class="footer-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
-    <span class="footer-nav-sep">·</span>
-    <a class="footer-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-  </nav>
-  <p class="footer-name">Rabbiner Elishai Zizov</p>
-  <p class="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+  <div class="footer-grid">
+    <div>
+      <p class="footer-name">Rabbiner Elishai Zizov</p>
+      <p class="footer-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
+    </div>
+    <div>
+      <span class="footer-col-label" data-t="footer-nav">Navigation</span>
+      <nav class="footer-nav">
+        <a class="footer-nav-link" href="/" data-t="nav-bio">Biografie</a>
+        <a class="footer-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
+        <a class="footer-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+      </nav>
+    </div>
+    <div>
+      <span class="footer-col-label" data-t="footer-social">Folgen</span>
+      <div class="footer-social-col">
+        <a href="https://www.instagram.com/elishaizizov" class="footer-social-link" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="footer-social-link" target="_blank" rel="noopener">Facebook</a>
+        <a href="/contact.html" class="footer-social-link footer-cta-link" data-t="nav-form">Anfragen</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+  </div>
 </footer>
 
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Nach oben">↑</button>
