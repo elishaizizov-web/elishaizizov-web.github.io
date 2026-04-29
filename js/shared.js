@@ -233,8 +233,11 @@ function navScrollTo(id) {
 
 // ── Page init ──
 document.addEventListener('DOMContentLoaded', function() {
-  // Language persistence across pages
-  const savedLang = localStorage.getItem('site_lang') || 'de';
+  // Language: URL param > sessionStorage (from 404 redirect) > localStorage > de
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  const sesLang = sessionStorage.getItem('redirect_lang');
+  if (sesLang) sessionStorage.removeItem('redirect_lang');
+  const savedLang = (urlLang && T[urlLang]) ? urlLang : (sesLang && T[sesLang]) ? sesLang : (localStorage.getItem('site_lang') || 'de');
   setLang(savedLang);
 
   // Back-to-top button
