@@ -260,7 +260,8 @@ function renderCard(a, noClick) {
   }
   const slug = articleSlug(a);
   const langParam = l !== 'de' ? '?lang=' + l : '';
-  return `<a href="/${slug}${langParam}" data-article-id="${escHtml(a.id)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
+  const safeId = escHtml(a.id).replace(/'/g, '&#39;');
+  return `<a href="/${slug}${langParam}" data-article-id="${escHtml(a.id)}" onclick="event.preventDefault();openArticle(this.dataset.articleId);" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
 
 function showHagim() {
@@ -389,22 +390,7 @@ function openArticle(id) {
   return true;
 }
 
-// Global delegated handler — catches both tap (touchend) and click on any article card
-(function() {
-  function _handleArticleTap(e) {
-    const el = e.target.closest('[data-article-id]');
-    if (!el) return;
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      openArticle(el.getAttribute('data-article-id'));
-    } catch(err) {
-      console.error('openArticle error:', err);
-    }
-  }
-  document.addEventListener('touchend', _handleArticleTap, { passive: false });
-  document.addEventListener('click', _handleArticleTap, false);
-})();
+// Click handling is via inline onclick on each card (see renderCard)
 
 function _renderArticlePage(a, l) {
   const tr = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
