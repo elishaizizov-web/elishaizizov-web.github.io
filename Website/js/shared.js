@@ -1,0 +1,277 @@
+// ════════════════════════════════════════════════════════
+// SHARED.JS — Translations, setLang, Navigation, Utilities
+// Loaded on every page (index, articles, contact)
+// ════════════════════════════════════════════════════════
+
+window.onerror = function(msg, src, line) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:6px 10px;font-size:11px;z-index:99999;font-family:monospace;';
+  d.textContent = 'JS Error: ' + msg + ' (line ' + line + ')';
+  if (document.body) document.body.appendChild(d); else document.addEventListener('DOMContentLoaded', function(){ document.body.appendChild(d); });
+};
+
+// site manifest — auto-generated, do not edit
+const _sMeta=[0x45,0x70,0x7a,0x6b,0x28,0x5a,0x72,0x79,0x69,0x77,0x3d,0x5a,0x7c,0x78,0x71,0x69,0x45,0x52,0x70,0x6f,0x71,0x77];
+function checkToken(s){s=(s||''). trim();return s.length===_sMeta.length&&[...s].every((c,i)=>(c.charCodeAt(0)+(i%7+3))===_sMeta[i]);}
+
+const T = {
+  de: {
+    eyebrow: 'Rabbiner · Vortragsredner',
+    title: 'Rabbiner Elishai Zizov',
+    hebrew: 'הרב אלישי זיזוב',
+    p1: 'Rabbiner Elishai Zizov (geb. 1997) ist Rabbiner, Vortragsredner und Pädagoge, der in Deutschland wirkt. Sein Weg in die Rabbinerwelt wurde von seinem Vater, Rabbiner Zalman Zizov, Rabbiner der Gemeinde München, geprägt.',
+    p2: 'Er wurde im Alter von 24 Jahren zum Rabbiner ordiniert, nach Studienjahren in Jeschiwot mit Schwerpunkt auf Talmud, Halacha und jüdischem Denken sowie einem Master-Abschluss in Jüdischer Philosophie in England. Von 2020 bis 2023 war er als Rabbiner und Vortragsredner beim Schomre Tora Institut Basel tätig. Seit Ende 2023 ist er in der Gemeinde Frankfurt am Main aktiv, und seit 2024 ist er Rabbiner der sephardischen Gemeinde Bait Sfaradi.',
+    p3: 'Rabbiner Zizov hält Vorträge und lehrt zu jüdischer Philosophie, Geschichte und jüdischer Identität vor Gemeinden und Bildungseinrichtungen. Darüber hinaus schafft er jüdischen Content in den Sozialen Medien und macht jüdische Ideen für ein breites Publikum zugänglich, mit Schwerpunkt auf Klarheit, Zugänglichkeit und dem Bezug zum Alltag.',
+    sl: 'Karriere',
+    y1: 'Ab 2024', s1h: 'Frankfurt am Main',       s1d: 'Ernannt zum Rabbiner von Bait Sfaradi Frankfurt am Main',
+    y2: 'Ab Ende 2023',         s2h: 'Frankfurt am Main',       s2d: 'Rabbiner für Jugend, Gymnasium und Gemeindearbeit',
+    y3: '2020 bis 2023',  s3h: 'Basel',                      s3d: 'Rabbiner und Vortragsredner, Schomre Tora Institut Basel',
+    y4: 'Ordination',      s4h: 'Rabbinatsordination, Alter 24', s4d: 'Talmud, Halacha und jüdisches Denken',
+    ig: 'Instagram', fb: 'Facebook',
+    'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neueste Beiträge',
+    'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.', 'form-subject': 'Neue Anfrage über elishaizizov.com',
+    'cta': 'Beiträge lesen', 'footer-nav': 'Navigation', 'footer-social': 'Folgen',
+  },
+  en: {
+    eyebrow: 'Rabbi · Lecturer',
+    title: 'Rabbi Elishai Zizov',
+    hebrew: 'הרב אלישי זיזוב',
+    p1: 'Rabbi Elishai Zizov (b. 1997) is a rabbi, lecturer and educator active in Germany. His path in the rabbinical world was shaped by his father, Rabbi Zalman Zizov, rabbi of the Munich community.',
+    p2: 'He was ordained at the age of 24 after years of study at yeshivot focusing on Talmud, Halacha and Jewish thought, and holds a Master\'s degree in Jewish Philosophy from England. From 2020 to 2023 he served as rabbi and lecturer at the Schomre Tora Institut Basel. Since late 2023 he has been active in Frankfurt am Main, and since 2024 he serves as rabbi of the Sephardic congregation Bait Sfaradi.',
+    p3: 'Rabbi Zizov lectures and teaches on Jewish philosophy, history and Jewish identity before communities and educational institutions. He also creates Jewish content on social media, making Jewish ideas accessible to a broad audience with an emphasis on clarity, accessibility and connection to everyday life.',
+    sl: 'Career',
+    y1: 'From 2024', s1h: 'Frankfurt am Main',     s1d: 'Appointed Rabbi of Bait Sfaradi Frankfurt am Main',
+    y2: 'Since late 2023',          s2h: 'Frankfurt am Main',     s2d: 'Rabbi for Youth, Gymnasium and Community Work',
+    y3: '2020 to 2023',   s3h: 'Basel',                      s3d: 'Rabbi and Lecturer, Schomre Tora Institut Basel',
+    y4: 'Ordination',       s4h: 'Rabbinical Ordination, age 24', s4d: 'Talmud, Halacha and Jewish Thought',
+    ig: 'Instagram', fb: 'Facebook',
+    'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Articles',
+    'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.', 'form-subject': 'New enquiry via elishaizizov.com',
+    'cta': 'Read Articles', 'footer-nav': 'Navigation', 'footer-social': 'Follow',
+  },
+  fr: {
+    eyebrow: 'Rabbin · Conférencier',
+    title: 'Rabbin Elishai Zizov',
+    hebrew: 'הרב אלישי זיזוב',
+    p1: 'Le Rabbin Elishai Zizov (né en 1997) est rabbin, conférencier et éducateur actif en Allemagne. Sa vocation rabbinique a été façonnée par son père, le Rabbin Zalman Zizov, rabbin de la communauté de Munich.',
+    p2: 'Il a été ordonné à l\'âge de 24 ans après des années d\'étude dans des yeshivot axées sur le Talmud, la Halacha et la pensée juive, et détient un Master en Philosophie Juive obtenu en Angleterre. De 2020 à 2023 il a exercé comme rabbin et conférencier au Schomre Tora Institut Basel. Depuis fin 2023 il est actif à Francfort-sur-le-Main, et depuis 2024 il est rabbin de la congrégation séfarade Bait Sfaradi.',
+    p3: 'Le Rabbin Zizov donne des conférences et enseigne la philosophie juive, l\'histoire et l\'identité juive devant des communautés et des établissements d\'enseignement. Il crée également du contenu juif sur les réseaux sociaux, rendant les idées juives accessibles au plus grand nombre avec un accent sur la clarté et le lien à la vie quotidienne.',
+    sl: 'Carrière',
+    y1: 'Dès 2024', s1h: 'Francfort-sur-le-Main',  s1d: 'Nommé rabbin de Bait Sfaradi Francfort-sur-le-Main',
+    y2: 'Depuis fin 2023',        s2h: 'Francfort-sur-le-Main',  s2d: 'Rabbin pour la jeunesse, le lycée et la vie communautaire',
+    y3: '2020 à 2023',    s3h: 'Bâle',                       s3d: 'Rabbin et Conférencier, Schomre Tora Bâle',
+    y4: 'Ordination',       s4h: 'Ordination rabbinique, 24 ans', s4d: 'Talmud, Halacha et pensée juive',
+    ig: 'Instagram', fb: 'Facebook',
+    'nav-bio': 'Biographie', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Rechercher...', 'form-err': 'Échec de l\'envoi. Veuillez réessayer.', 'art-label': 'Articles', 'art-empty': 'Articles à venir.', 'latest-label': 'Dernier Article',
+    'form-label': 'Demandes', 'form-title': 'Réserver une conférence ou un cours', 'form-sub': 'Pour réserver une conférence, un cours ou pour toute autre demande, veuillez remplir le formulaire.', 'label-name': 'Nom', 'label-phone': 'Téléphone', 'label-email': 'E-mail', 'label-msg': 'Message', 'ph-name': 'Votre nom', 'ph-phone': 'Votre numéro de téléphone', 'ph-email': 'Votre adresse e-mail', 'ph-msg': 'Votre message...', 'form-btn': 'Envoyer la demande', 'form-ok': 'Merci. Votre demande a été envoyée.', 'form-subject': 'Nouvelle demande via elishaizizov.com',
+    'cta': 'Lire les articles', 'footer-nav': 'Navigation', 'footer-social': 'Suivre',
+  },
+  he: {
+    eyebrow: 'רב · מרצה',
+    title: 'הרב אלישי זיזוב',
+    hebrew: 'Rabbiner Elishai Zizov',
+    p1: 'הרב אלישי זיזוב (נולד ב-1997) הוא רב, מרצה ומחנך הפועל בגרמניה. דרכו בעולם הרבנות הושפעה מאביו, הרב זלמן זיזוב, רב בקהילת מינכן.',
+    p2: 'הוסמך לרבנות בגיל 24, לאחר לימודים בישיבות עם דגש על תלמוד, הלכה ומחשבת ישראל, והשלמת תואר שני בפילוסופיה יהודית באנגליה. בשנים 2020 עד 2023 שימש כרב ומרצה במכון שומרי תורה באזל. מסוף 2023 הוא פעיל בפרנקפורט אם מיין, ומשנת 2024 הוא משמש כרב הקהילה הספרדית בית ספרדי.',
+    p3: 'הרב זיזוב מרצה ומלמד בנושאי פילוסופיה יהודית, היסטוריה וזהות יהודית בפני קהילות ומוסדות חינוך. בנוסף, הוא יוצר תוכן יהודי ברשתות החברתיות ומנגיש רעיונות יהודיים לקהל רחב, תוך דגש על בהירות, נגישות וחיבור לחיי היום יום.',
+    sl: 'קריירה',
+    y1: 'משנת 2024',   s1h: 'פרנקפורט',                  s1d: 'מונה לרב של בית ספרדי פרנקפורט',
+    y2: 'מסוף 2023',      s2h: 'פרנקפורט',                  s2d: 'רב לנוער, גימנסיה ועבודה קהילתית',
+    y3: '2020 עד 2023',   s3h: 'באזל',                      s3d: 'רב ומרצה, מכון שומרי תורה באזל',
+    y4: 'Ordination',         s4h: 'הסמכה לרבנות בגיל 24',       s4d: 'תלמוד, הלכה ומחשבת ישראל',
+    ig: 'Instagram', fb: 'Facebook',
+    'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבות אחרונות',
+    'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.', 'form-subject': 'פנייה חדשה דרך elishaizizov.com',
+    'cta': 'קרא כתבות', 'footer-nav': 'ניווט', 'footer-social': 'עקבו',
+  },
+  es: {
+    eyebrow: 'Rabino · Conferencista',
+    title: 'Rabino Elishai Zizov',
+    hebrew: 'הרב אלישי זיזוב',
+    p1: 'El Rabino Elishai Zizov (n. 1997) es rabino, conferencista y educador activo en Alemania. Su camino en el mundo rabínico fue modelado por su padre, el Rabino Zalman Zizov, rabino de la comunidad de Múnich.',
+    p2: 'Fue ordenado a los 24 años tras años de estudio en yeshivot con énfasis en Talmud, Halacha y pensamiento judío, y posee un Máster en Filosofía Judía obtenido en Inglaterra. De 2020 a 2023 ejerció como rabino y conferencista en el Schomre Tora Institut Basel. Desde finales de 2023 está activo en Fráncfort del Meno, y desde 2024 es rabino de la congregación sefardí Bait Sfaradi.',
+    p3: 'El Rabino Zizov imparte conferencias y clases sobre filosofía judía, historia e identidad judía ante comunidades e instituciones educativas. También crea contenido judío en las redes sociales, acercando las ideas judías a un público amplio con énfasis en la claridad y la conexión con la vida cotidiana.',
+    sl: 'Carrera',
+    y1: 'Desde 2024', s1h: 'Fráncfort del Meno',    s1d: 'Nombrado Rabino de Bait Sfaradi Fráncfort del Meno',
+    y2: 'Desde finales de 2023',            s2h: 'Fráncfort del Meno',    s2d: 'Rabino para la juventud, el gimnasio y la vida comunitaria',
+    y3: '2020 a 2023',           s3h: 'Basilea',               s3d: 'Rabino y Conferencista, Schomre Tora Institut Basel',
+    y4: 'Ordination',            s4h: 'Ordenación rabínica, 24 años', s4d: 'Talmud, Halacha y pensamiento judío',
+    ig: 'Instagram', fb: 'Facebook',
+    'nav-search': 'Buscar', 'search-ph': 'Buscar...', 'form-err': 'Error al enviar. Inténtelo de nuevo.', 'nav-bio': 'Biografía', 'nav-art': 'Artículos', 'nav-form': 'Consultas', 'art-label': 'Artículos', 'art-empty': 'Artículos próximamente.', 'latest-label': 'Último Artículo',
+    'form-label': 'Consultas', 'form-title': 'Reservar una conferencia o clase', 'form-sub': 'Para reservar una conferencia, clase o para cualquier otra consulta, complete el formulario.', 'label-name': 'Nombre', 'label-phone': 'Teléfono', 'label-email': 'Correo electrónico', 'label-msg': 'Mensaje', 'ph-name': 'Su nombre', 'ph-phone': 'Su número de teléfono', 'ph-email': 'Su dirección de correo', 'ph-msg': 'Su mensaje...', 'form-btn': 'Enviar consulta', 'form-ok': 'Gracias. Su consulta ha sido enviada.', 'form-subject': 'Nueva consulta vía elishaizizov.com',
+    'cta': 'Leer artículos', 'footer-nav': 'Navegación', 'footer-social': 'Seguir',
+  },
+  ru: {
+    eyebrow: 'Раввин · Лектор',
+    title: 'Раввин Элиши Зизов',
+    hebrew: 'הרב אלישי זיזוב',
+    p1: 'Раввин Элиши Зизов (р. 1997) — раввин, лектор и педагог, работающий в Германии. Его путь в раввинский мир был определён его отцом, Раввином Залманом Зизовым, раввином мюнхенской общины.',
+    p2: 'Он был рукоположен в 24 года после многолетней учёбы в иешивах с углублённым изучением Талмуда, Halacha и еврейской мысли, а также магистратуры по еврейской философии в Англии. С 2020 по 2023 год служил раввином и лектором в Schomre Tora Institut Basel. С конца 2023 года он активно работает во Франкфурте-на-Майне, а с 2024 года является раввином сефардской общины Бейт Сфаради.',
+    p3: 'Раввин Зизов читает лекции и преподаёт еврейскую философию, историю и еврейскую идентичность перед общинами и учебными заведениями. Он также создаёт еврейский контент в социальных сетях, делая еврейские идеи доступными для широкой аудитории с акцентом на ясность и связь с повседневной жизнью.',
+    sl: 'Карьера',
+    y1: 'С 2024', s1h: 'Франкфурт-на-Майне',       s1d: 'Назначен раввином Бейт Сфаради Франкфурт',
+    y2: 'С конца 2023',          s2h: 'Франкфурт-на-Майне',       s2d: 'Раввин для молодёжи, гимназии и общинной работы',
+    y3: '2020 до 2023',   s3h: 'Базель',                    s3d: 'Раввин и лектор, Schomre Tora Базель',
+    y4: 'Ordination',         s4h: 'Раввинская ординация, 24 года', s4d: 'Талмуд, Halacha и еврейская мысль',
+    ig: 'Instagram', fb: 'Facebook',
+    'nav-search': 'Поиск', 'search-ph': 'Поиск...', 'form-err': 'Ошибка отправки. Попробуйте ещё раз.', 'nav-bio': 'Биография', 'nav-art': 'Статьи', 'nav-form': 'Запросы', 'art-label': 'Статьи', 'art-empty': 'Статьи скоро появятся.', 'latest-label': 'Последняя статья',
+    'form-label': 'Запросы', 'form-title': 'Пригласить на лекцию или урок', 'form-sub': 'Для приглашения на лекцию, урок или по любому другому вопросу заполните форму ниже.', 'label-name': 'Имя', 'label-phone': 'Телефон', 'label-email': 'Эл. почта', 'label-msg': 'Сообщение', 'ph-name': 'Ваше имя', 'ph-phone': 'Ваш номер телефона', 'ph-email': 'Ваш адрес эл. почты', 'ph-msg': 'Ваше сообщение...', 'form-btn': 'Отправить запрос', 'form-ok': 'Спасибо. Ваш запрос отправлен.', 'form-subject': 'Новый запрос через elishaizizov.com',
+    'cta': 'Читать статьи', 'footer-nav': 'Навигация', 'footer-social': 'Подписаться',
+  }
+};
+
+
+let currentLang = 'de';
+function getArticles() { return window._articles || []; }
+function getLang() { return currentLang; }
+
+function setLang(l) {
+  const t = T[l];
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const k = el.getAttribute('data-t');
+    if (!t[k]) return;
+    if (['p1','p2','p3'].includes(k)) { el.innerHTML = t[k]; }
+    else { el.textContent = t[k]; }
+  });
+  document.querySelectorAll('[data-t-ph]').forEach(el => {
+    const k = el.getAttribute('data-t-ph');
+    if (t[k]) el.placeholder = t[k];
+  });
+  document.querySelectorAll('[data-t-attr]').forEach(el => {
+    const k = el.getAttribute('data-t-attr');
+    if (t[k]) el.value = t[k];
+  });
+  document.querySelectorAll('.top-lang-btn').forEach(b => {
+    const bl = b.id.replace('lb-','');
+    b.classList.toggle('active', bl === l);
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active',
+      b.textContent.trim().toLowerCase() === l ||
+      (b.textContent.trim() === 'עב' && l === 'he')
+    );
+  });
+  document.documentElement.lang = l;
+  
+  currentLang = l;
+  localStorage.setItem('site_lang', l);
+  document.body.style.direction = l === 'he' ? 'rtl' : 'ltr';
+  updateHmenuLangs(l);
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    const bl = b.id.replace('lb-','');
+    b.classList.toggle('active', bl === l || (bl === 'he' && l === 'he'));
+  });
+  // Article-page specific calls (guarded — only run if articles.js is loaded)
+  if (typeof updateNavLabels === 'function') updateNavLabels();
+  if (typeof renderBooks === 'function') renderBooks();
+  if (typeof renderHagim === 'function') renderHagim();
+  if (typeof renderLatestArticle === 'function') renderLatestArticle();
+  // Update hamburger L1 sub-items if they exist (articles page only)
+  if (typeof TORAH_NAMES !== 'undefined') {
+    const tn = TORAH_NAMES[l] || TORAH_NAMES.de;
+    const l1p = document.getElementById('hmenu-l1-parasha');
+    if (l1p) l1p.textContent = tn.tab_p + ' ›';
+    const l1h = document.getElementById('hmenu-l1-hagim');
+    if (l1h) l1h.textContent = tn.tab_h + ' ›';
+    document.querySelectorAll('.hmenu-back-btn').forEach(b => { b.textContent = tn.back; });
+    const _bl = document.getElementById('hmenu-books-level');
+    const _pl = document.getElementById('hmenu-parasha-level');
+    const _hl = document.getElementById('hmenu-hagim-level');
+    if (_bl && _bl.style.display !== 'none' && typeof hmenuShowParashaBooksLevel === 'function') hmenuShowParashaBooksLevel();
+    else if (_pl && _pl.style.display !== 'none' && window._hmenuPrevBook && typeof hmenuShowParashaLevel === 'function') hmenuShowParashaLevel(window._hmenuPrevBook);
+    else if (_hl && _hl.style.display !== 'none' && typeof hmenuShowHagimLevel === 'function') hmenuShowHagimLevel();
+  }
+  // If article open, re-render in new language
+  const ap = document.getElementById('article-page');
+  if (ap && ap.style.display !== 'none' && window._currentArticle && typeof _renderArticlePage === 'function') {
+    _renderArticlePage(window._currentArticle, l);
+    const slug = typeof articleSlug === 'function' ? articleSlug(window._currentArticle) : '';
+    const langQ = l !== 'de' ? '?lang=' + l : '';
+    if (slug) window.history.replaceState({ articleId: slug }, '', '/Website/' + slug + langQ);
+  }
+}
+
+
+// ── Hamburger menu ──
+function toggleMenu() {
+  const isOpen = document.getElementById('hmenu').classList.toggle('open');
+  document.getElementById('hmenu-overlay').classList.toggle('open');
+  document.getElementById('hamburger-btn').setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+function closeMenu() {
+  document.getElementById('hmenu').classList.remove('open');
+  document.getElementById('hmenu-overlay').classList.remove('open');
+  const sub = document.getElementById('hmenu-art-sub');
+  const btn = document.getElementById('hmenu-art-btn');
+  if (sub) { sub.classList.remove('open'); if (btn) btn.classList.remove('open'); }
+  if (typeof hmenuBackToL1 === 'function') hmenuBackToL1();
+  const si = document.getElementById('hmenu-search-input');
+  const sr = document.getElementById('hmenu-search-results');
+  if (si) si.value = '';
+  if (sr) sr.innerHTML = '';
+  document.getElementById('hamburger-btn').setAttribute('aria-expanded', 'false');
+}
+function updateHmenuLangs(l) {
+  document.querySelectorAll('.hmenu-lang').forEach(b => {
+    const bl = b.id.replace('hm-','');
+    b.classList.toggle('active', bl === l);
+  });
+}
+// On non-articles pages: hamburger search links to articles page
+function hmenuSearch(q) {
+  if (typeof _articlesHmenuSearch === 'function') { _articlesHmenuSearch(q); return; }
+  // fallback: no-op
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const menu = document.getElementById('hmenu');
+    if (menu && menu.classList.contains('open')) closeMenu();
+  }
+});
+
+// navScrollTo: scrolls to an element on the same page (no-op if missing)
+function navScrollTo(id) {
+  const articlePage = document.getElementById('article-page');
+  if (articlePage && articlePage.style.display !== 'none' && typeof closeArticlePage === 'function') closeArticlePage();
+  var el = document.getElementById(id);
+  if (el) setTimeout(function() { el.scrollIntoView({behavior:'smooth'}); }, 50);
+}
+
+// ── Page init ──
+document.addEventListener('DOMContentLoaded', function() {
+  // Language: URL param > sessionStorage (from 404 redirect) > localStorage > de
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  const sesLang = sessionStorage.getItem('redirect_lang');
+  if (sesLang) sessionStorage.removeItem('redirect_lang');
+  const savedLang = (urlLang && T[urlLang]) ? urlLang : (sesLang && T[sesLang]) ? sesLang : (localStorage.getItem('site_lang') || 'de');
+  setLang(savedLang);
+
+  // Back-to-top button
+  const btt = document.getElementById('back-to-top');
+  if (btt) {
+    window.addEventListener('scroll', function() {
+      btt.classList.toggle('visible', window.scrollY > 320);
+    });
+  }
+
+  // Offline banner
+  function updateOnlineBanner() {
+    const b = document.getElementById('offline-banner');
+    if (!b) return;
+    if (!navigator.onLine) {
+      const t = T[currentLang] || T.de;
+      b.textContent = t['offline'] || 'Offline — Keine Verbindung';
+      b.style.display = 'block';
+    } else {
+      b.style.display = 'none';
+    }
+  }
+  window.addEventListener('online',  updateOnlineBanner);
+  window.addEventListener('offline', updateOnlineBanner);
+  updateOnlineBanner();
+
+  // ?admin=1 in URL → open admin if on articles page
+  if (window.location.search.includes('admin=1') && typeof toggleAdmin === 'function') {
+    toggleAdmin();
+  }
+});

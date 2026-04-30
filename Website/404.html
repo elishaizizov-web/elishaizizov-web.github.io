@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script>
+  // GitHub Pages SPA routing:
+  // Unknown paths (e.g. /wajikra-2026) land here.
+  // Article slugs → redirect to /articles.html
+  // Other paths → redirect to /
+  var slug = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  var knownPages = ['index.html', 'articles.html', 'contact.html'];
+  if (slug && knownPages.indexOf(slug) === -1) {
+    // Likely an article slug — redirect to articles page
+    sessionStorage.setItem('redirect_article', slug);
+    var lang = new URLSearchParams(window.location.search).get('lang');
+    if (lang) sessionStorage.setItem('redirect_lang', lang);
+    window.location.replace('/Website/articles.html');
+  } else {
+    window.location.replace('/Website/');
+  }
+</script>
+</head><body></body></html>
