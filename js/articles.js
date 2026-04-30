@@ -289,8 +289,10 @@ function showHag(hagKey, hagDisplay) {
 // Back to top + reading progress bar
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('back-to-top');
-  if (window.scrollY > 400) btn.classList.add('visible');
-  else btn.classList.remove('visible');
+  if (btn) {
+    if (window.scrollY > 400) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  }
   const prog = document.getElementById('ap-progress');
   if (prog) {
     const ap = document.getElementById('article-page');
@@ -388,13 +390,12 @@ function openArticle(id) {
   function _handleArticleTap(e) {
     const el = e.target.closest('[data-article-id]');
     if (!el) return;
+    e.preventDefault();
+    e.stopPropagation();
     try {
-      if (openArticle(el.getAttribute('data-article-id'))) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      openArticle(el.getAttribute('data-article-id'));
     } catch(err) {
-      console.warn('openArticle failed, falling back to href navigation:', err);
+      console.error('openArticle error:', err);
     }
   }
   document.addEventListener('touchend', _handleArticleTap, { passive: false });
@@ -573,12 +574,12 @@ function closeArticlePage() {
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
-  window.history.pushState({}, '', '/');
-  // Reset meta tags to homepage defaults
-  document.title = 'Rabbiner Elishai Zizov';
-  document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.origin);
-  document.querySelector('meta[property="og:title"]')?.setAttribute('content', 'Rabbiner Elishai Zizov');
-  document.querySelector('meta[property="og:description"]')?.setAttribute('content', 'Rabbiner, Vortragsredner und jüdischer Pädagoge in Frankfurt am Main.');
+  window.history.pushState({}, '', '/articles.html');
+  // Reset meta tags to articles page defaults
+  document.title = 'Beiträge — Rabbiner Elishai Zizov';
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.origin + '/articles.html');
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', 'Beiträge — Rabbiner Elishai Zizov');
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', 'Torah-Beiträge und Artikel von Rabbiner Elishai Zizov.');
 }
 
 function closeOverlay() { closeArticlePage(); }
@@ -870,7 +871,8 @@ async function _loadArticlesImpl(silent) {
       const langFromUrl = urlParams.get('lang');
       if (langFromUrl && TORAH_NAMES[langFromUrl]) setLang(langFromUrl);
       const slug = window.location.pathname.replace(/^\//, '') || urlParams.get('article');
-      if (slug) openArticle(slug);
+      const knownPages = ['articles.html', 'index.html', 'contact.html', ''];
+      if (slug && !knownPages.includes(slug)) openArticle(slug);
     }
   } catch(e) {
     console.error('Render error after loading articles:', e);
@@ -883,7 +885,8 @@ window.addEventListener('popstate', () => {
   if (popLang && TORAH_NAMES[popLang]) setLang(popLang);
   const slug = window.location.pathname.replace(/^\//, '') ||
                popParams.get('article'); // backward compat
-  if (slug) { const a = findArticle(slug); if (a) { openArticle(a.id); return; } }
+  const knownPages = ['articles.html', 'index.html', 'contact.html', ''];
+  if (slug && !knownPages.includes(slug)) { const a = findArticle(slug); if (a) { openArticle(a.id); return; } }
   document.getElementById('article-page').style.display = 'none';
   document.querySelector('.logo-band').style.display    = 'flex';
   document.querySelector('.page-header').style.display  = 'block';
