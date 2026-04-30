@@ -375,6 +375,10 @@ function openArticle(id) {
   // switch views
   document.querySelector('.page-header').style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
+  const _pn = document.querySelector('.page-nav');
+  if (_pn) _pn.style.display = 'none';
+  const _gb = document.querySelector('.gold-bar');
+  if (_gb) _gb.style.display = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
   // Hide logo-band for one frame during scrollTo to prevent flash, then restore
@@ -574,6 +578,10 @@ function closeArticlePage() {
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
   document.querySelector('.page-header').style.display   = 'block';
   document.querySelector('.page-body').style.display     = 'block';
+  const _pn = document.querySelector('.page-nav');
+  if (_pn) _pn.style.display = '';
+  const _gb = document.querySelector('.gold-bar');
+  if (_gb) _gb.style.display = '';
   window.history.pushState({}, '', '/articles.html');
   // Reset meta tags to articles page defaults
   document.title = 'Beiträge — Rabbiner Elishai Zizov';
@@ -891,6 +899,10 @@ window.addEventListener('popstate', () => {
   document.querySelector('.logo-band').style.display    = 'flex';
   document.querySelector('.page-header').style.display  = 'block';
   document.querySelector('.page-body').style.display    = 'block';
+  const _pn = document.querySelector('.page-nav');
+  if (_pn) _pn.style.display = '';
+  const _gb = document.querySelector('.gold-bar');
+  if (_gb) _gb.style.display = '';
 });
 
 // ════════════════════════════════════════════════════════
