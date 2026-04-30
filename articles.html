@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beiträge — Rabbiner Elishai Zizov</title>
+<meta name="description" content="Torah-Beiträge und Artikel von Rabbiner Elishai Zizov. Paraschot, Chagim und mehr.">
+<meta property="og:title" content="Beiträge — Rabbiner Elishai Zizov">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elishaizizov.com/articles.html">
+<meta property="og:image" content="https://elishaizizov.com/logo.png">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1a2b4a">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="canonical" href="https://elishaizizov.com/articles.html">
+<link rel="alternate" hreflang="de" href="https://elishaizizov.com/articles.html">
+<link rel="alternate" hreflang="en" href="https://elishaizizov.com/articles.html?lang=en">
+<link rel="alternate" hreflang="he" href="https://elishaizizov.com/articles.html?lang=he">
+<link rel="alternate" hreflang="x-default" href="https://elishaizizov.com/articles.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/global.css">
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+</head>
+<body>
+
+<div class="logo-band">
+  <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
+  <a href="/" style="display:contents;cursor:pointer;"><img src="/logo.png" alt="Rabbiner Elishai Zizov"></a>
+  <span class="logo-band-spacer"></span>
+</div>
+
+<nav class="lang-bar">
+  <button class="lang-back-btn" id="lang-back-btn" onclick="closeArticlePage()" aria-label="Home">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
+  <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
+  <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
+  <button class="lang-btn" onclick="setLang('he')" id="lb-he">עב</button>
+</nav>
+
+<nav class="page-nav">
+  <a class="page-nav-link" href="/" data-t="nav-bio">Biografie</a>
+  <a class="page-nav-link active" href="/articles.html" data-t="nav-art">Beiträge</a>
+  <a class="page-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+</nav>
+
+<header class="page-header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="header-text">
+        <p class="header-eyebrow" data-t="eyebrow">Rabbiner · Vortragsredner</p>
+        <h1 class="header-name" data-t="title">Rabbiner Elishai Zizov</h1>
+        <p class="header-hebrew" data-t="hebrew">הרב אלישי זיזוב</p>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="gold-bar"></div>
+
+<main class="page-body">
+
+  <section class="articles-section" id="articles-section">
+    <span class="section-label" data-t="art-label">Beiträge</span>
+
+    <div id="v-check" style="font-size:10px;color:#bbb;text-align:right;padding:2px 4px;letter-spacing:.05em;">v110</div>
+    <div id="articles-loading-msg" style="display:none; padding:14px; color:#888; font-size:14px; text-align:center;">⏳ Beiträge werden geladen…</div>
+    <div style="text-align:center; margin-bottom:8px;">
+      <button id="articles-retry-btn" onclick="document.getElementById('articles-retry-btn').style.display='none'; loadArticles();" style="display:none; background:#1b2a3b; color:#f7f4ee; border:1px solid #b8952a; border-radius:6px; padding:8px 18px; font-size:13px; cursor:pointer;">↻ Beiträge laden</button>
+    </div>
+
+    <div id="latest-article-block" style="display:block; margin-bottom:28px;">
+      <p class="latest-article-label" data-t="latest-label">Neueste Beiträge</p>
+      <div id="latest-article-card" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;"></div>
+    </div>
+
+    <!-- Inline search -->
+    <div class="articles-search-wrap">
+      <input type="search" id="articles-search-input" data-t-ph="search-ph" placeholder="Suche nach Beiträgen..." oninput="inlineSearch(this.value)" autocomplete="off" aria-label="Beiträge durchsuchen">
+    </div>
+    <p class="search-no-results" id="articles-search-no-results">Keine Beiträge gefunden.</p>
+    <div id="articles-inline-results" class="articles-grid" style="display:none"></div>
+
+    <!-- Tabs -->
+    <div class="tab-bar" id="articles-tabs">
+      <button class="tab-btn active" id="tab-parasha" onclick="switchTab('parasha')" data-t="tab-p">Paraschot</button>
+      <button class="tab-btn" id="tab-hagim" onclick="switchTab('hagim')" data-t="tab-h">Chagim</button>
+    </div>
+
+    <!-- PARASHIOT -->
+    <div id="panel-parasha">
+      <div id="torah-nav" class="torah-nav">
+        <button class="book-btn" onclick="showBook('Bereshit')">Bereshit</button>
+        <button class="book-btn" onclick="showBook('Shemot')">Shemot</button>
+        <button class="book-btn" onclick="showBook('Vayikra')">Vayikra</button>
+        <button class="book-btn" onclick="showBook('Bamidbar')">Bamidbar</button>
+        <button class="book-btn" onclick="showBook('Devarim')">Devarim</button>
+      </div>
+      <div id="parasha-nav" class="parasha-nav" style="display:none">
+        <button class="back-btn" onclick="showBooks()">← Zurück</button>
+        <div id="parasha-list" class="parasha-list"></div>
+      </div>
+      <div id="articles-list" class="articles-list" style="display:none">
+        <button class="back-btn" onclick="showParashiot()">← Zurück</button>
+        <h3 id="articles-list-title" class="articles-list-title"></h3>
+        <div id="articles-grid" class="articles-grid"></div>
+      </div>
+    </div>
+
+    <!-- CHAGIM -->
+    <div id="panel-hagim" style="display:none">
+      <div id="hagim-nav" class="parasha-list">
+        <button class="parasha-btn" onclick="showHag('Rosh Hashanah')">Rosh Hashanah</button>
+        <button class="parasha-btn" onclick="showHag('Yom Kippur')">Yom Kippur</button>
+        <button class="parasha-btn" onclick="showHag('Sukkot')">Sukkot</button>
+        <button class="parasha-btn" onclick="showHag('Shemini Atzeret')">Shemini Atzeret</button>
+        <button class="parasha-btn" onclick="showHag('Chanukah')">Chanukah</button>
+        <button class="parasha-btn" onclick="showHag('Asarah BeTevet')">Asarah BeTevet</button>
+        <button class="parasha-btn" onclick="showHag('Tu BiShvat')">Tu BiShvat</button>
+        <button class="parasha-btn" onclick="showHag('Purim')">Purim</button>
+        <button class="parasha-btn" onclick="showHag('Pesach')">Pesach</button>
+        <button class="parasha-btn" onclick="showHag('Sefirat HaOmer')">Sefirat HaOmer</button>
+        <button class="parasha-btn" onclick="showHag('Yom HaShoah')">Yom HaShoah</button>
+        <button class="parasha-btn" onclick="showHag('Yom HaZikaron')">Yom HaZikaron</button>
+        <button class="parasha-btn" onclick="showHag('Yom HaAtzmaut')">Yom HaAtzmaut</button>
+        <button class="parasha-btn" onclick="showHag('Lag BaOmer')">Lag BaOmer</button>
+        <button class="parasha-btn" onclick="showHag('Yom Yerushalayim')">Yom Yerushalayim</button>
+        <button class="parasha-btn" onclick="showHag('Shavuot')">Shavuot</button>
+        <button class="parasha-btn" onclick="showHag('Shiva Asar BeTammuz')">Shiva Asar BeTammuz</button>
+        <button class="parasha-btn" onclick="showHag('Tisha BAv')">Tisha B'Av</button>
+      </div>
+      <div id="hag-articles-list" style="display:none">
+        <button class="back-btn" onclick="showHagim()">← Zurück</button>
+        <h3 id="hag-articles-title" class="articles-list-title"></h3>
+        <div id="hag-articles-grid" class="articles-grid"></div>
+      </div>
+    </div>
+
+    <p id="art-empty-msg" class="articles-empty" style="display:none" data-t="art-empty">Beiträge werden in Kürze veröffentlicht.</p>
+  </section>
+
+</main>
+
+<div id="offline-banner" class="offline-banner" role="alert"></div>
+
+<!-- reading progress bar -->
+<div id="ap-progress"></div>
+
+<!-- ── FULL ARTICLE PAGE ─────────────────────────────────── -->
+<div id="article-page">
+  <div class="ap-print-logo">
+    <img src="/logo.png" alt="Rabbiner Elishai Zizov">
+    <p>Rabbiner Elishai Zizov</p>
+  </div>
+  <nav id="ap-breadcrumb" class="ap-breadcrumb" aria-label="Breadcrumb"></nav>
+  <div id="ap-parasha"></div>
+  <h1 id="ap-title"></h1>
+  <div class="ap-img-wrap">
+    <span id="ap-date"></span>
+    <span id="ap-reading-time" class="ap-reading-time" style="margin-left:12px"></span>
+    <img id="ap-img" src="" alt="" style="display:none">
+  </div>
+  <div class="ap-divider" style="display:none"><span class="ap-divider-inner">✦ &nbsp; ✦ &nbsp; ✦</span></div>
+  <div id="ap-text"></div>
+  <div id="ap-share"></div>
+  <div id="ap-related"></div>
+</div>
+
+<div class="admin-overlay" id="admin-overlay">
+  <div class="admin-box">
+
+    <div class="admin-header-bar">
+      <h2>Artikel-Verwaltung</h2>
+      <span class="admin-draft-badge" id="admin-draft-badge"></span>
+      <button class="admin-close-btn" onclick="toggleAdmin()">&times;</button>
+    </div>
+
+    <div class="admin-body">
+
+      <!-- TOAST -->
+      <div id="admin-toast" class="admin-toast"></div>
+
+      <!-- LOGIN SCREEN -->
+      <div id="admin-login-screen" class="admin-card" style="text-align:center; padding:48px 28px;">
+        <div style="font-size:36px; margin-bottom:16px;">🔑</div>
+        <p style="font-family:'Playfair Display',serif; font-size:22px; margin-bottom:8px; color:var(--navy); font-weight:600;">כניסה לממשק</p>
+        <p style="font-size:14px; color:#aaa; margin-bottom:28px;">הכנס את הסיסמה כדי להמשיך</p>
+        <input type="password" id="admin-pw" placeholder="סיסמה..." style="padding:16px 18px; width:100%; max-width:300px; border-radius:10px; border:2px solid #e5e7eb; font-size:16px; display:block; margin:0 auto 16px; outline:none; text-align:center; font-family:'Raleway',sans-serif; transition:border-color 0.2s; box-sizing:border-box;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#e5e7eb'" onkeyup="if(event.key==='Enter')adminLogin()">
+        <button class="admin-save-btn" style="max-width:300px; margin:0 auto;" onclick="adminLogin()">ANMELDEN</button>
+        <p id="admin-login-err" style="display:none; color:#dc2626; margin-top:16px; font-size:14px; font-weight:bold;"></p>
+      </div>
+
+      <!-- ADMIN CONTENT -->
+      <div id="admin-content" style="display:none;">
+
+        <!-- Edit mode banner -->
+        <div id="admin-edit-banner" class="admin-edit-banner" style="display:none;">
+          <span>✏ Bearbeitung: <strong id="admin-edit-title-label"></strong></span>
+          <button class="admin-edit-banner-cancel" onclick="adminCancelEdit()">✕ Abbrechen</button>
+        </div>
+
+        <!-- ── 1. Artikel-Details ── -->
+        <div class="admin-card">
+          <div class="admin-card-title" style="justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:7px;">
+              <span style="display:inline-block;width:3px;height:14px;background:var(--gold);border-radius:2px;"></span>
+              Artikel-Details
+            </span>
+            <button onclick="adminLogout()" style="background:transparent;border:1px solid #ddd;padding:4px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;color:#888;letter-spacing:0.04em;">ABMELDEN</button>
+          </div>
+          <div class="aform-grid">
+            <div class="aform-group">
+              <label>Kategorie</label>
+              <select id="af-cat" onchange="adminToggleCat()">
+                <option value="parasha">Parascha / Tora</option>
+                <option value="hag">Fest / Feiertag</option>
+              </select>
+            </div>
+            <div class="aform-group" id="af-book-wrap">
+              <label>Buch</label>
+              <select id="af-book" onchange="adminUpdateParasha()">
+                <option value="Bereshit">Bereschit</option>
+                <option value="Shemot">Schemot</option>
+                <option value="Vayikra">Wajikra</option>
+                <option value="Bamidbar">Bamidbar</option>
+                <option value="Devarim">Dewarim</option>
+              </select>
+            </div>
+            <div class="aform-group" id="af-parasha-wrap">
+              <label>Parascha</label>
+              <select id="af-parasha"></select>
+            </div>
+            <div class="aform-group" id="af-hag-wrap" style="display:none;">
+              <label>Fest / Feiertag</label>
+              <select id="af-hag-name">
+                <option value="">— Bitte wählen —</option>
+                <option value="Rosh Hashanah">Rosch Haschana</option>
+                <option value="Yom Kippur">Jom Kipur</option>
+                <option value="Sukkot">Sukkot</option>
+                <option value="Shemini Atzeret">Schemini Azeret</option>
+                <option value="Chanukah">Chanukka</option>
+                <option value="Asarah BeTevet">Asara beTebet</option>
+                <option value="Tu BiShvat">Tu biSchewat</option>
+                <option value="Purim">Purim</option>
+                <option value="Pesach">Pessach</option>
+                <option value="Sefirat HaOmer">Sefirat HaOmer</option>
+                <option value="Yom HaShoah">Jom HaSchoah</option>
+                <option value="Yom HaZikaron">Jom HaZikaron</option>
+                <option value="Yom HaAtzmaut">Jom HaAzmaut</option>
+                <option value="Lag BaOmer">Lag baOmer</option>
+                <option value="Yom Yerushalayim">Jom Jeruschalajim</option>
+                <option value="Shavuot">Schawuot</option>
+                <option value="Shiva Asar BeTammuz">17. Tammus</option>
+                <option value="Tisha BAv">Tischa beAw</option>
+              </select>
+            </div>
+            <div class="aform-group">
+              <label>Veröffentlichungsdatum</label>
+              <input type="date" id="af-date-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 2. Bild ── -->
+        <div class="admin-card">
+          <div class="admin-card-title">Artikelbild</div>
+          <label for="af-image-file" class="premium-upload-box">
+            <input type="file" id="af-image-file" accept="image/*" onchange="uploadImage(event)">
+            <div class="premium-upload-icon">🖼</div>
+            <div class="premium-upload-text">Bild hochladen</div>
+            <div class="premium-upload-subtext">JPEG · PNG · JPG</div>
+            <p id="upload-status" style="margin-top:8px; font-weight:bold; color:var(--gold); display:none; font-size:13px;"></p>
+          </label>
+          <input type="hidden" id="af-image" oninput="updateImagePreview(this.value)">
+          <div id="af-image-preview" style="display:none; margin-top:10px; text-align:center;">
+            <img id="af-image-preview-img" src="" alt="Vorschau" style="max-width:100%; max-height:150px; border-radius:8px; border:1px solid #e5e7eb; object-fit:cover;">
+            <button type="button" onclick="clearImageUpload()" style="display:block; margin:7px auto 0; background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:5px 16px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">✕ Bild entfernen</button>
+          </div>
+        </div>
+
+        <!-- ── 3. Inhalte (Sprachen) ── -->
+        <div class="admin-card">
+          <div class="admin-card-title">Inhalte</div>
+          <div class="lang-progress">
+            <span class="lang-progress-label">Fortschritt:</span>
+            <span class="lang-progress-count" id="lang-progress-count">0 / 6</span>
+          </div>
+          <div class="lang-editor-section">
+            <div class="lang-tabs">
+              <button class="lang-tab active" data-lang="de" onclick="switchLangTab('de')">🇩🇪 DE<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="he" onclick="switchLangTab('he')">🇮🇱 עב<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="en" onclick="switchLangTab('en')">🇬🇧 EN<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="fr" onclick="switchLangTab('fr')">🇫🇷 FR<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="es" onclick="switchLangTab('es')">🇪🇸 ES<span class="tab-dot"></span></button>
+              <button class="lang-tab" data-lang="ru" onclick="switchLangTab('ru')">🇷🇺 RU<span class="tab-dot"></span></button>
+            </div>
+            <div class="lang-panel" id="lpanel-de">
+              <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
+              <div class="quill-wrapper" id="qwrap-de">
+                <div class="quill-extra-bar">
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-de').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-de">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('de')" title="Vollbild">⤢</button>
+                  </div>
+                </div>
+                <div id="q-de" class="custom-editor" contenteditable="true"></div>
+              </div>
+            </div>
+            <div class="lang-panel" id="lpanel-he" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('he')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-he" placeholder="הכנס כותרת בעברית..." dir="rtl" style="direction:rtl;text-align:right;" oninput="updateTabIndicator('he')">
+              <div class="quill-wrapper" id="qwrap-he">
+                <div class="quill-extra-bar">
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-he').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-he">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('he')" title="Vollbild">⤢</button>
+                  </div>
+                </div>
+                <div id="q-he" class="custom-editor" contenteditable="true" dir="rtl" style="text-align:right;"></div>
+              </div>
+            </div>
+            <div class="lang-panel" id="lpanel-en" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('en')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-en" placeholder="Enter English title..." oninput="updateTabIndicator('en')">
+              <div class="quill-wrapper" id="qwrap-en">
+                <div class="quill-extra-bar">
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-en').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-en">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('en')" title="Vollbild">⤢</button>
+                  </div>
+                </div>
+                <div id="q-en" class="custom-editor" contenteditable="true"></div>
+              </div>
+            </div>
+            <div class="lang-panel" id="lpanel-fr" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('fr')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
+              <div class="quill-wrapper" id="qwrap-fr">
+                <div class="quill-extra-bar">
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-fr">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('fr')" title="Vollbild">⤢</button>
+                  </div>
+                </div>
+                <div id="q-fr" class="custom-editor" contenteditable="true"></div>
+              </div>
+            </div>
+            <div class="lang-panel" id="lpanel-es" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('es')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
+              <div class="quill-wrapper" id="qwrap-es">
+                <div class="quill-extra-bar">
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-es">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('es')" title="Vollbild">⤢</button>
+                  </div>
+                </div>
+                <div id="q-es" class="custom-editor" contenteditable="true"></div>
+              </div>
+            </div>
+            <div class="lang-panel" id="lpanel-ru" style="display:none;">
+              <button class="copy-de-btn" onclick="copyTitleFromDE('ru')">↓ DE-Titel kopieren</button>
+              <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
+              <div class="quill-wrapper" id="qwrap-ru">
+                <div class="quill-extra-bar">
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
+                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('insertUnorderedList')">•</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="ql-word-count" id="wc-ru">0 Wörter</span>
+                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('ru')" title="Vollbild">⤢</button>
+                  </div>
+                </div>
+                <div id="q-ru" class="custom-editor" contenteditable="true"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 4. Artikel-Liste ── -->
+        <div class="admin-card">
+          <div class="admin-card-title">Veröffentlichte Artikel</div>
+          <input class="admin-list-search" type="text" placeholder="🔍 Artikel suchen..." oninput="adminFilterList(this.value)">
+          <div id="admin-art-list" class="admin-art-list"></div>
+        </div>
+
+        <!-- GitHub SEO Token (shown only if token not yet saved) -->
+        <div class="admin-card" id="admin-github-card" style="display:none;">
+          <div class="admin-card-title">SEO – GitHub Token</div>
+          <p style="font-size:12px;color:#888;margin-bottom:8px;">Einmalig eintragen – danach wird die Sitemap automatisch aktualisiert.</p>
+          <div style="display:flex;gap:8px;">
+            <input type="password" id="admin-gh-token-input" placeholder="ghp_..." style="flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;">
+            <button onclick="saveGitHubToken()" style="background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;">Speichern</button>
+          </div>
+          <div id="admin-gh-token-status" style="font-size:12px;margin-top:6px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── STICKY PUBLISH BAR (outside scrollable body) ── -->
+    <div class="admin-sticky-bar" id="admin-sticky-bar" style="display:none;">
+      <div id="admin-sticky-langs" class="admin-sticky-langs"></div>
+      <div class="admin-sticky-right">
+        <span id="admin-msg" class="admin-sticky-msg"></span>
+        <button id="admin-cancel-btn" class="admin-sticky-cancel" onclick="adminCancelEdit()" style="display:none;">✕ Abbrechen</button>
+        <button id="admin-publish-btn" class="admin-publish-btn" onclick="adminSave()">
+          <span class="spinner"></span>
+          <span class="btn-label">VERÖFFENTLICHEN</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+
+<div class="social-bar">
+  <a href="https://www.instagram.com/elishaizizov" class="social-icon" target="_blank" rel="noopener" title="Instagram">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="2" y="2" width="20" height="20" rx="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  </a>
+  <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="social-icon" target="_blank" rel="noopener" title="Facebook">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+    </svg>
+  </a>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-name">Rabbiner Elishai Zizov</p>
+      <p class="footer-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
+    </div>
+    <div>
+      <span class="footer-col-label" data-t="footer-nav">Navigation</span>
+      <nav class="footer-nav">
+        <a class="footer-nav-link" href="/" data-t="nav-bio">Biografie</a>
+        <a class="footer-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
+        <a class="footer-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+      </nav>
+    </div>
+    <div>
+      <span class="footer-col-label" data-t="footer-social">Folgen</span>
+      <div class="footer-social-col">
+        <a href="https://www.instagram.com/elishaizizov" class="footer-social-link" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="footer-social-link" target="_blank" rel="noopener">Facebook</a>
+        <a href="/contact.html" class="footer-social-link footer-cta-link" data-t="nav-form">Anfragen</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Nach oben">↑</button>
+
+<!-- Hamburger Menu (full version with Torah navigation) -->
+<div class="hmenu-overlay" id="hmenu-overlay" onclick="closeMenu()"></div>
+<nav class="hmenu" id="hmenu">
+  <button class="hmenu-close" onclick="closeMenu()">×</button>
+
+  <div class="hmenu-section">
+    <div class="hmenu-search-wrap">
+      <div class="hmenu-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="hmenu-search-input" placeholder="Suche..." data-t-ph="search-ph" oninput="hmenuSearch(this.value)" autocomplete="off">
+      </div>
+      <div id="hmenu-search-results" aria-live="polite"></div>
+    </div>
+    <button class="hmenu-item" id="hmenu-art-btn" onclick="hmenuToggleArt()"><span data-t="nav-art">Beiträge</span> <span class="hmenu-item-arrow">›</span></button>
+    <div class="hmenu-sub" id="hmenu-art-sub">
+      <div id="hmenu-l1">
+        <button class="hmenu-sub-item" id="hmenu-l1-parasha" onclick="hmenuShowParashaBooksLevel()">Paraschot ›</button>
+        <button class="hmenu-sub-item" id="hmenu-l1-hagim" onclick="hmenuShowHagimLevel()">Chagim ›</button>
+      </div>
+      <div id="hmenu-books-level" style="display:none">
+        <button class="hmenu-sub-back hmenu-back-btn" onclick="hmenuBackToL1()">‹ Zurück</button>
+        <div id="hmenu-books-list"></div>
+      </div>
+      <div id="hmenu-parasha-level" style="display:none">
+        <button class="hmenu-sub-back hmenu-back-btn" onclick="hmenuBackToBooks()">‹ Zurück</button>
+        <div id="hmenu-parasha-list"></div>
+      </div>
+      <div id="hmenu-hagim-level" style="display:none">
+        <button class="hmenu-sub-back hmenu-back-btn" onclick="hmenuBackToL1()">‹ Zurück</button>
+        <div id="hmenu-hagim-list"></div>
+      </div>
+    </div>
+    <a class="hmenu-item" href="/" style="display:block;text-decoration:none;" data-t="nav-bio">Biografie</a>
+    <a class="hmenu-item" href="/contact.html" style="display:block;text-decoration:none;" data-t="nav-form">Anfragen</a>
+  </div>
+
+  <div class="hmenu-divider"></div>
+
+  <div class="hmenu-section hmenu-langs">
+    <button class="hmenu-lang active" id="hm-de" onclick="setLang('de'); updateHmenuLangs('de')">DE</button>
+    <button class="hmenu-lang" id="hm-en" onclick="setLang('en'); updateHmenuLangs('en')">EN</button>
+    <button class="hmenu-lang" id="hm-he" onclick="setLang('he'); updateHmenuLangs('he')">עב</button>
+  </div>
+
+  <div class="hmenu-divider"></div>
+
+  <button class="hmenu-admin-btn" onclick="closeMenu(); toggleAdmin()">&#9881; Admin</button>
+
+  <div class="hmenu-divider"></div>
+
+  <a href="https://www.instagram.com/elishaizizov" class="hmenu-ig" target="_blank" rel="noopener">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="2" y="2" width="20" height="20" rx="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+    @elishaizizov
+  </a>
+  <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="hmenu-ig" target="_blank" rel="noopener" style="margin-top:10px">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+    </svg>
+    Facebook
+  </a>
+</nav>
+
+<!-- Search float -->
+<div id="search-float" class="search-float" style="display:none">
+  <div class="page-body" style="padding-top:0;padding-bottom:0">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Suche nach Beiträgen..." oninput="searchArticles(this.value)">
+      <p class="search-no-results" id="search-no-results">Keine Beiträge gefunden.</p>
+      <div id="search-results" class="articles-grid" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/shared.js"></script>
+<script src="/js/articles.js"></script>
+</body>
+</html>
