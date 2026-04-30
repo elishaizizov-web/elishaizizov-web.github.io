@@ -40,7 +40,6 @@ const HAGIM_NAMES = {
 };
 
 let currentBook = null;
-let currentLang = 'de';
 
 function getArticles() { return window._articles || []; }
 function getLang() { return currentLang; }
