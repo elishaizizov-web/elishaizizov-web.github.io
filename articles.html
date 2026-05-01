@@ -20,8 +20,8 @@
 <link rel="alternate" hreflang="x-default" href="https://elishaizizov.com/articles.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/global.css?v=3">
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -31,39 +31,34 @@
 </head>
 <body>
 
-<div class="logo-band">
-  <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
-  <a href="/" style="display:contents;cursor:pointer;"><img src="/logo.png" alt="Rabbiner Elishai Zizov"></a>
-  <span class="logo-band-spacer"></span>
-</div>
-
-<nav class="lang-bar">
-  <button class="lang-back-btn" id="lang-back-btn" onclick="closeArticlePage()" aria-label="Home">
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-  </button>
-  <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
-  <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
-  <button class="lang-btn" onclick="setLang('he')" id="lb-he">עב</button>
-</nav>
-
-<nav class="page-nav">
-  <a class="page-nav-link" href="/" data-t="nav-bio">Biografie</a>
-  <a class="page-nav-link active" href="/articles.html" data-t="nav-art">Beiträge</a>
-  <a class="page-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-</nav>
-
-<header class="page-header">
-  <div class="header-inner">
-    <div class="header-top">
-      <div class="header-text">
-        <p class="header-eyebrow" data-t="eyebrow">Rabbiner · Vortragsredner</p>
-        <h1 class="header-name" data-t="title">Rabbiner Elishai Zizov</h1>
-        <p class="header-hebrew" data-t="hebrew">הרב אלישי זיזוב</p>
-      </div>
+<header class="main-header" id="main-header">
+  <div class="mh-inner">
+    <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
+    <a class="mh-logo" href="/"><img src="/logo.png" alt="Rabbiner Elishai Zizov" loading="lazy"></a>
+    <nav class="mh-nav" aria-label="Main navigation">
+      <a class="mh-nav-link" href="/" data-t="nav-bio">Biografie</a>
+      <a class="mh-nav-link active" href="/articles.html" data-t="nav-art">Beiträge</a>
+      <a class="mh-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+    </nav>
+    <div class="mh-langs">
+      <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
+      <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
+      <button class="lang-btn" onclick="setLang('he')" id="lb-he">עב</button>
     </div>
+    <button class="mh-back-btn" id="lang-back-btn" onclick="closeArticlePage()" style="display:none;" aria-label="Zurück">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </button>
   </div>
 </header>
-<div class="gold-bar"></div>
+
+<div class="page-band page-header">
+  <div class="page-band-inner">
+    <p class="page-band-eyebrow" data-t="eyebrow">Rabbiner · Vortragsredner</p>
+    <h1 class="page-band-title" data-t="title">Rabbiner Elishai Zizov</h1>
+    <p class="page-band-hebrew" data-t="hebrew">הרב אלישי זיזוב</p>
+  </div>
+</div>
+<div class="page-band-gold gold-bar"></div>
 
 <main class="page-body">
 
@@ -180,6 +175,13 @@
       <h2>Artikel-Verwaltung</h2>
       <span class="admin-draft-badge" id="admin-draft-badge"></span>
       <button class="admin-close-btn" onclick="toggleAdmin()">&times;</button>
+    </div>
+
+    <!-- Admin Tab Bar -->
+    <div class="admin-tab-bar" id="admin-tab-bar" style="display:none;">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('articles')" id="atab-articles">✍ Artikel</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('hero')" id="atab-hero">🌟 Hero</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('dashboard')" id="atab-dashboard">📊 Dashboard</button>
     </div>
 
     <div class="admin-body">
@@ -378,6 +380,75 @@
           <div id="admin-gh-token-status" style="font-size:12px;margin-top:6px;"></div>
         </div>
 
+        <!-- ── HERO SLIDES PANEL ── -->
+        <div id="admin-hero-panel" style="display:none;">
+          <div class="admin-card">
+            <div class="admin-card-title">Hero-Karussell verwalten</div>
+            <p style="font-size:12px;color:#888;margin-bottom:16px;">Zitate und Texte die im Hero-Bereich der Startseite erscheinen.</p>
+
+            <div class="admin-card-title" style="font-size:13px;margin-top:8px;">Folie 1</div>
+            <div class="aform-grid" style="margin-top:8px;">
+              <div class="aform-group"><label>Zitat (DE)</label><textarea id="hero-q1-de" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
+              <div class="aform-group"><label>Zitat (HE)</label><textarea id="hero-q1-he" rows="2" dir="rtl" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:right;"></textarea></div>
+              <div class="aform-group"><label>Zitat (EN)</label><textarea id="hero-q1-en" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
+              <div class="aform-group"><label>Quelle (alle Sprachen)</label><input type="text" id="hero-c1-all" placeholder="z.B. Rabbiner Elishai Zizov"></div>
+            </div>
+
+            <div class="admin-card-title" style="font-size:13px;margin-top:16px;">Folie 2</div>
+            <div class="aform-grid" style="margin-top:8px;">
+              <div class="aform-group"><label>Zitat (DE)</label><textarea id="hero-q2-de" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
+              <div class="aform-group"><label>Zitat (HE)</label><textarea id="hero-q2-he" rows="2" dir="rtl" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:right;"></textarea></div>
+              <div class="aform-group"><label>Zitat (EN)</label><textarea id="hero-q2-en" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
+              <div class="aform-group"><label>Quelle (alle Sprachen)</label><input type="text" id="hero-c2-all" placeholder="z.B. Talmud Bavli"></div>
+            </div>
+
+            <div class="admin-card-title" style="font-size:13px;margin-top:16px;">Folie 3</div>
+            <div class="aform-grid" style="margin-top:8px;">
+              <div class="aform-group"><label>Zitat (DE)</label><textarea id="hero-q3-de" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
+              <div class="aform-group"><label>Zitat (HE)</label><textarea id="hero-q3-he" rows="2" dir="rtl" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:right;"></textarea></div>
+              <div class="aform-group"><label>Zitat (EN)</label><textarea id="hero-q3-en" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
+              <div class="aform-group"><label>Quelle (alle Sprachen)</label><input type="text" id="hero-c3-all" placeholder="z.B. Sanhedrin 37a"></div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+              <button class="admin-save-btn" onclick="heroSaveSlides()">
+                <span>💾 Speichern</span>
+              </button>
+              <button onclick="heroLoadSlides()" style="background:transparent;border:1px solid #ddd;padding:10px 20px;border-radius:6px;cursor:pointer;font-size:12px;color:#666;">↻ Laden</button>
+            </div>
+            <div id="hero-save-msg" style="font-size:12px;color:var(--gold);margin-top:10px;display:none;"></div>
+          </div>
+        </div>
+
+        <!-- ── DASHBOARD PANEL ── -->
+        <div id="admin-dashboard-panel" style="display:none;">
+          <div class="admin-card">
+            <div class="admin-card-title">Dashboard</div>
+            <div id="dashboard-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:4px;">
+              <div class="admin-stat-card" id="stat-articles">
+                <div class="admin-stat-num" id="stat-articles-num">—</div>
+                <div class="admin-stat-label">Artikel</div>
+              </div>
+              <div class="admin-stat-card" id="stat-nl">
+                <div class="admin-stat-num" id="stat-nl-num">—</div>
+                <div class="admin-stat-label">Newsletter</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="admin-stat-num">3</div>
+                <div class="admin-stat-label">Sprachen</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="admin-stat-num">3</div>
+                <div class="admin-stat-label">Hero-Folien</div>
+              </div>
+            </div>
+          </div>
+          <div class="admin-card" style="margin-top:0;">
+            <div class="admin-card-title">Letzte Aktivität</div>
+            <div id="dashboard-recent" style="font-size:13px;color:#888;padding:8px 0;">Wird geladen…</div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -399,46 +470,49 @@
 </div><!-- /admin-overlay -->
 
 
-<div class="social-bar">
-  <a href="https://www.instagram.com/elishaizizov" class="social-icon" target="_blank" rel="noopener" title="Instagram">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-      <rect x="2" y="2" width="20" height="20" rx="5"/>
-      <circle cx="12" cy="12" r="4"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-    </svg>
-  </a>
-  <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="social-icon" target="_blank" rel="noopener" title="Facebook">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-    </svg>
-  </a>
-</div>
-
-<footer class="site-footer">
-  <div class="footer-grid">
-    <div>
-      <p class="footer-name">Rabbiner Elishai Zizov</p>
-      <p class="footer-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
-    </div>
-    <div>
-      <span class="footer-col-label" data-t="footer-nav">Navigation</span>
-      <nav class="footer-nav">
-        <a class="footer-nav-link" href="/" data-t="nav-bio">Biografie</a>
-        <a class="footer-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
-        <a class="footer-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-      </nav>
-    </div>
-    <div>
-      <span class="footer-col-label" data-t="footer-social">Folgen</span>
-      <div class="footer-social-col">
-        <a href="https://www.instagram.com/elishaizizov" class="footer-social-link" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="footer-social-link" target="_blank" rel="noopener">Facebook</a>
-        <a href="/contact.html" class="footer-social-link footer-cta-link" data-t="nav-form">Anfragen</a>
+<footer class="main-footer site-footer">
+  <div class="mf-inner">
+    <div class="mf-brand fade-in-on-scroll">
+      <img src="/logo.png" alt="Rabbiner Elishai Zizov" class="mf-brand-logo">
+      <p class="mf-brand-name">Rabbiner Elishai Zizov</p>
+      <p class="mf-brand-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
+      <div class="mf-brand-socials">
+        <a href="https://www.instagram.com/elishaizizov" class="mf-social-icon" target="_blank" rel="noopener" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="mf-social-icon" target="_blank" rel="noopener" title="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
       </div>
     </div>
+    <div class="mf-col fade-in-on-scroll">
+      <span class="mf-col-title" data-t="footer-nav">Navigation</span>
+      <nav>
+        <a class="mf-nav-link" href="/" data-t="nav-bio">Biografie</a>
+        <a class="mf-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
+        <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+      </nav>
+    </div>
+    <div class="mf-col fade-in-on-scroll">
+      <span class="mf-col-title" data-t="footer-social">Folgen</span>
+      <nav>
+        <a class="mf-nav-link" href="https://www.instagram.com/elishaizizov" target="_blank" rel="noopener" data-t="ig">Instagram</a>
+        <a class="mf-nav-link" href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" target="_blank" rel="noopener" data-t="fb">Facebook</a>
+        <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+      </nav>
+    </div>
+    <div class="mf-col fade-in-on-scroll">
+      <span class="mf-col-title" data-t="footer-nl-title">Newsletter</span>
+      <p class="mf-col-text" data-t="footer-nl-sub">Erhalte Updates direkt in dein Postfach.</p>
+      <form class="mf-nl-form" id="nl-form" onsubmit="nlSubscribe(event)">
+        <input type="email" class="mf-nl-input" placeholder="E-Mail-Adresse" data-t-ph="footer-nl-ph" required>
+        <button type="submit" class="btn secondary-btn" style="font-size:9px;padding:10px 16px;" data-t="footer-nl-btn">Anmelden</button>
+      </form>
+      <p class="mf-nl-msg" id="nl-msg"></p>
+    </div>
   </div>
-  <div class="footer-bottom">
-    <p class="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+  <div class="mf-bottom">
+    <p class="mf-copy" data-t="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
   </div>
 </footer>
 
@@ -521,7 +595,7 @@
   </div>
 </div>
 
-<script src="/js/shared.js?v=5"></script>
-<script src="/js/articles.js?v=5"></script>
+<script src="/js/shared.js?v=6"></script>
+<script src="/js/articles.js?v=6"></script>
 </body>
 </html>

@@ -25,45 +25,71 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rabbi Elishai Zizov","url":"https://elishaizizov.com","image":"https://elishaizizov.com/logo.png","jobTitle":"Rabbi, Lecturer","worksFor":{"@type":"Organization","name":"Bait Sfaradi Frankfurt am Main"},"address":{"@type":"PostalAddress","addressLocality":"Frankfurt am Main","addressCountry":"DE"},"sameAs":["https://www.instagram.com/elishaizizov","https://www.facebook.com/share/1AdfNooWwL/"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/global.css?v=3">
 </head>
 <body>
 
-<div class="logo-band">
-  <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
-  <a href="/" style="display:contents;cursor:pointer;"><img src="/logo.png" alt="Rabbiner Elishai Zizov"></a>
-  <span class="logo-band-spacer"></span>
-</div>
-
-<nav class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
-  <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
-  <button class="lang-btn" onclick="setLang('he')" id="lb-he">עב</button>
-</nav>
-
-<nav class="page-nav">
-  <a class="page-nav-link active" href="/" data-t="nav-bio">Biografie</a>
-  <a class="page-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
-  <a class="page-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-</nav>
-
-<header class="page-header">
-  <div class="header-inner">
-    <div class="header-top">
-      <div class="header-text">
-        <p class="header-eyebrow" data-t="eyebrow">Rabbiner · Vortragsredner</p>
-        <h1 class="header-name" data-t="title">Rabbiner Elishai Zizov</h1>
-        <p class="header-hebrew" data-t="hebrew">הרב אלישי זיזוב</p>
-        <a href="/articles.html" class="hero-cta-btn">
-          <span data-t="cta">Beiträge lesen</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-      </div>
+<header class="main-header" id="main-header">
+  <div class="mh-inner">
+    <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu">&#9776;</button>
+    <a class="mh-logo" href="/"><img src="/logo.png" alt="Rabbiner Elishai Zizov" loading="lazy"></a>
+    <nav class="mh-nav" aria-label="Main navigation">
+      <a class="mh-nav-link active" href="/" data-t="nav-bio">Biografie</a>
+      <a class="mh-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
+      <a class="mh-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+    </nav>
+    <div class="mh-langs">
+      <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
+      <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
+      <button class="lang-btn" onclick="setLang('he')" id="lb-he">עב</button>
     </div>
   </div>
 </header>
-<div class="gold-bar"></div>
+
+<section class="hero-section" id="hero">
+  <div class="hero-carousel" id="hero-carousel">
+    <div class="hero-slide active">
+      <div class="hero-slide-bg"></div>
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-decor"><span class="hero-decor-star">✦ ✦ ✦</span></div>
+        <blockquote class="hero-quote">
+          <p data-t="hero-q1"></p>
+          <cite data-t="hero-c1"></cite>
+        </blockquote>
+        <a href="/articles.html" class="btn primary-btn" data-t="cta">Beiträge lesen</a>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <div class="hero-slide-bg"></div>
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-decor"><span class="hero-decor-star">✦ ✦ ✦</span></div>
+        <blockquote class="hero-quote">
+          <p data-t="hero-q2"></p>
+          <cite data-t="hero-c2"></cite>
+        </blockquote>
+        <a href="/contact.html" class="btn secondary-btn" data-t="nav-form">Anfragen</a>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <div class="hero-slide-bg"></div>
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-decor"><span class="hero-decor-star">✦ ✦ ✦</span></div>
+        <blockquote class="hero-quote">
+          <p data-t="hero-q3"></p>
+          <cite data-t="hero-c3"></cite>
+        </blockquote>
+        <a href="/articles.html" class="btn gold-btn" data-t="cta">Beiträge lesen</a>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control prev" onclick="heroCarousel(-1)" aria-label="Zurück">&#10094;</button>
+  <button class="carousel-control next" onclick="heroCarousel(1)" aria-label="Weiter">&#10095;</button>
+  <div class="carousel-dots" id="carousel-dots"></div>
+</section>
 
 <main class="page-body">
 
@@ -116,46 +142,49 @@
 
 <div id="offline-banner" class="offline-banner" role="alert"></div>
 
-<div class="social-bar">
-  <a href="https://www.instagram.com/elishaizizov" class="social-icon" target="_blank" rel="noopener" title="Instagram">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-      <rect x="2" y="2" width="20" height="20" rx="5"/>
-      <circle cx="12" cy="12" r="4"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-    </svg>
-  </a>
-  <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="social-icon" target="_blank" rel="noopener" title="Facebook">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-    </svg>
-  </a>
-</div>
-
-<footer class="site-footer">
-  <div class="footer-grid">
-    <div>
-      <p class="footer-name">Rabbiner Elishai Zizov</p>
-      <p class="footer-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
-    </div>
-    <div>
-      <span class="footer-col-label" data-t="footer-nav">Navigation</span>
-      <nav class="footer-nav">
-        <a class="footer-nav-link" href="/" data-t="nav-bio">Biografie</a>
-        <a class="footer-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
-        <a class="footer-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-      </nav>
-    </div>
-    <div>
-      <span class="footer-col-label" data-t="footer-social">Folgen</span>
-      <div class="footer-social-col">
-        <a href="https://www.instagram.com/elishaizizov" class="footer-social-link" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="footer-social-link" target="_blank" rel="noopener">Facebook</a>
-        <a href="/contact.html" class="footer-social-link footer-cta-link" data-t="nav-form">Anfragen</a>
+<footer class="main-footer site-footer">
+  <div class="mf-inner">
+    <div class="mf-brand fade-in-on-scroll">
+      <img src="/logo.png" alt="Rabbiner Elishai Zizov" class="mf-brand-logo">
+      <p class="mf-brand-name">Rabbiner Elishai Zizov</p>
+      <p class="mf-brand-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
+      <div class="mf-brand-socials">
+        <a href="https://www.instagram.com/elishaizizov" class="mf-social-icon" target="_blank" rel="noopener" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="mf-social-icon" target="_blank" rel="noopener" title="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
       </div>
     </div>
+    <div class="mf-col fade-in-on-scroll">
+      <span class="mf-col-title" data-t="footer-nav">Navigation</span>
+      <nav>
+        <a class="mf-nav-link" href="/" data-t="nav-bio">Biografie</a>
+        <a class="mf-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
+        <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+      </nav>
+    </div>
+    <div class="mf-col fade-in-on-scroll">
+      <span class="mf-col-title" data-t="footer-social">Folgen</span>
+      <nav>
+        <a class="mf-nav-link" href="https://www.instagram.com/elishaizizov" target="_blank" rel="noopener" data-t="ig">Instagram</a>
+        <a class="mf-nav-link" href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" target="_blank" rel="noopener" data-t="fb">Facebook</a>
+        <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
+      </nav>
+    </div>
+    <div class="mf-col fade-in-on-scroll">
+      <span class="mf-col-title" data-t="footer-nl-title">Newsletter</span>
+      <p class="mf-col-text" data-t="footer-nl-sub">Erhalte Updates direkt in dein Postfach.</p>
+      <form class="mf-nl-form" id="nl-form" onsubmit="nlSubscribe(event)">
+        <input type="email" class="mf-nl-input" placeholder="E-Mail-Adresse" data-t-ph="footer-nl-ph" required>
+        <button type="submit" class="btn secondary-btn" style="font-size:9px;padding:10px 16px;" data-t="footer-nl-btn">Anmelden</button>
+      </form>
+      <p class="mf-nl-msg" id="nl-msg"></p>
+    </div>
   </div>
-  <div class="footer-bottom">
-    <p class="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+  <div class="mf-bottom">
+    <p class="mf-copy" data-t="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
   </div>
 </footer>
 
@@ -202,6 +231,6 @@
   </a>
 </nav>
 
-<script src="/js/shared.js"></script>
+<script src="/js/shared.js?v=6"></script>
 </body>
 </html>
