@@ -1027,7 +1027,7 @@ function compressImageToBase64(file) {
 
 function initQuillEditors() {
   if (quillEditors.de) return;
-  ['de','he','en','fr','es','ru'].forEach(l => {
+  ['de','he','en'].forEach(l => {
     const el = document.getElementById('q-'+l);
     if (!el) return;
     // Editors are already contenteditable in HTML — just wire up the wrapper object
@@ -1080,10 +1080,7 @@ async function adminSave() {
     translations: {
       de: { title: titleDE,                                              text: quillEditors.de?.root.innerHTML||'' },
       he: { title: document.getElementById('af-title-he').value.trim(), text: quillEditors.he?.root.innerHTML||'' },
-      en: { title: document.getElementById('af-title-en').value.trim(), text: quillEditors.en?.root.innerHTML||'' },
-      fr: { title: document.getElementById('af-title-fr').value.trim(), text: quillEditors.fr?.root.innerHTML||'' },
-      es: { title: document.getElementById('af-title-es').value.trim(), text: quillEditors.es?.root.innerHTML||'' },
-      ru: { title: document.getElementById('af-title-ru').value.trim(), text: quillEditors.ru?.root.innerHTML||'' }
+      en: { title: document.getElementById('af-title-en').value.trim(), text: quillEditors.en?.root.innerHTML||'' }
     }
   };
   try {
@@ -1142,18 +1139,18 @@ function updateTabIndicator(lang) {
 }
 
 function updateAllTabIndicators() {
-  ['de','he','en','fr','es','ru'].forEach(updateTabIndicator);
+  ['de','he','en'].forEach(updateTabIndicator);
 }
 
 function updateLangProgress() {
   let count = 0;
-  ['de','he','en','fr','es','ru'].forEach(l => {
+  ['de','he','en'].forEach(l => {
     if ((document.getElementById('af-title-'+l)?.value||'').trim()) count++;
   });
   const el = document.getElementById('lang-progress-count');
   if (!el) return;
-  el.textContent = count + ' / 6';
-  el.className = 'lang-progress-count' + (count === 6 ? ' complete' : count > 0 ? ' partial' : '');
+  el.textContent = count + ' / 3';
+  el.className = 'lang-progress-count' + (count === 3 ? ' complete' : count > 0 ? ' partial' : '');
   updateStickyLangs();
 }
 
@@ -1174,7 +1171,7 @@ function saveDraft() {
     date: document.getElementById('af-date-input')?.value||'',
     image: document.getElementById('af-image')?.value||''
   };
-  ['de','he','en','fr','es','ru'].forEach(l => {
+  ['de','he','en'].forEach(l => {
     data.titles[l] = document.getElementById('af-title-'+l)?.value||'';
     data.texts[l] = quillEditors[l]?.root.innerHTML||'';
   });
@@ -1199,7 +1196,7 @@ function restoreDraft() {
     if (!raw) return false;
     const d = JSON.parse(raw);
     if (!d.titles?.de) return false;
-    ['de','he','en','fr','es','ru'].forEach(l => {
+    ['de','he','en'].forEach(l => {
       const el = document.getElementById('af-title-'+l);
       if (el && d.titles[l]) el.value = d.titles[l];
       if (quillEditors[l] && d.texts[l]) quillEditors[l].root.innerHTML = d.texts[l];
@@ -1218,7 +1215,7 @@ function restoreDraft() {
 
 function setupDraftAutoSave() {
   const debounced = () => { clearTimeout(_draftTimer); _draftTimer = setTimeout(saveDraft, 1500); };
-  ['de','he','en','fr','es','ru'].forEach(l => {
+  ['de','he','en'].forEach(l => {
     const el = document.getElementById('af-title-'+l);
     if (el) el.addEventListener('input', debounced);
     if (quillEditors[l]) quillEditors[l].on('text-change', debounced);
@@ -1280,8 +1277,7 @@ function updateWordCount(lang) {
 
 // ── STICKY LANG PILLS ──
 const LANG_META = [
-  {code:'de',flag:'🇩🇪'},{code:'he',flag:'🇮🇱'},{code:'en',flag:'🇬🇧'},
-  {code:'fr',flag:'🇫🇷'},{code:'es',flag:'🇪🇸'},{code:'ru',flag:'🇷🇺'}
+  {code:'de',flag:'🇩🇪'},{code:'he',flag:'🇮🇱'},{code:'en',flag:'🇬🇧'}
 ];
 function updateStickyLangs() {
   const el = document.getElementById('admin-sticky-langs');
@@ -1293,10 +1289,10 @@ function updateStickyLangs() {
 }
 
 function adminClearForm() {
-  ['af-title-de','af-title-he','af-title-en','af-title-fr','af-title-es','af-title-ru','af-image','af-hag-name']
+  ['af-title-de','af-title-he','af-title-en','af-image','af-hag-name']
     .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  ['de','he','en','fr','es','ru'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
-  ['de','he','en','fr','es','ru'].forEach(updateWordCount);
+  ['de','he','en'].forEach(l => { if(quillEditors[l]) quillEditors[l].setText(''); });
+  ['de','he','en'].forEach(updateWordCount);
   updateImagePreview('');
   const status = document.getElementById('upload-status');
   if (status) status.style.display = 'none';
@@ -1324,7 +1320,7 @@ async function adminEdit(id) {
   if (banner && label) { label.textContent = a.title||id; banner.style.display = 'flex'; }
   document.getElementById('admin-cancel-btn').style.display = 'inline-flex';
   if (!quillEditors.de) { initQuillEditors(); }
-  ['de','he','en','fr','es','ru'].forEach(l => {
+  ['de','he','en'].forEach(l => {
     const tr = (a.translations&&a.translations[l]) ? a.translations[l] : {};
     const el = document.getElementById('af-title-'+l);
     if (el) el.value = tr.title||(l==='de'?a.title:'')||'';
@@ -1342,7 +1338,7 @@ async function adminEdit(id) {
   }
   switchLangTab('de');
   updateAllTabIndicators();
-  ['de','he','en','fr','es','ru'].forEach(updateWordCount);
+  ['de','he','en'].forEach(updateWordCount);
   document.querySelector('.admin-body').scrollTo(0,0);
 }
 

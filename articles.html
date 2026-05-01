@@ -173,8 +173,6 @@
   <div id="ap-related"></div>
 </div>
 
-<button class="admin-fab" onclick="toggleAdmin()" title="Admin">&#9881;</button>
-
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-box">
 
@@ -292,16 +290,13 @@
           <div class="admin-card-title">Inhalte</div>
           <div class="lang-progress">
             <span class="lang-progress-label">Fortschritt:</span>
-            <span class="lang-progress-count" id="lang-progress-count">0 / 6</span>
+            <span class="lang-progress-count" id="lang-progress-count">0 / 3</span>
           </div>
           <div class="lang-editor-section">
             <div class="lang-tabs">
               <button class="lang-tab active" data-lang="de" onclick="switchLangTab('de')">🇩🇪 DE<span class="tab-dot"></span></button>
               <button class="lang-tab" data-lang="he" onclick="switchLangTab('he')">🇮🇱 עב<span class="tab-dot"></span></button>
               <button class="lang-tab" data-lang="en" onclick="switchLangTab('en')">🇬🇧 EN<span class="tab-dot"></span></button>
-              <button class="lang-tab" data-lang="fr" onclick="switchLangTab('fr')">🇫🇷 FR<span class="tab-dot"></span></button>
-              <button class="lang-tab" data-lang="es" onclick="switchLangTab('es')">🇪🇸 ES<span class="tab-dot"></span></button>
-              <button class="lang-tab" data-lang="ru" onclick="switchLangTab('ru')">🇷🇺 RU<span class="tab-dot"></span></button>
             </div>
             <div class="lang-panel" id="lpanel-de">
               <input type="text" id="af-title-de" placeholder="Deutschen Titel eingeben..." oninput="updateTabIndicator('de')">
@@ -360,66 +355,6 @@
                   </div>
                 </div>
                 <div id="q-en" class="custom-editor" contenteditable="true"></div>
-              </div>
-            </div>
-            <div class="lang-panel" id="lpanel-fr" style="display:none;">
-              <button class="copy-de-btn" onclick="copyTitleFromDE('fr')">↓ DE-Titel kopieren</button>
-              <input type="text" id="af-title-fr" placeholder="Entrez le titre en français..." oninput="updateTabIndicator('fr')">
-              <div class="quill-wrapper" id="qwrap-fr">
-                <div class="quill-extra-bar">
-                  <div class="editor-toolbar">
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('bold')"><b>B</b></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('italic')"><i>I</i></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('underline')"><u>U</u></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-fr').focus();document.execCommand('insertUnorderedList')">•</button>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:6px;">
-                    <span class="ql-word-count" id="wc-fr">0 Wörter</span>
-                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('fr')" title="Vollbild">⤢</button>
-                  </div>
-                </div>
-                <div id="q-fr" class="custom-editor" contenteditable="true"></div>
-              </div>
-            </div>
-            <div class="lang-panel" id="lpanel-es" style="display:none;">
-              <button class="copy-de-btn" onclick="copyTitleFromDE('es')">↓ DE-Titel kopieren</button>
-              <input type="text" id="af-title-es" placeholder="Ingrese el título en español..." oninput="updateTabIndicator('es')">
-              <div class="quill-wrapper" id="qwrap-es">
-                <div class="quill-extra-bar">
-                  <div class="editor-toolbar">
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('bold')"><b>B</b></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('italic')"><i>I</i></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('underline')"><u>U</u></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-es').focus();document.execCommand('insertUnorderedList')">•</button>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:6px;">
-                    <span class="ql-word-count" id="wc-es">0 Wörter</span>
-                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('es')" title="Vollbild">⤢</button>
-                  </div>
-                </div>
-                <div id="q-es" class="custom-editor" contenteditable="true"></div>
-              </div>
-            </div>
-            <div class="lang-panel" id="lpanel-ru" style="display:none;">
-              <button class="copy-de-btn" onclick="copyTitleFromDE('ru')">↓ DE-Titel kopieren</button>
-              <input type="text" id="af-title-ru" placeholder="Введите заголовок на русском..." oninput="updateTabIndicator('ru')">
-              <div class="quill-wrapper" id="qwrap-ru">
-                <div class="quill-extra-bar">
-                  <div class="editor-toolbar">
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('bold')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('bold')"><b>B</b></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('italic')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('italic')"><i>I</i></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('underline')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('underline')"><u>U</u></button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('formatBlock',false,'h3')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('formatBlock',false,'h3')">H3</button>
-                    <button type="button" class="editor-btn" onmousedown="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('insertUnorderedList')" ontouchend="event.preventDefault();document.getElementById('q-ru').focus();document.execCommand('insertUnorderedList')">•</button>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:6px;">
-                    <span class="ql-word-count" id="wc-ru">0 Wörter</span>
-                    <button class="ql-fullscreen-btn" onclick="toggleFullscreenEditor('ru')" title="Vollbild">⤢</button>
-                  </div>
-                </div>
-                <div id="q-ru" class="custom-editor" contenteditable="true"></div>
               </div>
             </div>
           </div>
@@ -586,7 +521,7 @@
   </div>
 </div>
 
-<script src="/js/shared.js?v=4"></script>
-<script src="/js/articles.js?v=4"></script>
+<script src="/js/shared.js?v=5"></script>
+<script src="/js/articles.js?v=5"></script>
 </body>
 </html>
