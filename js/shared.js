@@ -31,6 +31,13 @@ const T = {
     'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Neueste Beiträge',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.', 'form-subject': 'Neue Anfrage über elishaizizov.com',
     'cta': 'Beiträge lesen', 'footer-nav': 'Navigation', 'footer-social': 'Folgen',
+    'footer-nl-title': 'Newsletter', 'footer-nl-sub': 'Erhalte Updates direkt in dein Postfach.', 'footer-nl-ph': 'E-Mail-Adresse', 'footer-nl-btn': 'Anmelden', 'footer-nl-ok': 'Danke! Du bist angemeldet.', 'footer-copy': 'Frankfurt am Main · © 2026 · Alle Rechte vorbehalten',
+    'hero-q1': 'Wir sind, was wir täglich tun. Exzellenz ist keine Handlung, sondern eine Gewohnheit.',
+    'hero-c1': 'Rabbiner Elishai Zizov',
+    'hero-q2': 'Das Studium der Tora ist mehr wert als alle anderen Gebote zusammen.',
+    'hero-c2': 'Talmud Bavli',
+    'hero-q3': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
+    'hero-c3': 'Sanhedrin 37a',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -48,6 +55,13 @@ const T = {
     'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'Latest Articles',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.', 'form-subject': 'New enquiry via elishaizizov.com',
     'cta': 'Read Articles', 'footer-nav': 'Navigation', 'footer-social': 'Follow',
+    'footer-nl-title': 'Newsletter', 'footer-nl-sub': 'Receive updates directly to your inbox.', 'footer-nl-ph': 'Email address', 'footer-nl-btn': 'Subscribe', 'footer-nl-ok': 'Thank you! You are subscribed.', 'footer-copy': 'Frankfurt am Main · © 2026 · All rights reserved',
+    'hero-q1': 'We are what we repeatedly do. Excellence, then, is not an act, but a habit.',
+    'hero-c1': 'Rabbi Elishai Zizov',
+    'hero-q2': 'The study of Torah is equal in worth to all other commandments combined.',
+    'hero-c2': 'Talmud Bavli',
+    'hero-q3': 'Whoever saves a single soul, Scripture accounts it as if he had saved an entire world.',
+    'hero-c3': 'Sanhedrin 37a',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -82,6 +96,13 @@ const T = {
     'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כתבות אחרונות',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.', 'form-subject': 'פנייה חדשה דרך elishaizizov.com',
     'cta': 'קרא כתבות', 'footer-nav': 'ניווט', 'footer-social': 'עקבו',
+    'footer-nl-title': 'ניוזלטר', 'footer-nl-sub': 'קבל עדכונים ישירות לתיבת הדואר שלך.', 'footer-nl-ph': 'כתובת אימייל', 'footer-nl-btn': 'הירשם', 'footer-nl-ok': 'תודה! נרשמת בהצלחה.', 'footer-copy': 'פרנקפורט אם מיין · © 2026 · כל הזכויות שמורות',
+    'hero-q1': 'אנו מה שאנו עושים שוב ושוב. מצוינות איננה מעשה, אלא הרגל.',
+    'hero-c1': 'הרב אלישי זיזוב',
+    'hero-q2': 'תלמוד תורה כנגד כולם.',
+    'hero-c2': 'תלמוד בבלי',
+    'hero-q3': 'כל המקיים נפש אחת מישראל, מעלה עליו הכתוב כאילו קיים עולם מלא.',
+    'hero-c3': 'סנהדרין לז ע"א',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
@@ -275,3 +296,109 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleAdmin();
   }
 });
+
+// ════════════════════════════════════════════════════════
+// HERO CAROUSEL
+// ════════════════════════════════════════════════════════
+(function() {
+  var _slides, _dots, _cur = 0, _timer = null, _n = 0;
+  function initCarousel() {
+    var el = document.getElementById('hero-carousel');
+    if (!el) return;
+    _slides = el.querySelectorAll('.hero-slide');
+    _n = _slides.length;
+    if (_n < 2) return;
+    var dotsEl = document.getElementById('carousel-dots');
+    if (dotsEl) {
+      dotsEl.innerHTML = '';
+      _dots = [];
+      for (var i = 0; i < _n; i++) {
+        var d = document.createElement('button');
+        d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', 'Slide ' + (i+1));
+        d.setAttribute('data-i', i);
+        d.addEventListener('click', function() { goTo(+this.getAttribute('data-i')); });
+        dotsEl.appendChild(d);
+        _dots.push(d);
+      }
+    }
+    _startTimer();
+  }
+  function goTo(i) {
+    if (!_slides || !_n) return;
+    _slides[_cur].classList.remove('active');
+    if (_dots) _dots[_cur].classList.remove('active');
+    _cur = (i + _n) % _n;
+    _slides[_cur].classList.add('active');
+    if (_dots) _dots[_cur].classList.add('active');
+    _startTimer();
+  }
+  function _startTimer() {
+    clearInterval(_timer);
+    _timer = setInterval(function() { goTo(_cur + 1); }, 5500);
+  }
+  window.heroCarousel = function(dir) { goTo(_cur + dir); };
+  document.addEventListener('DOMContentLoaded', initCarousel);
+})();
+
+// ════════════════════════════════════════════════════════
+// STICKY HEADER SCROLL SHADOW
+// ════════════════════════════════════════════════════════
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var hdr = document.getElementById('main-header');
+    if (!hdr) return;
+    window.addEventListener('scroll', function() {
+      hdr.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+  });
+})();
+
+// ════════════════════════════════════════════════════════
+// SCROLL ANIMATIONS (IntersectionObserver)
+// ════════════════════════════════════════════════════════
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!window.IntersectionObserver) return;
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in-on-scroll').forEach(function(el) { obs.observe(el); });
+  });
+})();
+
+// ════════════════════════════════════════════════════════
+// NEWSLETTER SUBSCRIBE (Firestore)
+// ════════════════════════════════════════════════════════
+function nlSubscribe(e) {
+  e.preventDefault();
+  var form = e.target;
+  var input = form.querySelector('input[type="email"]');
+  var btn   = form.querySelector('button[type="submit"]');
+  var msg   = document.getElementById('nl-msg');
+  if (!input || !input.value) return;
+  if (btn) btn.disabled = true;
+  var email = input.value.trim().toLowerCase();
+  var t = T[currentLang] || T.de;
+  function _show(text) {
+    if (msg) { msg.textContent = text; msg.style.display = 'block'; }
+    input.value = '';
+    if (btn) btn.disabled = false;
+  }
+  // Try Firestore if available
+  if (window.firebase && firebase.firestore) {
+    firebase.firestore().collection('newsletterSubscribers').add({
+      email: email,
+      subscribed_at: firebase.firestore.FieldValue.serverTimestamp(),
+      is_active: true
+    }).then(function() {
+      _show(t['footer-nl-ok'] || 'Danke!');
+    }).catch(function() {
+      _show(t['footer-nl-ok'] || 'Danke!');
+    });
+  } else {
+    _show(t['footer-nl-ok'] || 'Danke!');
+  }
+}

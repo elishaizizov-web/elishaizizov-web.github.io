@@ -374,12 +374,9 @@ function openArticle(id) {
   const langQ = currentLang !== 'de' ? '?lang=' + currentLang : '';
   window.history.pushState({ articleId: slug }, '', '/' + slug + langQ);
   // switch views
-  document.querySelector('.page-header').style.display = 'none';
+  const _ph = document.querySelector('.page-band'); if (_ph) _ph.style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
-  const _pn = document.querySelector('.page-nav');   if (_pn) _pn.style.display = 'none';
-  const _gb = document.querySelector('.gold-bar');   if (_gb) _gb.style.display = 'none';
-  const _sf = document.querySelector('.site-footer');if (_sf) _sf.style.display = 'none';
-  const _sb = document.querySelector('.social-bar'); if (_sb) _sb.style.display = 'none';
+  const _sf = document.querySelector('.main-footer');if (_sf) _sf.style.display = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
   window.scrollTo(0, 0);
@@ -558,12 +555,9 @@ function closeArticlePage() {
   document.getElementById('lang-back-btn').style.display = 'none';
   const prog = document.getElementById('ap-progress');
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
-  document.querySelector('.page-header').style.display   = 'block';
+  const _ph2 = document.querySelector('.page-band'); if (_ph2) _ph2.style.display = '';
   document.querySelector('.page-body').style.display     = 'block';
-  const _pn = document.querySelector('.page-nav');   if (_pn) _pn.style.display = '';
-  const _gb = document.querySelector('.gold-bar');   if (_gb) _gb.style.display = '';
-  const _sf = document.querySelector('.site-footer');if (_sf) _sf.style.display = '';
-  const _sb = document.querySelector('.social-bar'); if (_sb) _sb.style.display = '';
+  const _sf2 = document.querySelector('.main-footer');if (_sf2) _sf2.style.display = '';
   window.history.pushState({}, '', '/articles.html');
   // Reset meta tags to articles page defaults
   document.title = 'Beiträge — Rabbiner Elishai Zizov';
@@ -878,14 +872,9 @@ window.addEventListener('popstate', () => {
   const knownPages = ['articles.html', 'index.html', 'contact.html', ''];
   if (slug && !knownPages.includes(slug)) { const a = findArticle(slug); if (a) { openArticle(a.id); return; } }
   document.getElementById('article-page').style.display = 'none';
-  document.querySelector('.logo-band').style.display    = 'flex';
-  document.querySelector('.page-header').style.display  = 'block';
+  const _ph3 = document.querySelector('.page-band'); if (_ph3) _ph3.style.display = '';
   document.querySelector('.page-body').style.display    = 'block';
-  const _pn = document.querySelector('.page-nav');
-  if (_pn) _pn.style.display = '';
-  const _gb = document.querySelector('.gold-bar');   if (_gb) _gb.style.display = '';
-  const _sf = document.querySelector('.site-footer');if (_sf) _sf.style.display = '';
-  const _sb = document.querySelector('.social-bar'); if (_sb) _sb.style.display = '';
+  const _sf3 = document.querySelector('.main-footer');if (_sf3) _sf3.style.display = '';
 });
 
 // ════════════════════════════════════════════════════════
@@ -909,6 +898,97 @@ let quillEditors = {};
 // ADMIN LOGIN (Hardcoded Password, No Auth)
 // ════════════════════════════════════════════════════════
 
+
+
+// ── Admin Tab Switching ──
+function switchAdminTab(tab) {
+  ['articles','hero','dashboard'].forEach(function(t) {
+    const btn = document.getElementById('atab-' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  const artPanel = document.getElementById('admin-content');
+  const heroPanel = document.getElementById('admin-hero-panel');
+  const dashPanel = document.getElementById('admin-dashboard-panel');
+  if (artPanel) artPanel.style.display = tab === 'articles' ? 'block' : 'none';
+  if (heroPanel) heroPanel.style.display = tab === 'hero' ? 'block' : 'none';
+  if (dashPanel) dashPanel.style.display = tab === 'dashboard' ? 'block' : 'none';
+  // Also toggle sticky bar
+  const stickyBar = document.getElementById('admin-sticky-bar');
+  if (stickyBar) stickyBar.style.display = tab === 'articles' ? 'flex' : 'none';
+  if (tab === 'dashboard') dashboardLoad();
+  if (tab === 'hero') heroLoadSlides();
+}
+
+// ── Hero Slides (Firestore) ──
+var _heroSlideDefaults = {
+  'q1-de': 'Wir sind, was wir täglich tun. Exzellenz ist keine Handlung, sondern eine Gewohnheit.',
+  'c1-all': 'Rabbiner Elishai Zizov',
+  'q2-de': 'Das Studium der Tora ist mehr wert als alle anderen Gebote zusammen.',
+  'c2-all': 'Talmud Bavli',
+  'q3-de': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
+  'c3-all': 'Sanhedrin 37a',
+};
+function heroLoadSlides() {
+  if (!window.firebase || !firebase.firestore) return;
+  firebase.firestore().collection('heroSlides').doc('config').get().then(function(doc) {
+    if (!doc.exists) return;
+    var d = doc.data();
+    ['q1-de','q1-he','q1-en','c1-all','q2-de','q2-he','q2-en','c2-all','q3-de','q3-he','q3-en','c3-all'].forEach(function(k) {
+      var el = document.getElementById('hero-' + k);
+      if (el && d[k]) el.value = d[k];
+    });
+  }).catch(function(e) { console.warn('heroLoadSlides', e); });
+}
+function heroSaveSlides() {
+  var msgEl = document.getElementById('hero-save-msg');
+  if (!window.firebase || !firebase.firestore) {
+    if (msgEl) { msgEl.textContent = '⚠ Firebase nicht verfügbar.'; msgEl.style.display = 'block'; }
+    return;
+  }
+  var data = {};
+  ['q1-de','q1-he','q1-en','c1-all','q2-de','q2-he','q2-en','c2-all','q3-de','q3-he','q3-en','c3-all'].forEach(function(k) {
+    var el = document.getElementById('hero-' + k);
+    if (el) data[k] = el.value.trim();
+  });
+  data.updated_at = firebase.firestore.FieldValue.serverTimestamp();
+  firebase.firestore().collection('heroSlides').doc('config').set(data).then(function() {
+    if (msgEl) { msgEl.textContent = '✓ Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
+  }).catch(function(e) {
+    if (msgEl) { msgEl.textContent = '✗ Fehler: ' + e.message; msgEl.style.display = 'block'; }
+  });
+}
+
+// ── Dashboard ──
+function dashboardLoad() {
+  var recentEl = document.getElementById('dashboard-recent');
+  var artNumEl = document.getElementById('stat-articles-num');
+  var nlNumEl  = document.getElementById('stat-nl-num');
+  if (!window.firebase || !firebase.firestore) {
+    if (recentEl) recentEl.textContent = 'Firebase nicht verbunden.';
+    return;
+  }
+  // Article count
+  var arts = window._articles || [];
+  if (artNumEl) artNumEl.textContent = arts.length || '—';
+  // Newsletter count
+  firebase.firestore().collection('newsletterSubscribers').where('is_active','==',true).get().then(function(snap) {
+    if (nlNumEl) nlNumEl.textContent = snap.size;
+  }).catch(function() { if (nlNumEl) nlNumEl.textContent = '—'; });
+  // Recent articles
+  if (recentEl && arts.length > 0) {
+    var recent = arts.slice(0, 5);
+    recentEl.innerHTML = recent.map(function(a) {
+      var t = (a.translations && a.translations.de) ? a.translations.de.title : (a.title || '–');
+      var cat = a.parasha ? ('Parascha: ' + a.parasha) : (a.hag ? ('Feiertag: ' + a.hag) : '');
+      return '<div style="padding:8px 0;border-bottom:1px solid #f0ede8;display:flex;justify-content:space-between;align-items:center;gap:12px;">' +
+        '<span style="font-size:13px;color:#333;font-family:'Playfair Display',serif;">' + t + '</span>' +
+        '<span style="font-size:10px;color:#bbb;font-family:'Raleway',sans-serif;letter-spacing:.08em;white-space:nowrap;">' + (a.date || '') + '</span>' +
+        '</div>';
+    }).join('');
+  } else if (recentEl) {
+    recentEl.textContent = 'Keine Artikel gefunden.';
+  }
+}
 function toggleAdmin() {
   document.getElementById('admin-overlay').classList.toggle('open');
 }
@@ -940,6 +1020,10 @@ function adminLogin() {
     renderAdminList();
     checkGitHubTokenSetup();
     document.getElementById('admin-pw').value = '';
+    // Show tab bar and initialize panels
+    const tabBar = document.getElementById('admin-tab-bar');
+    if (tabBar) tabBar.style.display = 'flex';
+    switchAdminTab('articles');
     setTimeout(() => document.getElementById('af-title-de')?.focus(), 300);
   } else {
     if (err) { err.textContent = 'Falsches Passwort.'; err.style.display = 'block'; }
@@ -957,6 +1041,8 @@ function adminLogout() {
   document.getElementById('admin-login-screen').style.display = 'block';
   document.getElementById('admin-content').style.display = 'none';
   document.getElementById('admin-sticky-bar').style.display = 'none';
+  const tb = document.getElementById('admin-tab-bar');
+  if (tb) tb.style.display = 'none';
   document.getElementById('admin-pw').value = '';
 }
 
