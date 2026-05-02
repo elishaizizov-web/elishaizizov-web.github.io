@@ -39,6 +39,7 @@ const T = {
     'hero-q3': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
     'hero-c3': 'Sanhedrin 37a',
     'home-art-label': 'Beiträge', 'home-art-title': 'Aktuelle Beiträge', 'home-art-cta': 'Alle Beiträge ansehen',
+    'bio-cta': 'Anfragen', 'stat-born': 'Jahrgang', 'stat-ord': 'Ordiniert im Alter von', 'stat-since': 'Rabbiner seit', 'stat-langs': 'Lehrsprachen',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -64,6 +65,7 @@ const T = {
     'hero-q3': 'Whoever saves a single soul, Scripture accounts it as if he had saved an entire world.',
     'hero-c3': 'Sanhedrin 37a',
     'home-art-label': 'Articles', 'home-art-title': 'Latest Articles', 'home-art-cta': 'View all articles',
+    'bio-cta': 'Make an enquiry', 'stat-born': 'Born', 'stat-ord': 'Ordained at age', 'stat-since': 'Rabbi since', 'stat-langs': 'Languages',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -106,6 +108,7 @@ const T = {
     'hero-q3': 'כל המקיים נפש אחת מישראל, מעלה עליו הכתוב כאילו קיים עולם מלא.',
     'hero-c3': 'סנהדרין לז ע"א',
     'home-art-label': 'מאמרים', 'home-art-title': 'מאמרים אחרונים', 'home-art-cta': 'לכל המאמרים',
+    'bio-cta': 'פנייה', 'stat-born': 'שנת לידה', 'stat-ord': 'הוסמך בגיל', 'stat-since': 'רב מאז', 'stat-langs': 'שפות הוראה',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
