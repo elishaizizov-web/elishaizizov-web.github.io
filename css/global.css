@@ -2594,3 +2594,12 @@ html[lang="he"] .mf-col nav { align-items: flex-end; }
   text-transform: uppercase;
   color: #aaa;
 }
+
+/* ── HOMEPAGE LATEST ARTICLES ───────────────────────────── */
+.home-articles { background: var(--bg-cream, #F5F5F2); padding: 72px 24px 80px; }
+.home-articles-inner { max-width: 1100px; margin: 0 auto; }
+.home-articles-title { font-family: 'Merriweather', serif; font-size: clamp(22px, 3vw, 30px); color: var(--navy); margin-bottom: 36px; font-weight: 700; }
+.home-articles-cta { text-align: center; margin-top: 44px; }
+.home-art-loading { height: 220px; display: flex; align-items: center; justify-content: center; }
+.home-art-loading::after { content: ''; width: 32px; height: 32px; border: 3px solid #ddd; border-top-color: var(--gold, #b8952a); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }

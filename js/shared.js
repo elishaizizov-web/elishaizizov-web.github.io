@@ -38,6 +38,7 @@ const T = {
     'hero-c2': 'Talmud Bavli',
     'hero-q3': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
     'hero-c3': 'Sanhedrin 37a',
+    'home-art-label': 'Beiträge', 'home-art-title': 'Aktuelle Beiträge', 'home-art-cta': 'Alle Beiträge ansehen',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -62,6 +63,7 @@ const T = {
     'hero-c2': 'Talmud Bavli',
     'hero-q3': 'Whoever saves a single soul, Scripture accounts it as if he had saved an entire world.',
     'hero-c3': 'Sanhedrin 37a',
+    'home-art-label': 'Articles', 'home-art-title': 'Latest Articles', 'home-art-cta': 'View all articles',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -103,6 +105,7 @@ const T = {
     'hero-c2': 'תלמוד בבלי',
     'hero-q3': 'כל המקיים נפש אחת מישראל, מעלה עליו הכתוב כאילו קיים עולם מלא.',
     'hero-c3': 'סנהדרין לז ע"א',
+    'home-art-label': 'מאמרים', 'home-art-title': 'מאמרים אחרונים', 'home-art-cta': 'לכל המאמרים',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
@@ -450,3 +453,63 @@ function nlSubscribe(e) {
     _show(t['footer-nl-ok'] || 'Danke!');
   }
 }
+
+// ════════════════════════════════════════════════════════
+// HOMEPAGE LATEST ARTICLES (Firestore REST, index.html only)
+// ════════════════════════════════════════════════════════
+(function() {
+  var API = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=100&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
+
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function parseDoc(doc) {
+    var f = doc.fields; if (!f) return null;
+    function sv(v) { return (v && v.stringValue) ? v.stringValue : ''; }
+    var tr = {};
+    if (f.translations && f.translations.mapValue) {
+      var langs = f.translations.mapValue.fields || {};
+      Object.keys(langs).forEach(function(lang) {
+        var lf = langs[lang].mapValue && langs[lang].mapValue.fields;
+        if (lf) tr[lang] = { title: sv(lf.title), text: sv(lf.text) };
+      });
+    }
+    return { id: (doc.name || '').split('/').pop(), title: sv(f.title), text: sv(f.text), date: sv(f.date), image: sv(f.image), translations: tr };
+  }
+
+  function renderCard(a, l) {
+    var t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
+    var title = t.title || a.title;
+    var excerpt = ((t.text || a.text || '').replace(/<[^>]+>/g, '') || '').substring(0, 160).trim();
+    var imgHtml = a.image
+      ? '<img class="article-card-img" src="' + esc(a.image) + '" alt="' + esc(title) + '" loading="lazy">'
+      : '<div class="article-card-img-placeholder"></div>';
+    var rm = { de: 'Weiterlesen', en: 'Read more', he: 'קרא עוד' }[l] || 'Weiterlesen';
+    var lp = l !== 'de' ? '?lang=' + l : '';
+    return '<a href="/articles.html' + lp + '" style="text-decoration:none;color:inherit;display:block;">'
+      + '<div class="article-card">' + imgHtml
+      + '<div class="article-card-body">'
+      + '<span class="article-card-date">' + esc(a.date) + '</span>'
+      + '<h3 class="article-card-title">' + esc(title) + '</h3>'
+      + (excerpt ? '<p class="article-card-excerpt">' + esc(excerpt) + (excerpt.length >= 160 ? '…' : '') + '</p>' : '')
+      + '<span class="article-card-readmore">' + rm + ' <span>→</span></span>'
+      + '</div></div></a>';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var grid = document.getElementById('home-articles-grid');
+    if (!grid) return;
+    grid.innerHTML = '<div class="home-art-loading"></div>';
+    fetch(API)
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function(data) {
+        var docs = (data.documents || []).map(parseDoc).filter(Boolean);
+        docs.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
+        var latest = docs.slice(0, 3);
+        var l = currentLang;
+        grid.innerHTML = latest.length ? latest.map(function(a) { return renderCard(a, l); }).join('') : '';
+      })
+      .catch(function() { grid.innerHTML = ''; });
+  });
+})();
