@@ -42,6 +42,7 @@ const T = {
     'bio-cta': 'Anfragen', 'stat-born': 'Jahrgang', 'stat-ord': 'Ordiniert im Alter von', 'stat-since': 'Rabbiner seit', 'stat-langs': 'Lehrsprachen',
     'cta-title': 'Vortrag oder Unterricht anfragen', 'cta-sub': 'Für Gemeinden, Schulen und Bildungseinrichtungen in Deutschland und Europa', 'cta-btn': 'Anfrage stellen',
     'cookie-msg': 'Diese Website verwendet Google Fonts. Durch die weitere Nutzung stimmen Sie der Verwendung zu.', 'cookie-ok': 'Akzeptieren',
+    'offline': 'Offline — Keine Internetverbindung',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -70,6 +71,7 @@ const T = {
     'bio-cta': 'Make an enquiry', 'stat-born': 'Born', 'stat-ord': 'Ordained at age', 'stat-since': 'Rabbi since', 'stat-langs': 'Languages',
     'cta-title': 'Book a lecture or class', 'cta-sub': 'For communities, schools and educational institutions across Germany and Europe', 'cta-btn': 'Send an enquiry',
     'cookie-msg': 'This website uses Google Fonts. By continuing to use the site you agree to their use.', 'cookie-ok': 'Accept',
+    'offline': 'Offline — No internet connection',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -115,6 +117,7 @@ const T = {
     'bio-cta': 'פנייה', 'stat-born': 'שנת לידה', 'stat-ord': 'הוסמך בגיל', 'stat-since': 'רב מאז', 'stat-langs': 'שפות הוראה',
     'cta-title': 'הזמינו הרצאה או שיעור', 'cta-sub': 'לקהילות, בתי ספר ומוסדות חינוך בגרמניה ובאירופה', 'cta-btn': 'שלחו פנייה',
     'cookie-msg': 'אתר זה משתמש ב-Google Fonts. המשך השימוש מהווה הסכמה לשימוש בהם.', 'cookie-ok': 'אישור',
+    'offline': 'אין חיבור לאינטרנט',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
@@ -306,6 +309,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // ?admin=1 in URL → open admin if on articles page
   if (window.location.search.includes('admin=1') && typeof toggleAdmin === 'function') {
     toggleAdmin();
+  }
+
+  // Service Worker registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function() {});
   }
 });
 
