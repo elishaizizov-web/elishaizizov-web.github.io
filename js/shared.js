@@ -370,6 +370,54 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 // ════════════════════════════════════════════════════════
+// FIREBASE INIT (shared — skipped if articles.js already ran)
+// ════════════════════════════════════════════════════════
+(function() {
+  if (!window.firebase) return;
+  if (firebase.apps && firebase.apps.length) return;
+  try {
+    firebase.initializeApp({
+      apiKey: "AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o",
+      authDomain: "elishai-zizov.firebaseapp.com",
+      projectId: "elishai-zizov",
+      storageBucket: "elishai-zizov.firebasestorage.app",
+      messagingSenderId: "336975073982",
+      appId: "1:336975073982:web:b4d9f466b7dc476531c4ef"
+    });
+  } catch(e) { console.error('Firebase shared init failed:', e); }
+})();
+
+// ════════════════════════════════════════════════════════
+// HERO SLIDES — load from Firestore and patch T object
+// ════════════════════════════════════════════════════════
+(function() {
+  function applyHeroSlides(d) {
+    // Map Firestore keys to T translation keys
+    var map = [
+      ['q1-de','q1-en','q1-he','c1-all', 'hero-q1','hero-c1'],
+      ['q2-de','q2-en','q2-he','c2-all', 'hero-q2','hero-c2'],
+      ['q3-de','q3-en','q3-he','c3-all', 'hero-q3','hero-c3']
+    ];
+    map.forEach(function(row) {
+      if (d[row[0]]) T.de[row[4]] = d[row[0]];
+      if (d[row[1]]) T.en[row[4]] = d[row[1]];
+      if (d[row[2]]) T.he[row[4]] = d[row[2]];
+      if (d[row[3]]) { T.de[row[5]] = d[row[3]]; T.en[row[5]] = d[row[3]]; T.he[row[5]] = d[row[3]]; }
+    });
+    setLang(currentLang);
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!document.getElementById('hero-carousel')) return;
+    if (!window.firebase) return;
+    try {
+      firebase.firestore().collection('heroSlides').doc('config').get().then(function(doc) {
+        if (doc && doc.exists) applyHeroSlides(doc.data());
+      }).catch(function() {});
+    } catch(e) {}
+  });
+})();
+
+// ════════════════════════════════════════════════════════
 // NEWSLETTER SUBSCRIBE (Firestore)
 // ════════════════════════════════════════════════════════
 function nlSubscribe(e) {
