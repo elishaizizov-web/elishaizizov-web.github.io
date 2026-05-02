@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css?v=6">
+<link rel="stylesheet" href="/css/global.css?v=7">
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -142,6 +142,14 @@
 
 </main>
 
+
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie-Hinweis" style="display:none">
+  <p class="cookie-text" data-t="cookie-msg">Diese Website verwendet Google Fonts. Durch die weitere Nutzung stimmen Sie der Verwendung zu.</p>
+  <div class="cookie-actions">
+    <button class="cookie-btn cookie-accept" onclick="acceptCookies()" data-t="cookie-ok">Akzeptieren</button>
+    <button class="cookie-btn cookie-dismiss" onclick="dismissCookies()" aria-label="Schließen">×</button>
+  </div>
+</div>
 <div id="offline-banner" class="offline-banner" role="alert"></div>
 
 <!-- reading progress bar -->
@@ -594,7 +602,7 @@
   </div>
 </div>
 
-<script src="/js/shared.js?v=11"></script>
+<script src="/js/shared.js?v=12"></script>
 <script src="/js/articles.js?v=7"></script>
 </body>
 </html>
