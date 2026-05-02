@@ -981,8 +981,8 @@ function dashboardLoad() {
       var t = (a.translations && a.translations.de) ? a.translations.de.title : (a.title || '–');
       var cat = a.parasha ? ('Parascha: ' + a.parasha) : (a.hag ? ('Feiertag: ' + a.hag) : '');
       return '<div style="padding:8px 0;border-bottom:1px solid #f0ede8;display:flex;justify-content:space-between;align-items:center;gap:12px;">' +
-        '<span style="font-size:13px;color:#333;font-family:'Playfair Display',serif;">' + t + '</span>' +
-        '<span style="font-size:10px;color:#bbb;font-family:'Raleway',sans-serif;letter-spacing:.08em;white-space:nowrap;">' + (a.date || '') + '</span>' +
+        '<span style="font-size:13px;color:#333;font-family:serif;">' + t + '</span>' +
+        '<span style="font-size:10px;color:#bbb;letter-spacing:.08em;white-space:nowrap;">' + (a.date || '') + '</span>' +
         '</div>';
     }).join('');
   } else if (recentEl) {
