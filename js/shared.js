@@ -40,6 +40,7 @@ const T = {
     'hero-c3': 'Sanhedrin 37a',
     'home-art-label': 'Beiträge', 'home-art-title': 'Aktuelle Beiträge', 'home-art-cta': 'Alle Beiträge ansehen',
     'bio-cta': 'Anfragen', 'stat-born': 'Jahrgang', 'stat-ord': 'Ordiniert im Alter von', 'stat-since': 'Rabbiner seit', 'stat-langs': 'Lehrsprachen',
+    'cta-title': 'Vortrag oder Unterricht anfragen', 'cta-sub': 'Für Gemeinden, Schulen und Bildungseinrichtungen in Deutschland und Europa', 'cta-btn': 'Anfrage stellen',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -66,6 +67,7 @@ const T = {
     'hero-c3': 'Sanhedrin 37a',
     'home-art-label': 'Articles', 'home-art-title': 'Latest Articles', 'home-art-cta': 'View all articles',
     'bio-cta': 'Make an enquiry', 'stat-born': 'Born', 'stat-ord': 'Ordained at age', 'stat-since': 'Rabbi since', 'stat-langs': 'Languages',
+    'cta-title': 'Book a lecture or class', 'cta-sub': 'For communities, schools and educational institutions across Germany and Europe', 'cta-btn': 'Send an enquiry',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -109,6 +111,7 @@ const T = {
     'hero-c3': 'סנהדרין לז ע"א',
     'home-art-label': 'מאמרים', 'home-art-title': 'מאמרים אחרונים', 'home-art-cta': 'לכל המאמרים',
     'bio-cta': 'פנייה', 'stat-born': 'שנת לידה', 'stat-ord': 'הוסמך בגיל', 'stat-since': 'רב מאז', 'stat-langs': 'שפות הוראה',
+    'cta-title': 'הזמינו הרצאה או שיעור', 'cta-sub': 'לקהילות, בתי ספר ומוסדות חינוך בגרמניה ובאירופה', 'cta-btn': 'שלחו פנייה',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
