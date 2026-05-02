@@ -43,6 +43,7 @@ const T = {
     'cta-title': 'Vortrag oder Unterricht anfragen', 'cta-sub': 'Für Gemeinden, Schulen und Bildungseinrichtungen in Deutschland und Europa', 'cta-btn': 'Anfrage stellen',
     'cookie-msg': 'Diese Website verwendet Google Fonts. Durch die weitere Nutzung stimmen Sie der Verwendung zu.', 'cookie-ok': 'Akzeptieren',
     'offline': 'Offline — Keine Internetverbindung',
+    'contact-loc': 'Frankfurt am Main, Deutschland', 'contact-langs': 'Deutsch · Englisch · Hebräisch',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -72,6 +73,7 @@ const T = {
     'cta-title': 'Book a lecture or class', 'cta-sub': 'For communities, schools and educational institutions across Germany and Europe', 'cta-btn': 'Send an enquiry',
     'cookie-msg': 'This website uses Google Fonts. By continuing to use the site you agree to their use.', 'cookie-ok': 'Accept',
     'offline': 'Offline — No internet connection',
+    'contact-loc': 'Frankfurt am Main, Germany', 'contact-langs': 'German · English · Hebrew',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -118,6 +120,7 @@ const T = {
     'cta-title': 'הזמינו הרצאה או שיעור', 'cta-sub': 'לקהילות, בתי ספר ומוסדות חינוך בגרמניה ובאירופה', 'cta-btn': 'שלחו פנייה',
     'cookie-msg': 'אתר זה משתמש ב-Google Fonts. המשך השימוש מהווה הסכמה לשימוש בהם.', 'cookie-ok': 'אישור',
     'offline': 'אין חיבור לאינטרנט',
+    'contact-loc': 'פרנקפורט אם מיין, גרמניה', 'contact-langs': 'גרמנית · אנגלית · עברית',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',

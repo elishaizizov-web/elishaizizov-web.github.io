@@ -2838,3 +2838,56 @@ html[lang="he"] .station-card:hover { border-right-color: var(--navy, #1b2a3b); 
   .cookie-banner { flex-direction: column; align-items: flex-start; padding: 16px 20px; }
   .cookie-actions { align-self: flex-end; }
 }
+
+/* ── CONTACT SPLIT LAYOUT ────────────────────────────── */
+.contact-split {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
+  align-items: start;
+  padding-top: 56px;
+}
+.contact-info-col { padding-top: 4px; }
+.contact-info-title {
+  font-family: 'Merriweather', serif;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 700;
+  color: var(--navy, #1b2a3b);
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+.contact-info-sub {
+  font-size: 14px;
+  color: var(--text-soft, #666);
+  font-weight: 300;
+  line-height: 1.75;
+  margin-bottom: 32px;
+}
+.contact-details {
+  list-style: none;
+  padding: 0; margin: 0 0 32px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.contact-details li {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13.5px; color: var(--text-soft, #666);
+  font-weight: 300; font-family: 'Raleway', sans-serif;
+  letter-spacing: 0.02em;
+}
+.contact-details li svg { flex-shrink: 0; color: var(--gold, #b8952a); }
+.contact-social-links { display: flex; gap: 10px; flex-wrap: wrap; }
+.contact-social-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--rule, #e0ddd6);
+  padding: 8px 16px;
+  font-family: 'Raleway', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-soft, #666); text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.contact-social-btn:hover { border-color: var(--navy, #1b2a3b); color: var(--navy, #1b2a3b); }
+html[lang="he"] .contact-split { direction: rtl; }
+html[lang="he"] .contact-details li { flex-direction: row-reverse; }
+@media (max-width: 768px) {
+  .contact-split { grid-template-columns: 1fr; gap: 36px; }
+}
