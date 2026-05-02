@@ -2742,3 +2742,99 @@ html[lang="he"] .bio-split-photo { order: -1; }
 .cta-banner-btn:hover { background: #d4af37; gap: 14px; }
 html[lang="he"] .cta-banner-btn { flex-direction: row-reverse; }
 html[lang="he"] .cta-banner-btn svg { transform: scaleX(-1); }
+
+/* ── STATIONS CARD GRID ──────────────────────────────── */
+.stations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.station-card {
+  border-left: 3px solid var(--gold, #b8952a);
+  padding: 20px 18px 20px 22px;
+  background: #fdfcfa;
+  border-top: 1px solid var(--rule, #e0ddd6);
+  border-right: 1px solid var(--rule, #e0ddd6);
+  border-bottom: 1px solid var(--rule, #e0ddd6);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: box-shadow 0.22s, border-left-color 0.22s;
+}
+.station-card:hover { box-shadow: 0 4px 18px rgba(27,42,59,0.08); border-left-color: var(--navy, #1b2a3b); }
+.station-card .station-period {
+  font-family: 'Raleway', sans-serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold, #b8952a);
+}
+.station-card strong {
+  font-family: 'Merriweather', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy, #1b2a3b);
+  line-height: 1.25;
+}
+.station-card span {
+  font-size: 13px;
+  color: var(--text-soft, #666);
+  font-weight: 300;
+  line-height: 1.55;
+}
+html[lang="he"] .station-card { border-left: none; border-right: 3px solid var(--gold, #b8952a); padding: 20px 22px 20px 18px; }
+html[lang="he"] .station-card:hover { border-right-color: var(--navy, #1b2a3b); }
+
+/* ── COOKIE BANNER ───────────────────────────────────── */
+.cookie-banner {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9998;
+  background: var(--navy, #1b2a3b);
+  border-top: 2px solid var(--gold, #b8952a);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  transition: opacity 0.3s;
+}
+.cookie-text {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  flex: 1;
+  margin: 0;
+}
+.cookie-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.cookie-btn {
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cookie-accept {
+  background: var(--gold, #b8952a);
+  color: var(--navy, #1b2a3b);
+  padding: 8px 18px;
+}
+.cookie-accept:hover { background: #d4af37; }
+.cookie-dismiss {
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 18px;
+  padding: 4px 8px;
+  letter-spacing: 0;
+}
+.cookie-dismiss:hover { color: #fff; }
+@media (max-width: 600px) {
+  .cookie-banner { flex-direction: column; align-items: flex-start; padding: 16px 20px; }
+  .cookie-actions { align-self: flex-end; }
+}
