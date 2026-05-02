@@ -1,0 +1,20 @@
+{
+  "name": "Rabbiner Elishai Zizov",
+  "short_name": "R. Zizov",
+  "description": "Rabbiner, Vortragsredner und Pädagoge — Frankfurt am Main",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1b2a3b",
+  "theme_color": "#1b2a3b",
+  "lang": "de",
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Beiträge", "short_name": "Beiträge", "url": "/articles.html", "description": "Torah-Beiträge und Artikel" },
+    { "name": "Anfragen", "short_name": "Anfragen", "url": "/contact.html", "description": "Vortrag oder Unterricht anfragen" }
+  ]
+}
