@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css?v=15">
+<link rel="stylesheet" href="/css/global.css?v=16">
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -410,6 +410,16 @@
               <div class="aform-group"><label>Zitat (HE)</label><textarea id="hero-q1-he" rows="2" dir="rtl" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:right;"></textarea></div>
               <div class="aform-group"><label>Zitat (EN)</label><textarea id="hero-q1-en" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
               <div class="aform-group"><label>Quelle (alle Sprachen)</label><input type="text" id="hero-c1-all" placeholder="z.B. Rabbiner Elishai Zizov"></div>
+              <div class="aform-group" style="grid-column:1/-1;">
+                <label>Hintergrundbild (optional)</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">
+                  <label style="display:inline-flex;align-items:center;gap:6px;background:#1b2a3b;color:#fff;padding:7px 14px;border-radius:6px;font-size:11px;font-family:'Raleway',sans-serif;letter-spacing:.08em;cursor:pointer;">📷 Bild wählen<input type="file" accept="image/*" style="display:none" onchange="uploadHeroImage(1,this)"></label>
+                  <button type="button" onclick="clearHeroImage(1)" style="background:transparent;border:1px solid #ddd;padding:7px 12px;border-radius:6px;font-size:11px;cursor:pointer;color:#888;">✕ Löschen</button>
+                </div>
+                <div id="hero-img1-preview" style="display:none;margin-bottom:4px;"><img id="hero-img1-preview-img" style="max-width:100%;max-height:90px;object-fit:cover;border-radius:4px;display:block;border:1px solid #ddd;"></div>
+                <div id="hero-img1-status" style="font-size:11px;display:none;"></div>
+                <input type="hidden" id="hero-img1">
+              </div>
             </div>
 
             <div class="admin-card-title" style="font-size:13px;margin-top:16px;">Folie 2</div>
@@ -418,6 +428,16 @@
               <div class="aform-group"><label>Zitat (HE)</label><textarea id="hero-q2-he" rows="2" dir="rtl" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:right;"></textarea></div>
               <div class="aform-group"><label>Zitat (EN)</label><textarea id="hero-q2-en" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
               <div class="aform-group"><label>Quelle (alle Sprachen)</label><input type="text" id="hero-c2-all" placeholder="z.B. Talmud Bavli"></div>
+              <div class="aform-group" style="grid-column:1/-1;">
+                <label>Hintergrundbild (optional)</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">
+                  <label style="display:inline-flex;align-items:center;gap:6px;background:#1b2a3b;color:#fff;padding:7px 14px;border-radius:6px;font-size:11px;font-family:'Raleway',sans-serif;letter-spacing:.08em;cursor:pointer;">📷 Bild wählen<input type="file" accept="image/*" style="display:none" onchange="uploadHeroImage(2,this)"></label>
+                  <button type="button" onclick="clearHeroImage(2)" style="background:transparent;border:1px solid #ddd;padding:7px 12px;border-radius:6px;font-size:11px;cursor:pointer;color:#888;">✕ Löschen</button>
+                </div>
+                <div id="hero-img2-preview" style="display:none;margin-bottom:4px;"><img id="hero-img2-preview-img" style="max-width:100%;max-height:90px;object-fit:cover;border-radius:4px;display:block;border:1px solid #ddd;"></div>
+                <div id="hero-img2-status" style="font-size:11px;display:none;"></div>
+                <input type="hidden" id="hero-img2">
+              </div>
             </div>
 
             <div class="admin-card-title" style="font-size:13px;margin-top:16px;">Folie 3</div>
@@ -426,6 +446,16 @@
               <div class="aform-group"><label>Zitat (HE)</label><textarea id="hero-q3-he" rows="2" dir="rtl" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:right;"></textarea></div>
               <div class="aform-group"><label>Zitat (EN)</label><textarea id="hero-q3-en" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;"></textarea></div>
               <div class="aform-group"><label>Quelle (alle Sprachen)</label><input type="text" id="hero-c3-all" placeholder="z.B. Sanhedrin 37a"></div>
+              <div class="aform-group" style="grid-column:1/-1;">
+                <label>Hintergrundbild (optional)</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">
+                  <label style="display:inline-flex;align-items:center;gap:6px;background:#1b2a3b;color:#fff;padding:7px 14px;border-radius:6px;font-size:11px;font-family:'Raleway',sans-serif;letter-spacing:.08em;cursor:pointer;">📷 Bild wählen<input type="file" accept="image/*" style="display:none" onchange="uploadHeroImage(3,this)"></label>
+                  <button type="button" onclick="clearHeroImage(3)" style="background:transparent;border:1px solid #ddd;padding:7px 12px;border-radius:6px;font-size:11px;cursor:pointer;color:#888;">✕ Löschen</button>
+                </div>
+                <div id="hero-img3-preview" style="display:none;margin-bottom:4px;"><img id="hero-img3-preview-img" style="max-width:100%;max-height:90px;object-fit:cover;border-radius:4px;display:block;border:1px solid #ddd;"></div>
+                <div id="hero-img3-status" style="font-size:11px;display:none;"></div>
+                <input type="hidden" id="hero-img3">
+              </div>
             </div>
 
             <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
@@ -614,7 +644,7 @@
   </div>
 </div>
 
-<script src="/js/shared.js?v=16"></script>
-<script src="/js/articles.js?v=11"></script>
+<script src="/js/shared.js?v=17"></script>
+<script src="/js/articles.js?v=12"></script>
 </body>
 </html>

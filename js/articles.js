@@ -956,6 +956,10 @@ function heroLoadSlides() {
       var el = document.getElementById('hero-' + k);
       if (el && d[k]) el.value = d[k];
     });
+    [1,2,3].forEach(function(n) {
+      var imgEl = document.getElementById('hero-img' + n);
+      if (imgEl && d['img' + n]) { imgEl.value = d['img' + n]; updateHeroImagePreview(n, d['img' + n]); }
+    });
   }).catch(function(e) { console.warn('heroLoadSlides', e); });
 }
 function heroSaveSlides() {
@@ -969,11 +973,69 @@ function heroSaveSlides() {
     var el = document.getElementById('hero-' + k);
     if (el) data[k] = el.value.trim();
   });
+  [1,2,3].forEach(function(n) {
+    var imgEl = document.getElementById('hero-img' + n);
+    if (imgEl) data['img' + n] = imgEl.value;
+  });
   data.updated_at = firebase.firestore.FieldValue.serverTimestamp();
   firebase.firestore().collection('heroSlides').doc('config').set(data).then(function() {
     if (msgEl) { msgEl.textContent = '✓ Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
   }).catch(function(e) {
     if (msgEl) { msgEl.textContent = '✗ Fehler: ' + e.message; msgEl.style.display = 'block'; }
+  });
+}
+
+function updateHeroImagePreview(n, url) {
+  var wrap = document.getElementById('hero-img' + n + '-preview');
+  var img  = document.getElementById('hero-img' + n + '-preview-img');
+  if (wrap && img) {
+    if (url && url.length > 10) { img.src = url; wrap.style.display = 'block'; }
+    else { wrap.style.display = 'none'; img.src = ''; }
+  }
+}
+function clearHeroImage(n) {
+  var imgEl = document.getElementById('hero-img' + n);
+  if (imgEl) imgEl.value = '';
+  updateHeroImagePreview(n, '');
+  var st = document.getElementById('hero-img' + n + '-status');
+  if (st) st.style.display = 'none';
+}
+async function uploadHeroImage(n, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('hero-img' + n + '-status');
+  const imgEl  = document.getElementById('hero-img' + n);
+  if (status) { status.style.display = 'block'; status.textContent = 'Bild wird verarbeitet...'; status.style.color = '#b8952a'; }
+  try {
+    const base64 = await compressHeroImage(file);
+    if (imgEl) imgEl.value = base64;
+    updateHeroImagePreview(n, base64);
+    if (status) { status.textContent = '✓ Bild geladen!'; status.style.color = 'green'; }
+  } catch(err) {
+    if (status) { status.textContent = '❌ Fehler: ' + err.message; status.style.color = 'red'; }
+  }
+}
+function compressHeroImage(file) {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = function() {
+        const TW = 1200, TH = 520;
+        const srcAR = img.width / img.height, tgtAR = TW / TH;
+        let sx, sy, sw, sh;
+        if (srcAR > tgtAR) { sh = img.height; sw = sh * tgtAR; sy = 0; sx = (img.width - sw) / 2; }
+        else { sw = img.width; sh = sw / tgtAR; sx = 0; sy = (img.height - sh) / 2; }
+        const canvas = document.createElement('canvas');
+        canvas.width = TW; canvas.height = TH;
+        canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, TW, TH);
+        resolve(canvas.toDataURL('image/jpeg', 0.62));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   });
 }
 
