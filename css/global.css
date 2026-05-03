@@ -2326,6 +2326,9 @@ html[lang="he"] .mh-back-btn { margin-inline-start: 0; margin-inline-end: auto; 
   inset: 0;
   background: radial-gradient(ellipse at 70% 50%, rgba(212,175,55,0.07) 0%, transparent 65%);
 }
+.hero-slide.has-image .hero-slide-overlay {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.62) 100%);
+}
 .hero-content {
   position: relative;
   z-index: 2;

@@ -451,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ════════════════════════════════════════════════════════
 (function() {
   function applyHeroSlides(d) {
-    // Map Firestore keys to T translation keys
     var map = [
       ['q1-de','q1-en','q1-he','c1-all', 'hero-q1','hero-c1'],
       ['q2-de','q2-en','q2-he','c2-all', 'hero-q2','hero-c2'],
@@ -462,6 +461,15 @@ document.addEventListener('DOMContentLoaded', function() {
       if (d[row[1]]) T.en[row[4]] = d[row[1]];
       if (d[row[2]]) T.he[row[4]] = d[row[2]];
       if (d[row[3]]) { T.de[row[5]] = d[row[3]]; T.en[row[5]] = d[row[3]]; T.he[row[5]] = d[row[3]]; }
+    });
+    // Apply background images
+    var slides = document.querySelectorAll('.hero-slide');
+    [0,1,2].forEach(function(i) {
+      var url = d['img' + (i + 1)];
+      if (!url || !slides[i]) return;
+      var bg = slides[i].querySelector('.hero-slide-bg');
+      if (bg) { bg.style.backgroundImage = 'url(' + url + ')'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
+      slides[i].classList.add('has-image');
     });
     setLang(currentLang);
   }
