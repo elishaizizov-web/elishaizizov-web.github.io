@@ -906,13 +906,12 @@ function switchAdminTab(tab) {
     const btn = document.getElementById('atab-' + t);
     if (btn) btn.classList.toggle('active', t === tab);
   });
-  const artPanel = document.getElementById('admin-content');
+  const artPanel  = document.getElementById('admin-articles-panel');
   const heroPanel = document.getElementById('admin-hero-panel');
   const dashPanel = document.getElementById('admin-dashboard-panel');
-  if (artPanel) artPanel.style.display = tab === 'articles' ? 'block' : 'none';
-  if (heroPanel) heroPanel.style.display = tab === 'hero' ? 'block' : 'none';
+  if (artPanel)  artPanel.style.display  = tab === 'articles'  ? 'block' : 'none';
+  if (heroPanel) heroPanel.style.display = tab === 'hero'      ? 'block' : 'none';
   if (dashPanel) dashPanel.style.display = tab === 'dashboard' ? 'block' : 'none';
-  // Also toggle sticky bar
   const stickyBar = document.getElementById('admin-sticky-bar');
   if (stickyBar) stickyBar.style.display = tab === 'articles' ? 'flex' : 'none';
   if (tab === 'dashboard') dashboardLoad();
