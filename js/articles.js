@@ -558,6 +558,14 @@ function closeArticlePage() {
   const _ph2 = document.querySelector('.page-band'); if (_ph2) _ph2.style.display = '';
   document.querySelector('.page-body').style.display     = 'block';
   const _sf2 = document.querySelector('.main-footer');if (_sf2) _sf2.style.display = '';
+  const previewBanner = document.getElementById('admin-preview-notice');
+  if (previewBanner) previewBanner.style.display = 'none';
+  if (window._previewMode) {
+    window._previewMode = false;
+    window._currentArticle = null;
+    document.getElementById('admin-overlay').classList.add('open');
+    return;
+  }
   window.history.pushState({}, '', '/articles.html');
   // Reset meta tags to articles page defaults
   document.title = 'Beiträge — Rabbiner Elishai Zizov';
@@ -1035,6 +1043,45 @@ function adminLogin() {
 }
 
 
+
+function adminPreview() {
+  var isHag = (document.getElementById('af-cat')||{}).value === 'hag';
+  var dv = (document.getElementById('af-date-input')||{}).value;
+  var mock = {
+    id: '_preview',
+    title: (document.getElementById('af-title-de')||{}).value || '(Kein Titel)',
+    date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
+    parasha: isHag ? '' : ((document.getElementById('af-parasha')||{}).value||''),
+    hag: isHag ? ((document.getElementById('af-hag-name')||{}).value||'') : '',
+    image: (document.getElementById('af-image')||{}).value||'',
+    text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
+    translations: {
+      de: { title: (document.getElementById('af-title-de')||{}).value||'', text: quillEditors.de ? quillEditors.de.root.innerHTML : '' },
+      he: { title: (document.getElementById('af-title-he')||{}).value||'', text: quillEditors.he ? quillEditors.he.root.innerHTML : '' },
+      en: { title: (document.getElementById('af-title-en')||{}).value||'', text: quillEditors.en ? quillEditors.en.root.innerHTML : '' }
+    }
+  };
+  window._currentArticle = mock;
+  window._previewMode = true;
+  document.getElementById('admin-overlay').classList.remove('open');
+  _renderArticlePage(mock, currentLang);
+  const _ph = document.querySelector('.page-band'); if (_ph) _ph.style.display = 'none';
+  document.querySelector('.page-body').style.display = 'none';
+  const _sf = document.querySelector('.main-footer'); if (_sf) _sf.style.display = 'none';
+  document.getElementById('article-page').style.display = 'block';
+  document.getElementById('lang-back-btn').style.display = 'inline-flex';
+  var banner = document.getElementById('admin-preview-notice');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'admin-preview-notice';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#b8952a;color:#fff;text-align:center;padding:9px 16px;font-size:11px;font-family:Raleway,sans-serif;font-weight:700;letter-spacing:0.15em;z-index:9999;text-transform:uppercase;';
+    banner.textContent = '— Vorschau — Nicht veröffentlicht —';
+    document.body.appendChild(banner);
+  } else {
+    banner.style.display = 'block';
+  }
+  window.scrollTo(0, 0);
+}
 
 function adminLogout() {
   document.getElementById('admin-login-screen').style.display = 'block';
