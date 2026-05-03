@@ -952,9 +952,11 @@ function heroLoadSlides() {
   firebase.firestore().collection('heroSlides').doc('config').get().then(function(doc) {
     if (!doc.exists) return;
     var d = doc.data();
-    ['q1-de','q1-he','q1-en','c1-all','q2-de','q2-he','q2-en','c2-all','q3-de','q3-he','q3-en','c3-all'].forEach(function(k) {
+    ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
+     'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
+     'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
       var el = document.getElementById('hero-' + k);
-      if (el && d[k]) el.value = d[k];
+      if (el && d[k] !== undefined) el.value = d[k];
     });
     [1,2,3].forEach(function(n) {
       var imgEl = document.getElementById('hero-img' + n);
@@ -969,7 +971,9 @@ function heroSaveSlides() {
     return;
   }
   var data = {};
-  ['q1-de','q1-he','q1-en','c1-all','q2-de','q2-he','q2-en','c2-all','q3-de','q3-he','q3-en','c3-all'].forEach(function(k) {
+  ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
+   'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
+   'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
     var el = document.getElementById('hero-' + k);
     if (el) data[k] = el.value.trim();
   });
@@ -1005,17 +1009,22 @@ async function uploadHeroImage(n, input) {
   if (!file) return;
   const status = document.getElementById('hero-img' + n + '-status');
   const imgEl  = document.getElementById('hero-img' + n);
-  if (status) { status.style.display = 'block'; status.textContent = 'Bild wird verarbeitet...'; status.style.color = '#b8952a'; }
+  if (status) { status.style.display = 'block'; status.textContent = 'Bild wird vorbereitet...'; status.style.color = '#b8952a'; }
   try {
-    const base64 = await compressHeroImage(file);
-    if (imgEl) imgEl.value = base64;
-    updateHeroImagePreview(n, base64);
-    if (status) { status.textContent = '✓ Bild geladen!'; status.style.color = 'green'; }
+    const blob = await compressHeroImageToBlob(file);
+    if (!window.firebase || !storage) throw new Error('Storage nicht verfügbar');
+    if (status) status.textContent = 'Wird hochgeladen...';
+    const ref = storage.ref().child('hero/slide' + n + '.jpg');
+    const snap = await ref.put(blob, { contentType: 'image/jpeg' });
+    const url = await snap.ref.getDownloadURL();
+    if (imgEl) imgEl.value = url;
+    updateHeroImagePreview(n, url);
+    if (status) { status.textContent = '✓ Hochgeladen!'; status.style.color = 'green'; }
   } catch(err) {
     if (status) { status.textContent = '❌ Fehler: ' + err.message; status.style.color = 'red'; }
   }
 }
-function compressHeroImage(file) {
+function compressHeroImageToBlob(file) {
   return new Promise(function(resolve, reject) {
     const reader = new FileReader();
     reader.onerror = reject;
@@ -1023,7 +1032,7 @@ function compressHeroImage(file) {
       const img = new Image();
       img.onerror = reject;
       img.onload = function() {
-        const TW = 1200, TH = 520;
+        const TW = 1400, TH = 600;
         const srcAR = img.width / img.height, tgtAR = TW / TH;
         let sx, sy, sw, sh;
         if (srcAR > tgtAR) { sh = img.height; sw = sh * tgtAR; sy = 0; sx = (img.width - sw) / 2; }
@@ -1031,7 +1040,7 @@ function compressHeroImage(file) {
         const canvas = document.createElement('canvas');
         canvas.width = TW; canvas.height = TH;
         canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, TW, TH);
-        resolve(canvas.toDataURL('image/jpeg', 0.62));
+        canvas.toBlob(function(b) { resolve(b); }, 'image/jpeg', 0.78);
       };
       img.src = e.target.result;
     };
