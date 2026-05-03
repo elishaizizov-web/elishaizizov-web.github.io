@@ -466,10 +466,10 @@ document.addEventListener('DOMContentLoaded', function() {
       if (d[r.che] || d[r.call]) T.he[r.ck] = d[r.che] || d[r.call];
     });
     setLang(currentLang);
-    // Load background images from separate docs (each image in its own doc to stay under 1MB)
+    // Load background images — stored in articles collection under special IDs
     var slides = document.querySelectorAll('.hero-slide');
     [1,2,3].forEach(function(n) {
-      firebase.firestore().collection('heroSlides').doc('img' + n).get().then(function(doc) {
+      firebase.firestore().collection('articles').doc('__hero_img' + n + '__').get().then(function(doc) {
         if (!doc.exists) return;
         var url = doc.data().data;
         if (!url || !slides[n - 1]) return;
@@ -483,7 +483,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!document.getElementById('hero-carousel')) return;
     if (!window.firebase) return;
     try {
-      firebase.firestore().collection('heroSlides').doc('config').get().then(function(doc) {
+      // Hero config stored in articles collection (same permissive rules as articles)
+      firebase.firestore().collection('articles').doc('__hero_config__').get().then(function(doc) {
         if (doc && doc.exists) applyHeroSlides(doc.data());
       }).catch(function() {});
     } catch(e) {}

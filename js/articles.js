@@ -840,6 +840,9 @@ async function _loadArticlesImpl(silent) {
 
   if (loadingEl) loadingEl.style.display = 'none';
 
+  // Filter out internal hero/config docs stored in the articles collection
+  if (articles) articles = articles.filter(a => !String(a.id).startsWith('__'));
+
   const retryBtn = document.getElementById('articles-retry-btn');
   if (!articles || !articles.length) {
     console.warn('loadArticles: Firestore returned no articles — keeping fallback data');
@@ -947,9 +950,12 @@ var _heroSlideDefaults = {
   'q3-de': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
   'c3-all': 'Sanhedrin 37a',
 };
+// Hero slides data stored in the 'articles' collection under special IDs (prefix __) so
+// the same Firestore rules that allow article writes also allow hero writes — no auth needed.
+var _HERO_CFG = '__hero_config__';
 function heroLoadSlides() {
   if (!window.firebase || !firebase.firestore) return;
-  firebase.firestore().collection('heroSlides').doc('config').get().then(function(doc) {
+  firebase.firestore().collection('articles').doc(_HERO_CFG).get().then(function(doc) {
     if (!doc.exists) return;
     var d = doc.data();
     ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
@@ -959,9 +965,8 @@ function heroLoadSlides() {
       if (el && d[k] !== undefined) el.value = d[k];
     });
   }).catch(function(e) { console.warn('heroLoadSlides', e); });
-  // Load images from separate docs (avoids 1MB per-document limit)
   [1,2,3].forEach(function(n) {
-    firebase.firestore().collection('heroSlides').doc('img' + n).get().then(function(doc) {
+    firebase.firestore().collection('articles').doc('__hero_img' + n + '__').get().then(function(doc) {
       if (!doc.exists) return;
       var url = doc.data().data;
       var imgEl = document.getElementById('hero-img' + n);
@@ -982,9 +987,8 @@ function heroSaveSlides() {
     var el = document.getElementById('hero-' + k);
     if (el) data[k] = el.value.trim();
   });
-  // Images are saved immediately on upload to heroSlides/img{n} — not included here
   data.updated_at = firebase.firestore.FieldValue.serverTimestamp();
-  firebase.firestore().collection('heroSlides').doc('config').set(data).then(function() {
+  firebase.firestore().collection('articles').doc(_HERO_CFG).set(data).then(function() {
     if (msgEl) { msgEl.textContent = '✓ Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
   }).catch(function(e) {
     if (msgEl) { msgEl.textContent = '✗ Fehler: ' + e.message; msgEl.style.display = 'block'; }
@@ -1006,7 +1010,7 @@ function clearHeroImage(n) {
   var st = document.getElementById('hero-img' + n + '-status');
   if (st) st.style.display = 'none';
   if (window.firebase && firebase.firestore) {
-    firebase.firestore().collection('heroSlides').doc('img' + n).delete().catch(function() {});
+    firebase.firestore().collection('articles').doc('__hero_img' + n + '__').delete().catch(function() {});
   }
 }
 async function uploadHeroImage(n, input) {
@@ -1019,7 +1023,7 @@ async function uploadHeroImage(n, input) {
     const dataUrl = await compressHeroImageToDataUrl(file);
     if (!window.firebase || !firebase.firestore) throw new Error('Firebase nicht verfügbar');
     if (status) status.textContent = 'Wird gespeichert...';
-    await firebase.firestore().collection('heroSlides').doc('img' + n).set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
+    await firebase.firestore().collection('articles').doc('__hero_img' + n + '__').set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
     if (imgEl) imgEl.value = dataUrl;
     updateHeroImagePreview(n, dataUrl);
     if (status) { status.textContent = '✓ Gespeichert!'; status.style.color = 'green'; }
