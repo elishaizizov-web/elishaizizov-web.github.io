@@ -1631,19 +1631,24 @@ async function saveGitHubToken() {
   var input = document.getElementById('admin-gh-token-input');
   var status = document.getElementById('admin-gh-token-status');
   var token = (input ? input.value : '').trim();
-  if (!token.startsWith('ghp_')) { status.textContent = '\u2717 Ung\xfcltiges Token-Format'; status.style.color='#c00'; return; }
+  if (!token.startsWith('ghp_')) { status.textContent = '\u2717 Ung\u00fcltiges Token-Format'; status.style.color='#c00'; return; }
   try {
-    await db.collection('settings').doc('github').set({ token: token });
+    localStorage.setItem('gh_token', token);
+    if (db) await db.collection('settings').doc('github').set({ token: token }).catch(function(){});
     status.textContent = '\u2713 Token gespeichert!'; status.style.color='green';
     input.value = '';
   } catch(e) { status.textContent = '\u2717 Fehler: ' + e.message; status.style.color='#c00'; }
 }
 
 async function getGitHubToken() {
+  var local = localStorage.getItem('gh_token');
+  if (local && local.startsWith('ghp_')) return local;
   try {
     var doc = await db.collection('settings').doc('github').get();
-    return doc.exists ? doc.data().token : null;
-  } catch(e) { return null; }
+    var t = doc.exists ? doc.data().token : null;
+    if (t) { localStorage.setItem('gh_token', t); return t; }
+  } catch(e) {}
+  return null;
 }
 
 function stripHtml(html) {
