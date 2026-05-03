@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load background images — stored in articles collection under special IDs
     var slides = document.querySelectorAll('.hero-slide');
     [1,2,3].forEach(function(n) {
-      firebase.firestore().collection('articles').doc('__hero_img' + n + '__').get().then(function(doc) {
+      firebase.firestore().collection('articles').doc('hero_img_' + n).get().then(function(doc) {
         if (!doc.exists) return;
         var url = doc.data().data;
         if (!url || !slides[n - 1]) return;
@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!window.firebase) return;
     try {
       // Hero config stored in articles collection (same permissive rules as articles)
-      firebase.firestore().collection('articles').doc('__hero_config__').get().then(function(doc) {
+      firebase.firestore().collection('articles').doc('hero_config').get().then(function(doc) {
         if (doc && doc.exists) applyHeroSlides(doc.data());
       }).catch(function() {});
     } catch(e) {}

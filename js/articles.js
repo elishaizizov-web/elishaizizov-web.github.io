@@ -841,7 +841,7 @@ async function _loadArticlesImpl(silent) {
   if (loadingEl) loadingEl.style.display = 'none';
 
   // Filter out internal hero/config docs stored in the articles collection
-  if (articles) articles = articles.filter(a => !String(a.id).startsWith('__'));
+  if (articles) articles = articles.filter(a => !String(a.id).startsWith('hero_'));
 
   const retryBtn = document.getElementById('articles-retry-btn');
   if (!articles || !articles.length) {
@@ -952,7 +952,7 @@ var _heroSlideDefaults = {
 };
 // Hero slides data stored in the 'articles' collection under special IDs (prefix __) so
 // the same Firestore rules that allow article writes also allow hero writes — no auth needed.
-var _HERO_CFG = '__hero_config__';
+var _HERO_CFG = 'hero_config';
 function heroLoadSlides() {
   if (!window.firebase || !firebase.firestore) return;
   firebase.firestore().collection('articles').doc(_HERO_CFG).get().then(function(doc) {
@@ -966,7 +966,7 @@ function heroLoadSlides() {
     });
   }).catch(function(e) { console.warn('heroLoadSlides', e); });
   [1,2,3].forEach(function(n) {
-    firebase.firestore().collection('articles').doc('__hero_img' + n + '__').get().then(function(doc) {
+    firebase.firestore().collection('articles').doc('hero_img_' + n).get().then(function(doc) {
       if (!doc.exists) return;
       var url = doc.data().data;
       var imgEl = document.getElementById('hero-img' + n);
@@ -1010,7 +1010,7 @@ function clearHeroImage(n) {
   var st = document.getElementById('hero-img' + n + '-status');
   if (st) st.style.display = 'none';
   if (window.firebase && firebase.firestore) {
-    firebase.firestore().collection('articles').doc('__hero_img' + n + '__').delete().catch(function() {});
+    firebase.firestore().collection('articles').doc('hero_img_' + n).delete().catch(function() {});
   }
 }
 async function uploadHeroImage(n, input) {
@@ -1023,7 +1023,7 @@ async function uploadHeroImage(n, input) {
     const dataUrl = await compressHeroImageToDataUrl(file);
     if (!window.firebase || !firebase.firestore) throw new Error('Firebase nicht verfügbar');
     if (status) status.textContent = 'Wird gespeichert...';
-    await firebase.firestore().collection('articles').doc('__hero_img' + n + '__').set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
+    await firebase.firestore().collection('articles').doc('hero_img_' + n).set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
     if (imgEl) imgEl.value = dataUrl;
     updateHeroImagePreview(n, dataUrl);
     if (status) { status.textContent = '✓ Gespeichert!'; status.style.color = 'green'; }
