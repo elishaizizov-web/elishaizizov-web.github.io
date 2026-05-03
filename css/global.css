@@ -2386,8 +2386,14 @@ html[lang="he"] .mh-back-btn { margin-inline-start: 0; margin-inline-end: auto; 
   opacity: 0.8;
 }
 html[lang="he"] .hero-content { direction: rtl; }
-html[lang="he"] .hero-quote { text-align: right; }
-html[lang="he"] .hero-quote cite { text-align: right; }
+html[lang="he"] .hero-quote {
+  text-align: center;
+  font-style: normal;
+  font-family: 'Frank Ruhl Libre', 'Merriweather', serif;
+}
+html[lang="he"] .hero-quote p::before,
+html[lang="he"] .hero-quote p::after { content: ''; }
+html[lang="he"] .hero-quote cite { text-align: center; letter-spacing: 0.08em; }
 
 /* Carousel controls */
 .carousel-control {
@@ -2570,7 +2576,7 @@ html[lang="he"] .page-band-inner { direction: rtl; text-align: right; }
 
 html[lang="he"] .mf-inner { direction: rtl; }
 html[lang="he"] .mf-bottom { direction: rtl; }
-html[lang="he"] .mf-col nav { align-items: flex-end; }
+html[lang="he"] .mf-col nav { align-items: flex-start; }
 html[lang="he"] .mf-brand { text-align: right; }
 html[lang="he"] .mf-brand-socials { justify-content: flex-end; }
 
