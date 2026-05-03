@@ -262,13 +262,17 @@ function renderCard(a, noClick) {
   const excerptHtml = excerpt ? `<p class="article-card-excerpt">${escHtml(excerpt)}${excerpt.length >= 200 ? '…' : ''}</p>` : '';
   const readMoreLabel = { de: 'Weiterlesen', en: 'Read more', fr: 'Lire la suite', es: 'Leer más', ru: 'Читать', he: 'קרא עוד' }[l] || 'Weiterlesen';
   const readMoreHtml = noClick ? '' : `<span class="article-card-readmore">${readMoreLabel} <span>→</span></span>`;
+  const cat = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
+  const tagHtml = cat ? `<span class="article-card-tag">${escHtml(cat)}</span>` : '';
+  const heYear = toHebrewYear(a.date);
+  const dateStr = a.date + (heYear ? ' · ' + heYear : '');
   if (noClick) {
-    return `<div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
+    return `<div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
   }
   const slug = articleSlug(a);
   const langParam = l !== 'de' ? '?lang=' + l : '';
   const safeId = escHtml(a.id).replace(/'/g, '&#39;');
-  return `<a href="/${slug}${langParam}" data-article-id="${escHtml(a.id)}" onclick="event.preventDefault();openArticle(this.dataset.articleId);" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body"><span class="article-card-date">${escHtml(a.date)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
+  return `<a href="/${slug}${langParam}" data-article-id="${escHtml(a.id)}" onclick="event.preventDefault();openArticle(this.dataset.articleId);" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
 
 function showHagim() {
@@ -397,7 +401,8 @@ function _renderArticlePage(a, l) {
   const isRTL = (l === 'he');
   const dir   = isRTL ? 'rtl' : 'ltr';
   // content
-  document.getElementById('ap-date').textContent  = a.date || '';
+  const _heYear = toHebrewYear(a.date);
+  document.getElementById('ap-date').textContent = (a.date || '') + (_heYear ? ' · ' + _heYear : '');
   const parashaEl = document.getElementById('ap-parasha');
   const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
