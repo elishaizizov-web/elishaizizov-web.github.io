@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css?v=11">
+<link rel="stylesheet" href="/css/global.css?v=12">
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -476,6 +476,7 @@
       <div class="admin-sticky-right">
         <span id="admin-msg" class="admin-sticky-msg"></span>
         <button id="admin-cancel-btn" class="admin-sticky-cancel" onclick="adminCancelEdit()" style="display:none;">✕ Abbrechen</button>
+        <button type="button" class="admin-preview-btn" onclick="adminPreview()">👁 Vorschau</button>
         <button id="admin-publish-btn" class="admin-publish-btn" onclick="adminSave()">
           <span class="spinner"></span>
           <span class="btn-label">VERÖFFENTLICHEN</span>
@@ -614,6 +615,6 @@
 </div>
 
 <script src="/js/shared.js?v=16"></script>
-<script src="/js/articles.js?v=8"></script>
+<script src="/js/articles.js?v=9"></script>
 </body>
 </html>
