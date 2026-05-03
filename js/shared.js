@@ -44,6 +44,7 @@ const T = {
     'cookie-msg': 'Diese Website verwendet Google Fonts. Durch die weitere Nutzung stimmen Sie der Verwendung zu.', 'cookie-ok': 'Akzeptieren',
     'offline': 'Offline — Keine Internetverbindung',
     'contact-loc': 'Frankfurt am Main, Deutschland', 'contact-langs': 'Deutsch · Englisch · Hebräisch',
+    'page-art-title': 'Paraschot, Chagim und mehr',
   },
   en: {
     eyebrow: 'Rabbi · Lecturer',
@@ -74,6 +75,7 @@ const T = {
     'cookie-msg': 'This website uses Google Fonts. By continuing to use the site you agree to their use.', 'cookie-ok': 'Accept',
     'offline': 'Offline — No internet connection',
     'contact-loc': 'Frankfurt am Main, Germany', 'contact-langs': 'German · English · Hebrew',
+    'page-art-title': 'Parashot, Holidays & More',
   },
   fr: {
     eyebrow: 'Rabbin · Conférencier',
@@ -121,6 +123,7 @@ const T = {
     'cookie-msg': 'אתר זה משתמש ב-Google Fonts. המשך השימוש מהווה הסכמה לשימוש בהם.', 'cookie-ok': 'אישור',
     'offline': 'אין חיבור לאינטרנט',
     'contact-loc': 'פרנקפורט אם מיין, גרמניה', 'contact-langs': 'גרמנית · אנגלית · עברית',
+    'page-art-title': 'פרשיות, חגים ועוד',
   },
   es: {
     eyebrow: 'Rabino · Conferencista',
