@@ -407,6 +407,28 @@ html[lang="he"] .station::before {
 .parasha-btn:hover { background: var(--navy); color: #ffffff; border-color: var(--navy); }
 .parasha-btn.has-articles { border-color: var(--gold); color: var(--gold); font-weight: 700; }
 
+.nav-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0 4px;
+  margin-left: 6px;
+  letter-spacing: 0;
+  line-height: 1;
+  vertical-align: middle;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.85);
+}
+.parasha-btn .nav-count { background: var(--gold); border-color: var(--gold); color: #fff; }
+.parasha-btn:hover .nav-count { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
+
 .articles-list-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 20px; }
 .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
 
