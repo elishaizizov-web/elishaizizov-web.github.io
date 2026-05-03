@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
     clearInterval(_timer);
     _timer = setInterval(function() { goTo(_cur + 1); }, 5500);
   }
-  window.heroCarousel = function(dir) { goTo(_cur + dir); };
+  window.heroCarousel = function(dir) { goTo(_cur + (document.documentElement.lang === 'he' ? -dir : dir)); };
   document.addEventListener('DOMContentLoaded', initCarousel);
 })();
 
