@@ -465,16 +465,19 @@ document.addEventListener('DOMContentLoaded', function() {
       if (d[r.cen] || d[r.call]) T.en[r.ck] = d[r.cen] || d[r.call];
       if (d[r.che] || d[r.call]) T.he[r.ck] = d[r.che] || d[r.call];
     });
-    // Apply background images from Storage URLs
-    var slides = document.querySelectorAll('.hero-slide');
-    [0,1,2].forEach(function(i) {
-      var url = d['img' + (i + 1)];
-      if (!url || !slides[i]) return;
-      var bg = slides[i].querySelector('.hero-slide-bg');
-      if (bg) { bg.style.backgroundImage = 'url("' + url + '")'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
-      slides[i].classList.add('has-image');
-    });
     setLang(currentLang);
+    // Load background images from separate docs (each image in its own doc to stay under 1MB)
+    var slides = document.querySelectorAll('.hero-slide');
+    [1,2,3].forEach(function(n) {
+      firebase.firestore().collection('heroSlides').doc('img' + n).get().then(function(doc) {
+        if (!doc.exists) return;
+        var url = doc.data().data;
+        if (!url || !slides[n - 1]) return;
+        var bg = slides[n - 1].querySelector('.hero-slide-bg');
+        if (bg) { bg.style.backgroundImage = 'url("' + url + '")'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
+        slides[n - 1].classList.add('has-image');
+      }).catch(function() {});
+    });
   }
   document.addEventListener('DOMContentLoaded', function() {
     if (!document.getElementById('hero-carousel')) return;

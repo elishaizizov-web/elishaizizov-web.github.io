@@ -958,11 +958,16 @@ function heroLoadSlides() {
       var el = document.getElementById('hero-' + k);
       if (el && d[k] !== undefined) el.value = d[k];
     });
-    [1,2,3].forEach(function(n) {
-      var imgEl = document.getElementById('hero-img' + n);
-      if (imgEl && d['img' + n]) { imgEl.value = d['img' + n]; updateHeroImagePreview(n, d['img' + n]); }
-    });
   }).catch(function(e) { console.warn('heroLoadSlides', e); });
+  // Load images from separate docs (avoids 1MB per-document limit)
+  [1,2,3].forEach(function(n) {
+    firebase.firestore().collection('heroSlides').doc('img' + n).get().then(function(doc) {
+      if (!doc.exists) return;
+      var url = doc.data().data;
+      var imgEl = document.getElementById('hero-img' + n);
+      if (imgEl && url) { imgEl.value = url; updateHeroImagePreview(n, url); }
+    }).catch(function() {});
+  });
 }
 function heroSaveSlides() {
   var msgEl = document.getElementById('hero-save-msg');
@@ -977,10 +982,7 @@ function heroSaveSlides() {
     var el = document.getElementById('hero-' + k);
     if (el) data[k] = el.value.trim();
   });
-  [1,2,3].forEach(function(n) {
-    var imgEl = document.getElementById('hero-img' + n);
-    if (imgEl) data['img' + n] = imgEl.value;
-  });
+  // Images are saved immediately on upload to heroSlides/img{n} — not included here
   data.updated_at = firebase.firestore.FieldValue.serverTimestamp();
   firebase.firestore().collection('heroSlides').doc('config').set(data).then(function() {
     if (msgEl) { msgEl.textContent = '✓ Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
@@ -1003,6 +1005,9 @@ function clearHeroImage(n) {
   updateHeroImagePreview(n, '');
   var st = document.getElementById('hero-img' + n + '-status');
   if (st) st.style.display = 'none';
+  if (window.firebase && firebase.firestore) {
+    firebase.firestore().collection('heroSlides').doc('img' + n).delete().catch(function() {});
+  }
 }
 async function uploadHeroImage(n, input) {
   const file = input.files[0];
@@ -1011,20 +1016,18 @@ async function uploadHeroImage(n, input) {
   const imgEl  = document.getElementById('hero-img' + n);
   if (status) { status.style.display = 'block'; status.textContent = 'Bild wird vorbereitet...'; status.style.color = '#b8952a'; }
   try {
-    const blob = await compressHeroImageToBlob(file);
-    if (!window.firebase || !storage) throw new Error('Storage nicht verfügbar');
-    if (status) status.textContent = 'Wird hochgeladen...';
-    const ref = storage.ref().child('hero/slide' + n + '.jpg');
-    const snap = await ref.put(blob, { contentType: 'image/jpeg' });
-    const url = await snap.ref.getDownloadURL();
-    if (imgEl) imgEl.value = url;
-    updateHeroImagePreview(n, url);
-    if (status) { status.textContent = '✓ Hochgeladen!'; status.style.color = 'green'; }
+    const dataUrl = await compressHeroImageToDataUrl(file);
+    if (!window.firebase || !firebase.firestore) throw new Error('Firebase nicht verfügbar');
+    if (status) status.textContent = 'Wird gespeichert...';
+    await firebase.firestore().collection('heroSlides').doc('img' + n).set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
+    if (imgEl) imgEl.value = dataUrl;
+    updateHeroImagePreview(n, dataUrl);
+    if (status) { status.textContent = '✓ Gespeichert!'; status.style.color = 'green'; }
   } catch(err) {
     if (status) { status.textContent = '❌ Fehler: ' + err.message; status.style.color = 'red'; }
   }
 }
-function compressHeroImageToBlob(file) {
+function compressHeroImageToDataUrl(file) {
   return new Promise(function(resolve, reject) {
     const reader = new FileReader();
     reader.onerror = reject;
@@ -1040,7 +1043,7 @@ function compressHeroImageToBlob(file) {
         const canvas = document.createElement('canvas');
         canvas.width = TW; canvas.height = TH;
         canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, TW, TH);
-        canvas.toBlob(function(b) { resolve(b); }, 'image/jpeg', 0.78);
+        resolve(canvas.toDataURL('image/jpeg', 0.78));
       };
       img.src = e.target.result;
     };
