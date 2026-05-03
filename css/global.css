@@ -2952,10 +2952,7 @@ html[lang="he"] .hero-section::after {
   right: auto;
   left: 6%;
 }
-.hero-carousel, .hero-slide, .hero-content {
-  position: relative;
-  z-index: 2;
-}
+.hero-carousel { z-index: 2; }
 
 /* ── PULL QUOTE STRIP ─────────────────────────────────── */
 .quote-strip {
