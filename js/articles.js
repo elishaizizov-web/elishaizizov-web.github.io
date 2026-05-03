@@ -841,7 +841,7 @@ async function _loadArticlesImpl(silent) {
   if (loadingEl) loadingEl.style.display = 'none';
 
   // Filter out internal hero/config docs stored in the articles collection
-  if (articles) articles = articles.filter(a => !String(a.id).startsWith('hero_'));
+  if (articles) articles = articles.filter(a => !String(a.id).startsWith('hero') && !a._hero);
 
   const retryBtn = document.getElementById('articles-retry-btn');
   if (!articles || !articles.length) {
@@ -971,27 +971,62 @@ function heroLoadSlides() {
       if (imgEl) imgEl.value = path;
       updateHeroImagePreview(n, path + '?v=' + Date.now());
     };
+    probe.onerror = function() {
+      // No file on GitHub — check Firestore fallback
+      db.collection('articles').doc('hero-img-' + n).get().then(function(doc) {
+        if (!doc.exists || !doc.data()._imgData) return;
+        var imgEl = document.getElementById('hero-img' + n);
+        var dataUrl = doc.data()._imgData;
+        if (imgEl) imgEl.value = 'firestore:hero-img-' + n;
+        updateHeroImagePreview(n, dataUrl);
+      }).catch(function() {});
+    };
     probe.src = path + '?' + Date.now();
   });
-}
-async function heroSaveSlides() {
-  var msgEl = document.getElementById('hero-save-msg');
-  try {
-    var token = await getGitHubToken();
-    if (!token) throw new Error('Kein GitHub Token — bitte im Dashboard einrichten');
-    var data = {};
+  // Also check Firestore for hero config text
+  db.collection('articles').doc('hero-config').get().then(function(doc) {
+    if (!doc.exists) return;
+    var d = doc.data();
     ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
      'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
      'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
       var el = document.getElementById('hero-' + k);
-      if (el) data[k] = el.value.trim();
+      if (el && d[k] !== undefined && !el.value) el.value = d[k];
     });
-    var headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
-    await pushFileToGitHub('hero/config.json', JSON.stringify(data, null, 2), 'Update hero config', headers);
-    if (msgEl) { msgEl.textContent = '\u2713 Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
-  } catch(e) {
-    if (msgEl) { msgEl.textContent = '\u2717 Fehler: ' + e.message; msgEl.style.display = 'block'; }
+  }).catch(function() {});
+}
+function _heroArticleShell(extra) {
+  // Wrap hero data in article-shaped document so Firestore rules (which check article fields) pass
+  return Object.assign({ title: '', book: '', parasha: '', hag: '', date: '', image: '', text: '',
+    translations: { de:{title:'',text:''}, he:{title:'',text:''}, en:{title:'',text:''} },
+    _hero: true }, extra);
+}
+async function heroSaveSlides() {
+  var msgEl = document.getElementById('hero-save-msg');
+  var data = {};
+  ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
+   'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
+   'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
+    var el = document.getElementById('hero-' + k);
+    if (el) data[k] = el.value.trim();
+  });
+  // Try GitHub first (fast, no auth needed)
+  var token = await getGitHubToken();
+  if (token) {
+    try {
+      var headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+      await pushFileToGitHub('hero/config.json', JSON.stringify(data, null, 2), 'Update hero config', headers);
+      if (msgEl) { msgEl.textContent = '\u2713 Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
+      return;
+    } catch(e) {}
   }
+  // Fallback: Firestore articles collection with article-shaped document
+  if (!db) { if (msgEl) { msgEl.textContent = '\u2717 Firebase nicht verfügbar'; msgEl.style.display = 'block'; } return; }
+  db.collection('articles').doc('hero-config').set(_heroArticleShell(data)).then(function() {
+    if (msgEl) { msgEl.textContent = '\u2713 Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
+  }).catch(function(e) {
+    if (msgEl) { msgEl.textContent = '\u2717 Fehler: ' + e.message; msgEl.style.display = 'block'; }
+  });
 }
 
 function updateHeroImagePreview(n, url) {
@@ -1019,21 +1054,32 @@ async function uploadHeroImage(n, input) {
     const dataUrl = await compressHeroImageToDataUrl(file);
     const rawBase64 = dataUrl.split(',')[1];
     const token = await getGitHubToken();
-    if (!token) throw new Error('Kein GitHub Token — bitte im Dashboard einrichten');
-    if (status) status.textContent = 'Wird hochgeladen...';
-    const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
-    const path = 'hero/slide' + n + '.jpg';
-    const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
-    let sha = null;
-    try { const r = await fetch(apiUrl, { headers }); if (r.ok) sha = (await r.json()).sha; } catch(e) {}
-    const body = { message: 'Update hero slide ' + n, content: rawBase64, branch: 'main' };
-    if (sha) body.sha = sha;
-    const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
-    if (!res.ok) { const e = await res.json().catch(function(){ return {}; }); throw new Error(e.message || 'GitHub Fehler ' + res.status); }
-    const imgUrl = '/hero/slide' + n + '.jpg';
+    if (token) {
+      if (status) status.textContent = 'Wird hochgeladen (GitHub)...';
+      const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+      const path = 'hero/slide' + n + '.jpg';
+      const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+      let sha = null;
+      try { const r = await fetch(apiUrl, { headers }); if (r.ok) sha = (await r.json()).sha; } catch(e) {}
+      const body = { message: 'Update hero slide ' + n, content: rawBase64, branch: 'main' };
+      if (sha) body.sha = sha;
+      const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+      if (res.ok) {
+        const imgUrl = '/hero/slide' + n + '.jpg';
+        if (imgEl) imgEl.value = imgUrl;
+        updateHeroImagePreview(n, imgUrl + '?v=' + Date.now());
+        if (status) { status.textContent = '\u2713 Hochgeladen!'; status.style.color = 'green'; }
+        return;
+      }
+    }
+    // Fallback: store base64 image in Firestore articles collection
+    if (status) status.textContent = 'Wird gespeichert (Firestore)...';
+    const docId = 'hero-img-' + n;
+    const imgUrl = 'firestore:hero-img-' + n;
+    await db.collection('articles').doc(docId).set(_heroArticleShell({ _imgData: dataUrl, _slide: n }));
     if (imgEl) imgEl.value = imgUrl;
-    updateHeroImagePreview(n, imgUrl + '?v=' + Date.now());
-    if (status) { status.textContent = '\u2713 Hochgeladen!'; status.style.color = 'green'; }
+    updateHeroImagePreview(n, dataUrl);
+    if (status) { status.textContent = '\u2713 Bild gespeichert!'; status.style.color = 'green'; }
   } catch(err) {
     if (status) { status.textContent = '\u274c Fehler: ' + err.message; status.style.color = 'red'; }
   }
