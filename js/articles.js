@@ -950,49 +950,48 @@ var _heroSlideDefaults = {
   'q3-de': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
   'c3-all': 'Sanhedrin 37a',
 };
-// Hero slides data stored in the 'articles' collection under special IDs (prefix __) so
-// the same Firestore rules that allow article writes also allow hero writes — no auth needed.
-var _HERO_CFG = 'hero_config';
+// ── Hero Slides — stored as static files on GitHub (no Firebase auth needed) ──
 function heroLoadSlides() {
-  if (!window.firebase || !firebase.firestore) return;
-  firebase.firestore().collection('articles').doc(_HERO_CFG).get().then(function(doc) {
-    if (!doc.exists) return;
-    var d = doc.data();
+  fetch('/hero/config.json?' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(d) {
+      if (!d) return;
+      ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
+       'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
+       'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
+        var el = document.getElementById('hero-' + k);
+        if (el && d[k] !== undefined) el.value = d[k];
+      });
+    }).catch(function() {});
+  [1,2,3].forEach(function(n) {
+    var path = '/hero/slide' + n + '.jpg';
+    var probe = new Image();
+    probe.onload = function() {
+      var imgEl = document.getElementById('hero-img' + n);
+      if (imgEl) imgEl.value = path;
+      updateHeroImagePreview(n, path + '?v=' + Date.now());
+    };
+    probe.src = path + '?' + Date.now();
+  });
+}
+async function heroSaveSlides() {
+  var msgEl = document.getElementById('hero-save-msg');
+  try {
+    var token = await getGitHubToken();
+    if (!token) throw new Error('Kein GitHub Token — bitte im Dashboard einrichten');
+    var data = {};
     ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
      'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
      'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
       var el = document.getElementById('hero-' + k);
-      if (el && d[k] !== undefined) el.value = d[k];
+      if (el) data[k] = el.value.trim();
     });
-  }).catch(function(e) { console.warn('heroLoadSlides', e); });
-  [1,2,3].forEach(function(n) {
-    firebase.firestore().collection('articles').doc('hero_img_' + n).get().then(function(doc) {
-      if (!doc.exists) return;
-      var url = doc.data().data;
-      var imgEl = document.getElementById('hero-img' + n);
-      if (imgEl && url) { imgEl.value = url; updateHeroImagePreview(n, url); }
-    }).catch(function() {});
-  });
-}
-function heroSaveSlides() {
-  var msgEl = document.getElementById('hero-save-msg');
-  if (!window.firebase || !firebase.firestore) {
-    if (msgEl) { msgEl.textContent = '⚠ Firebase nicht verfügbar.'; msgEl.style.display = 'block'; }
-    return;
+    var headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+    await pushFileToGitHub('hero/config.json', JSON.stringify(data, null, 2), 'Update hero config', headers);
+    if (msgEl) { msgEl.textContent = '\u2713 Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
+  } catch(e) {
+    if (msgEl) { msgEl.textContent = '\u2717 Fehler: ' + e.message; msgEl.style.display = 'block'; }
   }
-  var data = {};
-  ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
-   'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
-   'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
-    var el = document.getElementById('hero-' + k);
-    if (el) data[k] = el.value.trim();
-  });
-  data.updated_at = firebase.firestore.FieldValue.serverTimestamp();
-  firebase.firestore().collection('articles').doc(_HERO_CFG).set(data).then(function() {
-    if (msgEl) { msgEl.textContent = '✓ Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
-  }).catch(function(e) {
-    if (msgEl) { msgEl.textContent = '✗ Fehler: ' + e.message; msgEl.style.display = 'block'; }
-  });
 }
 
 function updateHeroImagePreview(n, url) {
@@ -1009,9 +1008,6 @@ function clearHeroImage(n) {
   updateHeroImagePreview(n, '');
   var st = document.getElementById('hero-img' + n + '-status');
   if (st) st.style.display = 'none';
-  if (window.firebase && firebase.firestore) {
-    firebase.firestore().collection('articles').doc('hero_img_' + n).delete().catch(function() {});
-  }
 }
 async function uploadHeroImage(n, input) {
   const file = input.files[0];
@@ -1021,14 +1017,25 @@ async function uploadHeroImage(n, input) {
   if (status) { status.style.display = 'block'; status.textContent = 'Bild wird vorbereitet...'; status.style.color = '#b8952a'; }
   try {
     const dataUrl = await compressHeroImageToDataUrl(file);
-    if (!window.firebase || !firebase.firestore) throw new Error('Firebase nicht verfügbar');
-    if (status) status.textContent = 'Wird gespeichert...';
-    await firebase.firestore().collection('articles').doc('hero_img_' + n).set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
-    if (imgEl) imgEl.value = dataUrl;
-    updateHeroImagePreview(n, dataUrl);
-    if (status) { status.textContent = '✓ Gespeichert!'; status.style.color = 'green'; }
+    const rawBase64 = dataUrl.split(',')[1];
+    const token = await getGitHubToken();
+    if (!token) throw new Error('Kein GitHub Token — bitte im Dashboard einrichten');
+    if (status) status.textContent = 'Wird hochgeladen...';
+    const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+    const path = 'hero/slide' + n + '.jpg';
+    const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+    let sha = null;
+    try { const r = await fetch(apiUrl, { headers }); if (r.ok) sha = (await r.json()).sha; } catch(e) {}
+    const body = { message: 'Update hero slide ' + n, content: rawBase64, branch: 'main' };
+    if (sha) body.sha = sha;
+    const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+    if (!res.ok) { const e = await res.json().catch(function(){ return {}; }); throw new Error(e.message || 'GitHub Fehler ' + res.status); }
+    const imgUrl = '/hero/slide' + n + '.jpg';
+    if (imgEl) imgEl.value = imgUrl;
+    updateHeroImagePreview(n, imgUrl + '?v=' + Date.now());
+    if (status) { status.textContent = '\u2713 Hochgeladen!'; status.style.color = 'green'; }
   } catch(err) {
-    if (status) { status.textContent = '❌ Fehler: ' + err.message; status.style.color = 'red'; }
+    if (status) { status.textContent = '\u274c Fehler: ' + err.message; status.style.color = 'red'; }
   }
 }
 function compressHeroImageToDataUrl(file) {

@@ -447,10 +447,10 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 // ════════════════════════════════════════════════════════
-// HERO SLIDES — load from Firestore and patch T object
+// HERO SLIDES — loaded from static files (no Firebase auth needed)
 // ════════════════════════════════════════════════════════
 (function() {
-  function applyHeroSlides(d) {
+  function applyHeroText(d) {
     var slides_data = [
       { qde:'q1-de', qen:'q1-en', qhe:'q1-he', cde:'c1-de', cen:'c1-en', che:'c1-he', call:'c1-all', qk:'hero-q1', ck:'hero-c1' },
       { qde:'q2-de', qen:'q2-en', qhe:'q2-he', cde:'c2-de', cen:'c2-en', che:'c2-he', call:'c2-all', qk:'hero-q2', ck:'hero-c2' },
@@ -460,34 +460,32 @@ document.addEventListener('DOMContentLoaded', function() {
       if (d[r.qde]) T.de[r.qk] = d[r.qde];
       if (d[r.qen]) T.en[r.qk] = d[r.qen];
       if (d[r.qhe]) T.he[r.qk] = d[r.qhe];
-      // per-language citation, fallback to c-all for backward compat
       if (d[r.cde] || d[r.call]) T.de[r.ck] = d[r.cde] || d[r.call];
       if (d[r.cen] || d[r.call]) T.en[r.ck] = d[r.cen] || d[r.call];
       if (d[r.che] || d[r.call]) T.he[r.ck] = d[r.che] || d[r.call];
     });
     setLang(currentLang);
-    // Load background images — stored in articles collection under special IDs
+  }
+  function loadHeroImages() {
     var slides = document.querySelectorAll('.hero-slide');
     [1,2,3].forEach(function(n) {
-      firebase.firestore().collection('articles').doc('hero_img_' + n).get().then(function(doc) {
-        if (!doc.exists) return;
-        var url = doc.data().data;
-        if (!url || !slides[n - 1]) return;
-        var bg = slides[n - 1].querySelector('.hero-slide-bg');
-        if (bg) { bg.style.backgroundImage = 'url("' + url + '")'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
-        slides[n - 1].classList.add('has-image');
-      }).catch(function() {});
+      var probe = new Image();
+      probe.onload = function() {
+        if (!slides[n-1]) return;
+        var bg = slides[n-1].querySelector('.hero-slide-bg');
+        if (bg) { bg.style.backgroundImage = 'url("/hero/slide' + n + '.jpg")'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
+        slides[n-1].classList.add('has-image');
+      };
+      probe.src = '/hero/slide' + n + '.jpg';
     });
   }
   document.addEventListener('DOMContentLoaded', function() {
     if (!document.getElementById('hero-carousel')) return;
-    if (!window.firebase) return;
-    try {
-      // Hero config stored in articles collection (same permissive rules as articles)
-      firebase.firestore().collection('articles').doc('hero_config').get().then(function(doc) {
-        if (doc && doc.exists) applyHeroSlides(doc.data());
-      }).catch(function() {});
-    } catch(e) {}
+    fetch('/hero/config.json')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(d) { if (d) applyHeroText(d); })
+      .catch(function() {});
+    loadHeroImages();
   });
 })();
 
