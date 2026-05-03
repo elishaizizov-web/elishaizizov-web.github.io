@@ -952,6 +952,7 @@ var _heroSlideDefaults = {
 };
 // ── Hero Slides — stored as static files on GitHub (no Firebase auth needed) ──
 function heroLoadSlides() {
+  heroCheckToken();
   fetch('/hero/config.json?' + Date.now())
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(d) {
@@ -1051,37 +1052,64 @@ async function uploadHeroImage(n, input) {
   const imgEl  = document.getElementById('hero-img' + n);
   if (status) { status.style.display = 'block'; status.textContent = 'Bild wird vorbereitet...'; status.style.color = '#b8952a'; }
   try {
+    const token = await getGitHubToken();
+    if (!token) {
+      // Highlight the token setup box so the user sees what to do
+      var box = document.getElementById('hero-token-box');
+      if (box) { box.style.border = '2px solid #e53935'; box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      var inp = document.getElementById('hero-token-input');
+      if (inp) inp.focus();
+      throw new Error('Bitte zuerst den GitHub-Token oben eingeben und speichern.');
+    }
     const dataUrl = await compressHeroImageToDataUrl(file);
     const rawBase64 = dataUrl.split(',')[1];
-    const token = await getGitHubToken();
-    if (token) {
-      if (status) status.textContent = 'Wird hochgeladen (GitHub)...';
-      const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
-      const path = 'hero/slide' + n + '.jpg';
-      const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
-      let sha = null;
-      try { const r = await fetch(apiUrl, { headers }); if (r.ok) sha = (await r.json()).sha; } catch(e) {}
-      const body = { message: 'Update hero slide ' + n, content: rawBase64, branch: 'main' };
-      if (sha) body.sha = sha;
-      const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
-      if (res.ok) {
-        const imgUrl = '/hero/slide' + n + '.jpg';
-        if (imgEl) imgEl.value = imgUrl;
-        updateHeroImagePreview(n, imgUrl + '?v=' + Date.now());
-        if (status) { status.textContent = '\u2713 Hochgeladen!'; status.style.color = 'green'; }
-        return;
+    if (status) status.textContent = 'Wird hochgeladen...';
+    const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+    const path = 'hero/slide' + n + '.jpg';
+    const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+    let sha = null;
+    try { const r = await fetch(apiUrl, { headers }); if (r.ok) sha = (await r.json()).sha; } catch(e) {}
+    const body = { message: 'Update hero slide ' + n, content: rawBase64, branch: 'main' };
+    if (sha) body.sha = sha;
+    const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+    if (!res.ok) {
+      var errData = await res.json().catch(function() { return {}; });
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('gh_token');
+        heroCheckToken();
+        throw new Error('Token ung\u00fcltig oder abgelaufen. Bitte neuen Token eingeben.');
       }
+      throw new Error(errData.message || 'GitHub Fehler ' + res.status);
     }
-    // Fallback: store base64 image in Firestore articles collection
-    if (status) status.textContent = 'Wird gespeichert (Firestore)...';
-    const docId = 'hero-img-' + n;
-    const imgUrl = 'firestore:hero-img-' + n;
-    await db.collection('articles').doc(docId).set(_heroArticleShell({ _imgData: dataUrl, _slide: n }));
+    const imgUrl = '/hero/slide' + n + '.jpg';
     if (imgEl) imgEl.value = imgUrl;
-    updateHeroImagePreview(n, dataUrl);
-    if (status) { status.textContent = '\u2713 Bild gespeichert!'; status.style.color = 'green'; }
+    updateHeroImagePreview(n, imgUrl + '?v=' + Date.now());
+    if (status) { status.textContent = '\u2713 Hochgeladen! (Bild ist in ~1 Minute sichtbar)'; status.style.color = 'green'; }
   } catch(err) {
-    if (status) { status.textContent = '\u274c Fehler: ' + err.message; status.style.color = 'red'; }
+    if (status) { status.textContent = '\u274c ' + err.message; status.style.color = 'red'; }
+  }
+}
+function heroSaveToken() {
+  var val = (document.getElementById('hero-token-input').value || '').trim();
+  if (!val) { heroCheckToken(); return; }
+  localStorage.setItem('gh_token', val);
+  // Also save to Firestore settings if possible (best-effort)
+  try { db.collection('settings').doc('github').set({ token: val }, { merge: true }).catch(function(){}); } catch(e) {}
+  document.getElementById('hero-token-input').value = '';
+  heroCheckToken();
+}
+function heroCheckToken() {
+  var msg = document.getElementById('hero-token-status-msg');
+  var box = document.getElementById('hero-token-box');
+  var tok = localStorage.getItem('gh_token');
+  if (tok && tok.startsWith('ghp_')) {
+    if (msg) msg.innerHTML = '\u2705 Token gespeichert (' + tok.slice(0, 8) + '\u2026). Bildupload aktiv.';
+    if (msg) msg.style.color = 'green';
+    if (box) box.style.border = '2px solid #43a047';
+  } else {
+    if (msg) msg.textContent = '\u26a0\ufe0f Kein Token gespeichert. Bildupload nicht m\u00f6glich.';
+    if (msg) msg.style.color = '#c62828';
+    if (box) box.style.border = '2px solid #f0c040';
   }
 }
 function compressHeroImageToDataUrl(file) {

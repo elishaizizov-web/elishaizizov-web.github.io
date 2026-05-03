@@ -65,10 +65,6 @@
 
       <ul class="contact-details">
         <li>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <span>elishaizizov@gmail.com</span>
-        </li>
-        <li>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span data-t="contact-loc">Frankfurt am Main, Deutschland</span>
         </li>
@@ -93,8 +89,7 @@
     <!-- Right: form -->
     <div class="contact-form-col">
     <form id="inquiry-form" action="https://formspree.io/f/mpqyjezd" method="POST">
-      <input type="hidden" name="_replyto" value="elishaizizov@gmail.com">
-      <input type="hidden" name="_subject" data-t-attr="form-subject" value="Neue Anfrage über elishaizizov.com">
+<input type="hidden" name="_subject" data-t-attr="form-subject" value="Neue Anfrage über elishaizizov.com">
 
       <div class="form-row">
         <div class="form-group">
@@ -234,7 +229,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-<script src="/js/shared.js?v=19"></script>
+<script src="/js/shared.js?v=22"></script>
 <script>
 // Form submit handler (contact page only)
 document.getElementById('inquiry-form').addEventListener('submit', async function(e) {
