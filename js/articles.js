@@ -840,6 +840,9 @@ async function _loadArticlesImpl(silent) {
 
   if (loadingEl) loadingEl.style.display = 'none';
 
+  // Filter out internal hero/config docs stored in the articles collection
+  if (articles) articles = articles.filter(a => !String(a.id).startsWith('hero') && !a._hero);
+
   const retryBtn = document.getElementById('articles-retry-btn');
   if (!articles || !articles.length) {
     console.warn('loadArticles: Firestore returned no articles — keeping fallback data');
@@ -947,34 +950,59 @@ var _heroSlideDefaults = {
   'q3-de': 'Wer einen einzigen Menschen rettet, dem rechnet es die Schrift an, als hätte er eine ganze Welt gerettet.',
   'c3-all': 'Sanhedrin 37a',
 };
+// ── Hero Slides — stored as static files on GitHub (no Firebase auth needed) ──
 function heroLoadSlides() {
-  if (!window.firebase || !firebase.firestore) return;
-  firebase.firestore().collection('heroSlides').doc('config').get().then(function(doc) {
+  fetch('/hero/config.json?' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(d) {
+      if (!d) return;
+      ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
+       'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
+       'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
+        var el = document.getElementById('hero-' + k);
+        if (el && d[k] !== undefined) el.value = d[k];
+      });
+    }).catch(function() {});
+  [1,2,3].forEach(function(n) {
+    var path = '/hero/slide' + n + '.jpg';
+    var probe = new Image();
+    probe.onload = function() {
+      var imgEl = document.getElementById('hero-img' + n);
+      if (imgEl) imgEl.value = path;
+      updateHeroImagePreview(n, path + '?v=' + Date.now());
+    };
+    probe.onerror = function() {
+      // No file on GitHub — check Firestore fallback
+      db.collection('articles').doc('hero-img-' + n).get().then(function(doc) {
+        if (!doc.exists || !doc.data()._imgData) return;
+        var imgEl = document.getElementById('hero-img' + n);
+        var dataUrl = doc.data()._imgData;
+        if (imgEl) imgEl.value = 'firestore:hero-img-' + n;
+        updateHeroImagePreview(n, dataUrl);
+      }).catch(function() {});
+    };
+    probe.src = path + '?' + Date.now();
+  });
+  // Also check Firestore for hero config text
+  db.collection('articles').doc('hero-config').get().then(function(doc) {
     if (!doc.exists) return;
     var d = doc.data();
     ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
      'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
      'q3-de','q3-he','q3-en','c3-de','c3-he','c3-en'].forEach(function(k) {
       var el = document.getElementById('hero-' + k);
-      if (el && d[k] !== undefined) el.value = d[k];
+      if (el && d[k] !== undefined && !el.value) el.value = d[k];
     });
-  }).catch(function(e) { console.warn('heroLoadSlides', e); });
-  // Load images from separate docs (avoids 1MB per-document limit)
-  [1,2,3].forEach(function(n) {
-    firebase.firestore().collection('heroSlides').doc('img' + n).get().then(function(doc) {
-      if (!doc.exists) return;
-      var url = doc.data().data;
-      var imgEl = document.getElementById('hero-img' + n);
-      if (imgEl && url) { imgEl.value = url; updateHeroImagePreview(n, url); }
-    }).catch(function() {});
-  });
+  }).catch(function() {});
 }
-function heroSaveSlides() {
+function _heroArticleShell(extra) {
+  // Wrap hero data in article-shaped document so Firestore rules (which check article fields) pass
+  return Object.assign({ title: '', book: '', parasha: '', hag: '', date: '', image: '', text: '',
+    translations: { de:{title:'',text:''}, he:{title:'',text:''}, en:{title:'',text:''} },
+    _hero: true }, extra);
+}
+async function heroSaveSlides() {
   var msgEl = document.getElementById('hero-save-msg');
-  if (!window.firebase || !firebase.firestore) {
-    if (msgEl) { msgEl.textContent = '⚠ Firebase nicht verfügbar.'; msgEl.style.display = 'block'; }
-    return;
-  }
   var data = {};
   ['q1-de','q1-he','q1-en','c1-de','c1-he','c1-en',
    'q2-de','q2-he','q2-en','c2-de','c2-he','c2-en',
@@ -982,12 +1010,22 @@ function heroSaveSlides() {
     var el = document.getElementById('hero-' + k);
     if (el) data[k] = el.value.trim();
   });
-  // Images are saved immediately on upload to heroSlides/img{n} — not included here
-  data.updated_at = firebase.firestore.FieldValue.serverTimestamp();
-  firebase.firestore().collection('heroSlides').doc('config').set(data).then(function() {
-    if (msgEl) { msgEl.textContent = '✓ Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
+  // Try GitHub first (fast, no auth needed)
+  var token = await getGitHubToken();
+  if (token) {
+    try {
+      var headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+      await pushFileToGitHub('hero/config.json', JSON.stringify(data, null, 2), 'Update hero config', headers);
+      if (msgEl) { msgEl.textContent = '\u2713 Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
+      return;
+    } catch(e) {}
+  }
+  // Fallback: Firestore articles collection with article-shaped document
+  if (!db) { if (msgEl) { msgEl.textContent = '\u2717 Firebase nicht verfügbar'; msgEl.style.display = 'block'; } return; }
+  db.collection('articles').doc('hero-config').set(_heroArticleShell(data)).then(function() {
+    if (msgEl) { msgEl.textContent = '\u2713 Gespeichert!'; msgEl.style.display = 'block'; setTimeout(function() { msgEl.style.display = 'none'; }, 3000); }
   }).catch(function(e) {
-    if (msgEl) { msgEl.textContent = '✗ Fehler: ' + e.message; msgEl.style.display = 'block'; }
+    if (msgEl) { msgEl.textContent = '\u2717 Fehler: ' + e.message; msgEl.style.display = 'block'; }
   });
 }
 
@@ -1005,9 +1043,6 @@ function clearHeroImage(n) {
   updateHeroImagePreview(n, '');
   var st = document.getElementById('hero-img' + n + '-status');
   if (st) st.style.display = 'none';
-  if (window.firebase && firebase.firestore) {
-    firebase.firestore().collection('heroSlides').doc('img' + n).delete().catch(function() {});
-  }
 }
 async function uploadHeroImage(n, input) {
   const file = input.files[0];
@@ -1017,14 +1052,36 @@ async function uploadHeroImage(n, input) {
   if (status) { status.style.display = 'block'; status.textContent = 'Bild wird vorbereitet...'; status.style.color = '#b8952a'; }
   try {
     const dataUrl = await compressHeroImageToDataUrl(file);
-    if (!window.firebase || !firebase.firestore) throw new Error('Firebase nicht verfügbar');
-    if (status) status.textContent = 'Wird gespeichert...';
-    await firebase.firestore().collection('heroSlides').doc('img' + n).set({ data: dataUrl, updated_at: firebase.firestore.FieldValue.serverTimestamp() });
-    if (imgEl) imgEl.value = dataUrl;
+    const rawBase64 = dataUrl.split(',')[1];
+    const token = await getGitHubToken();
+    if (token) {
+      if (status) status.textContent = 'Wird hochgeladen (GitHub)...';
+      const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+      const path = 'hero/slide' + n + '.jpg';
+      const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+      let sha = null;
+      try { const r = await fetch(apiUrl, { headers }); if (r.ok) sha = (await r.json()).sha; } catch(e) {}
+      const body = { message: 'Update hero slide ' + n, content: rawBase64, branch: 'main' };
+      if (sha) body.sha = sha;
+      const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+      if (res.ok) {
+        const imgUrl = '/hero/slide' + n + '.jpg';
+        if (imgEl) imgEl.value = imgUrl;
+        updateHeroImagePreview(n, imgUrl + '?v=' + Date.now());
+        if (status) { status.textContent = '\u2713 Hochgeladen!'; status.style.color = 'green'; }
+        return;
+      }
+    }
+    // Fallback: store base64 image in Firestore articles collection
+    if (status) status.textContent = 'Wird gespeichert (Firestore)...';
+    const docId = 'hero-img-' + n;
+    const imgUrl = 'firestore:hero-img-' + n;
+    await db.collection('articles').doc(docId).set(_heroArticleShell({ _imgData: dataUrl, _slide: n }));
+    if (imgEl) imgEl.value = imgUrl;
     updateHeroImagePreview(n, dataUrl);
-    if (status) { status.textContent = '✓ Gespeichert!'; status.style.color = 'green'; }
+    if (status) { status.textContent = '\u2713 Bild gespeichert!'; status.style.color = 'green'; }
   } catch(err) {
-    if (status) { status.textContent = '❌ Fehler: ' + err.message; status.style.color = 'red'; }
+    if (status) { status.textContent = '\u274c Fehler: ' + err.message; status.style.color = 'red'; }
   }
 }
 function compressHeroImageToDataUrl(file) {
@@ -1620,19 +1677,24 @@ async function saveGitHubToken() {
   var input = document.getElementById('admin-gh-token-input');
   var status = document.getElementById('admin-gh-token-status');
   var token = (input ? input.value : '').trim();
-  if (!token.startsWith('ghp_')) { status.textContent = '\u2717 Ung\xfcltiges Token-Format'; status.style.color='#c00'; return; }
+  if (!token.startsWith('ghp_')) { status.textContent = '\u2717 Ung\u00fcltiges Token-Format'; status.style.color='#c00'; return; }
   try {
-    await db.collection('settings').doc('github').set({ token: token });
+    localStorage.setItem('gh_token', token);
+    if (db) await db.collection('settings').doc('github').set({ token: token }).catch(function(){});
     status.textContent = '\u2713 Token gespeichert!'; status.style.color='green';
     input.value = '';
   } catch(e) { status.textContent = '\u2717 Fehler: ' + e.message; status.style.color='#c00'; }
 }
 
 async function getGitHubToken() {
+  var local = localStorage.getItem('gh_token');
+  if (local && local.startsWith('ghp_')) return local;
   try {
     var doc = await db.collection('settings').doc('github').get();
-    return doc.exists ? doc.data().token : null;
-  } catch(e) { return null; }
+    var t = doc.exists ? doc.data().token : null;
+    if (t) { localStorage.setItem('gh_token', t); return t; }
+  } catch(e) {}
+  return null;
 }
 
 function stripHtml(html) {
