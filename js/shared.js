@@ -396,6 +396,39 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 // ════════════════════════════════════════════════════════
+// STATS COUNT-UP ANIMATION
+// ════════════════════════════════════════════════════════
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var bar = document.querySelector('.stats-bar');
+    if (!bar || !window.IntersectionObserver) return;
+    var done = false;
+    var obs = new IntersectionObserver(function(entries) {
+      if (done || !entries[0].isIntersecting) return;
+      done = true;
+      obs.disconnect();
+      bar.querySelectorAll('.stat-num').forEach(function(el) {
+        var raw    = el.textContent.trim();
+        var suffix = raw.replace(/[\d]/g, '');
+        var target = parseInt(raw.replace(/\D/g, ''), 10);
+        if (!target) return;
+        var duration = 1600;
+        var t0 = null;
+        function step(ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.5 });
+    obs.observe(bar);
+  });
+})();
+
+// ════════════════════════════════════════════════════════
 // FIREBASE INIT (shared — skipped if articles.js already ran)
 // ════════════════════════════════════════════════════════
 (function() {
