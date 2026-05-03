@@ -114,7 +114,12 @@ function renderBooks() {
   const tn = getTN();
   const nav = document.getElementById('torah-nav');
   if (!nav) return;
-  nav.innerHTML = BOOK_KEYS.map((k, i) => `<button class="book-btn" onclick="showBook('${k}')">${tn.books[i]}</button>`).join('');
+  const arts = getArticles();
+  nav.innerHTML = BOOK_KEYS.map((k, i) => {
+    const n = arts.filter(a => a.book === k).length;
+    const badge = n > 0 ? `<span class="nav-count">${n}</span>` : '';
+    return `<button class="book-btn" onclick="showBook('${k}')">${tn.books[i]}${badge}</button>`;
+  }).join('');
 }
 
 function renderHagim() {
@@ -123,9 +128,10 @@ function renderHagim() {
   const names = HAGIM_NAMES[currentLang] || HAGIM_NAMES.de;
   const articles = getArticles();
   nav.innerHTML = HAG_KEYS.map((key, i) => {
-    const hasArt = articles.some(a => a.hag === key);
-    const label = names[i].replace(/'/g, "\'");
-    return `<button class="parasha-btn ${hasArt ? 'has-articles' : ''}" onclick="showHag('${key}','${label}')">${names[i]}</button>`;
+    const n = articles.filter(a => a.hag === key).length;
+    const badge = n > 0 ? `<span class="nav-count">${n}</span>` : '';
+    const label = names[i].replace(/'/g, "\\'");
+    return `<button class="parasha-btn ${n > 0 ? 'has-articles' : ''}" onclick="showHag('${key}','${label}')">${names[i]}${badge}</button>`;
   }).join('');
 }
 
@@ -170,8 +176,9 @@ function showBook(book) {
   const list = document.getElementById('parasha-list');
   list.innerHTML = parashiot_de.map((pDe, i) => {
     const pDisplay = parashiot_display[i];
-    const hasArt = articles.some(a => a.book === book && a.parasha === pDe);
-    return `<button class="parasha-btn ${hasArt ? 'has-articles' : ''}" onclick="showParasha('${pDe}','${pDisplay}')">${pDisplay}</button>`;
+    const n = articles.filter(a => a.book === book && a.parasha === pDe).length;
+    const badge = n > 0 ? `<span class="nav-count">${n}</span>` : '';
+    return `<button class="parasha-btn ${n > 0 ? 'has-articles' : ''}" onclick="showParasha('${pDe}','${pDisplay}')">${pDisplay}${badge}</button>`;
   }).join('');
 }
 
