@@ -451,24 +451,27 @@ document.addEventListener('DOMContentLoaded', function() {
 // ════════════════════════════════════════════════════════
 (function() {
   function applyHeroSlides(d) {
-    var map = [
-      ['q1-de','q1-en','q1-he','c1-all', 'hero-q1','hero-c1'],
-      ['q2-de','q2-en','q2-he','c2-all', 'hero-q2','hero-c2'],
-      ['q3-de','q3-en','q3-he','c3-all', 'hero-q3','hero-c3']
+    var slides_data = [
+      { qde:'q1-de', qen:'q1-en', qhe:'q1-he', cde:'c1-de', cen:'c1-en', che:'c1-he', call:'c1-all', qk:'hero-q1', ck:'hero-c1' },
+      { qde:'q2-de', qen:'q2-en', qhe:'q2-he', cde:'c2-de', cen:'c2-en', che:'c2-he', call:'c2-all', qk:'hero-q2', ck:'hero-c2' },
+      { qde:'q3-de', qen:'q3-en', qhe:'q3-he', cde:'c3-de', cen:'c3-en', che:'c3-he', call:'c3-all', qk:'hero-q3', ck:'hero-c3' }
     ];
-    map.forEach(function(row) {
-      if (d[row[0]]) T.de[row[4]] = d[row[0]];
-      if (d[row[1]]) T.en[row[4]] = d[row[1]];
-      if (d[row[2]]) T.he[row[4]] = d[row[2]];
-      if (d[row[3]]) { T.de[row[5]] = d[row[3]]; T.en[row[5]] = d[row[3]]; T.he[row[5]] = d[row[3]]; }
+    slides_data.forEach(function(r) {
+      if (d[r.qde]) T.de[r.qk] = d[r.qde];
+      if (d[r.qen]) T.en[r.qk] = d[r.qen];
+      if (d[r.qhe]) T.he[r.qk] = d[r.qhe];
+      // per-language citation, fallback to c-all for backward compat
+      if (d[r.cde] || d[r.call]) T.de[r.ck] = d[r.cde] || d[r.call];
+      if (d[r.cen] || d[r.call]) T.en[r.ck] = d[r.cen] || d[r.call];
+      if (d[r.che] || d[r.call]) T.he[r.ck] = d[r.che] || d[r.call];
     });
-    // Apply background images
+    // Apply background images from Storage URLs
     var slides = document.querySelectorAll('.hero-slide');
     [0,1,2].forEach(function(i) {
       var url = d['img' + (i + 1)];
       if (!url || !slides[i]) return;
       var bg = slides[i].querySelector('.hero-slide-bg');
-      if (bg) { bg.style.backgroundImage = 'url(' + url + ')'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
+      if (bg) { bg.style.backgroundImage = 'url("' + url + '")'; bg.style.backgroundSize = 'cover'; bg.style.backgroundPosition = 'center'; }
       slides[i].classList.add('has-image');
     });
     setLang(currentLang);
