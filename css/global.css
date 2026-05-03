@@ -2417,10 +2417,6 @@ html[lang="he"] .hero-quote cite { text-align: center; letter-spacing: 0.08em; }
 .carousel-control:hover { background: rgba(212,175,55,0.5); color: #fff; transform: translateY(-50%) scale(1.08); }
 .carousel-control.prev { left: 20px; }
 .carousel-control.next { right: 20px; }
-html[lang="he"] .carousel-control { transform: translateY(-50%) scaleX(-1); }
-html[lang="he"] .carousel-control:hover { transform: translateY(-50%) scaleX(-1) scale(1.08); }
-html[lang="he"] .carousel-control.prev { left: auto; right: 20px; }
-html[lang="he"] .carousel-control.next { right: auto; left: 20px; }
 .carousel-dots {
   position: absolute;
   bottom: 20px;
@@ -2738,7 +2734,7 @@ html[lang="he"] .mf-brand-socials { justify-content: flex-end; }
   opacity: 0.6;
   font-family: 'Raleway', sans-serif;
 }
-html[lang="he"] .bio-split { direction: rtl; }
+html[lang="he"] .bio-split { direction: rtl; grid-template-columns: 340px 1fr; }
 html[lang="he"] .bio-split-photo { order: -1; }
 @media (max-width: 860px) {
   .bio-split { grid-template-columns: 1fr; gap: 32px; }
