@@ -1097,24 +1097,34 @@ function adminLogin() {
   }
 
   if (checkToken(trimmed)) {
-    document.getElementById('admin-login-screen').style.display = 'none';
-    document.getElementById('admin-content').style.display = 'block';
-    document.getElementById('admin-sticky-bar').style.display = 'flex';
-    initQuillEditors();
-    adminUpdateParasha();
-    setTodayDate();
-    setupDraftAutoSave();
-    updateStickyLangs();
-    const restored = restoreDraft();
-    if (restored) { setTimeout(() => showToast('📋 Entwurf wiederhergestellt', 'info'), 400); }
-    renderAdminList();
-    checkGitHubTokenSetup();
     document.getElementById('admin-pw').value = '';
-    // Show tab bar and initialize panels
-    const tabBar = document.getElementById('admin-tab-bar');
-    if (tabBar) tabBar.style.display = 'flex';
-    switchAdminTab('articles');
-    setTimeout(() => document.getElementById('af-title-de')?.focus(), 300);
+    // Sign in to Firebase Auth so Firestore/Storage security rules see request.auth != null
+    const doOpen = function() {
+      document.getElementById('admin-login-screen').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+      document.getElementById('admin-sticky-bar').style.display = 'flex';
+      initQuillEditors();
+      adminUpdateParasha();
+      setTodayDate();
+      setupDraftAutoSave();
+      updateStickyLangs();
+      const restored = restoreDraft();
+      if (restored) { setTimeout(() => showToast('📋 Entwurf wiederhergestellt', 'info'), 400); }
+      renderAdminList();
+      checkGitHubTokenSetup();
+      const tabBar = document.getElementById('admin-tab-bar');
+      if (tabBar) tabBar.style.display = 'flex';
+      switchAdminTab('articles');
+      setTimeout(() => document.getElementById('af-title-de')?.focus(), 300);
+    };
+    if (auth) {
+      auth.signInAnonymously().then(doOpen).catch(function(e) {
+        console.warn('Firebase anonymous sign-in failed, continuing without auth:', e);
+        doOpen();
+      });
+    } else {
+      doOpen();
+    }
   } else {
     if (err) { err.textContent = 'Falsches Passwort.'; err.style.display = 'block'; }
   }
