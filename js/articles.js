@@ -1499,7 +1499,7 @@ async function adminSave() {
   };
   try {
     var ghArticles = await loadGHArticles();
-    var allArticles = ghArticles !== null ? ghArticles : (window._articles ? [...window._articles] : []);
+    var allArticles = ghArticles !== null ? ghArticles : [];
 
     var savedId;
     const isUpdate = !!window._editingId;
@@ -1780,7 +1780,7 @@ async function adminDelete(id) {
   if (!confirm('Diesen Artikel wirklich löschen?')) return;
   try {
     var ghArticles = await loadGHArticles();
-    var allArticles = ghArticles !== null ? ghArticles : (window._articles ? [...window._articles] : []);
+    var allArticles = ghArticles !== null ? ghArticles : [];
     allArticles = allArticles.filter(function(a) { return a.id !== id; });
     await saveGHArticles(allArticles);
     window._articles = window._articles.filter(function(a) { return a.id !== id; });
