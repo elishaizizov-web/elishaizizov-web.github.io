@@ -1425,11 +1425,11 @@ function adminToggleCat() {
   document.getElementById('af-book-wrap').style.display    = isHag ? 'none' : '';
   document.getElementById('af-parasha-wrap').style.display = isHag ? 'none' : '';
   document.getElementById('af-hag-wrap').style.display     = isHag ? '' : 'none';
+  const p2w = document.getElementById('af-parasha2-wrap');
   if (isHag) {
-    const cb = document.getElementById('af-combine-check');
-    if (cb) cb.checked = false;
-    const cw = document.getElementById('af-combine-wrap');
-    if (cw) cw.style.display = 'none';
+    if (p2w) p2w.style.display = 'none';
+    const p2 = document.getElementById('af-parasha2');
+    if (p2) p2.value = '';
   } else {
     adminUpdateCombined();
   }
@@ -1439,31 +1439,40 @@ function adminUpdateParasha() {
   const book = document.getElementById('af-book') ? document.getElementById('af-book').value : 'Bereshit';
   const keys = PARASHA_MAP[book] || [];
   const displayNames = (TORAH[book] && TORAH[book].de_display) ? TORAH[book].de_display : keys;
+  const heNames = (TORAH[book] && TORAH[book].he) ? TORAH[book].he : [];
   document.getElementById('af-parasha').innerHTML =
-    keys.map((p, i) => `<option value="${p}">${displayNames[i] || p}</option>`).join('');
+    keys.map((p, i) => {
+      const de = displayNames[i] || p;
+      const he = heNames[i] ? ' / ' + heNames[i] : '';
+      const canCombine = !!COMBINED_PARASHAS[p];
+      return `<option value="${p}">${de}${he}${canCombine ? ' ⟡' : ''}</option>`;
+    }).join('');
   adminUpdateCombined();
 }
 
 function adminUpdateCombined() {
   const book = (document.getElementById('af-book') || {}).value || 'Bereshit';
   const parasha = (document.getElementById('af-parasha') || {}).value || '';
-  const wrap = document.getElementById('af-combine-wrap');
-  const check = document.getElementById('af-combine-check');
-  const label = document.getElementById('af-combine-label');
-  if (!wrap || !check || !label) return;
+  const wrap = document.getElementById('af-parasha2-wrap');
+  const sel = document.getElementById('af-parasha2');
+  if (!wrap || !sel) return;
 
   const paired = COMBINED_PARASHAS[parasha];
   if (paired) {
     const keys = PARASHA_MAP[book] || [];
     const displayNames = (TORAH[book] && TORAH[book].de_display) ? TORAH[book].de_display : keys;
+    const heNames = (TORAH[book] && TORAH[book].he) ? TORAH[book].he : keys;
     const pIdx = keys.indexOf(paired);
-    const pairDisplay = pIdx !== -1 ? (displayNames[pIdx] || paired) : paired;
-    const heIdx = PARASHA_MAP[book] ? PARASHA_MAP[book].indexOf(paired) : -1;
-    const heDisplay = (heIdx !== -1 && TORAH[book] && TORAH[book].he) ? TORAH[book].he[heIdx] : '';
-    label.textContent = '+ ' + pairDisplay + (heDisplay ? ' / ' + heDisplay : '');
+    const pairDe = pIdx !== -1 ? (displayNames[pIdx] || paired) : paired;
+    const pairHe = pIdx !== -1 ? (heNames[pIdx] || '') : '';
+    const optLabel = pairDe + (pairHe ? ' / ' + pairHe : '');
+    sel.innerHTML =
+      '<option value="">— פרשה בודדת (keine Kombination) —</option>' +
+      '<option value="' + paired + '">' + optLabel + '</option>';
     wrap.style.display = '';
   } else {
-    check.checked = false;
+    sel.innerHTML = '<option value="">— פרשה בודדת (keine Kombination) —</option>';
+    sel.value = '';
     wrap.style.display = 'none';
   }
 }
@@ -1477,8 +1486,7 @@ async function adminSave() {
   msg.textContent = 'Speichere…';
   const isHag = document.getElementById('af-cat').value === 'hag';
   const parashaKey = isHag ? '' : document.getElementById('af-parasha').value;
-  const isCombined = !isHag && (document.getElementById('af-combine-check') || {}).checked;
-  const parasha2Key = (isCombined && parashaKey) ? (COMBINED_PARASHAS[parashaKey] || '') : '';
+  const parasha2Key = isHag ? '' : ((document.getElementById('af-parasha2') || {}).value || '');
   const dv    = document.getElementById('af-date-input').value;
   const nowSec = Math.floor(Date.now() / 1000);
   const docData = {
@@ -1586,7 +1594,7 @@ function saveDraft() {
     cat: document.getElementById('af-cat')?.value||'parasha',
     book: document.getElementById('af-book')?.value||'Bereshit',
     parasha: document.getElementById('af-parasha')?.value||'',
-    combine: !!(document.getElementById('af-combine-check')?.checked),
+    parasha2: document.getElementById('af-parasha2')?.value||'',
     hag: document.getElementById('af-hag-name')?.value||'',
     date: document.getElementById('af-date-input')?.value||'',
     image: document.getElementById('af-image')?.value||''
@@ -1626,8 +1634,8 @@ function restoreDraft() {
     if (d.parasha) setTimeout(()=>{
       document.getElementById('af-parasha').value = d.parasha;
       adminUpdateCombined();
-      if (d.combine) { const cb = document.getElementById('af-combine-check'); if (cb) cb.checked = true; }
-    }, 60);
+      if (d.parasha2) { const p2 = document.getElementById('af-parasha2'); if (p2) p2.value = d.parasha2; }
+    }, 80);
     if (d.hag) document.getElementById('af-hag-name').value = d.hag;
     if (d.date) document.getElementById('af-date-input').value = d.date;
     else setTodayDate();
@@ -1644,7 +1652,7 @@ function setupDraftAutoSave() {
     if (el) el.addEventListener('input', debounced);
     if (quillEditors[l]) quillEditors[l].on('text-change', debounced);
   });
-  ['af-cat','af-book','af-parasha','af-hag-name','af-date-input','af-combine-check'].forEach(id => {
+  ['af-cat','af-book','af-parasha','af-parasha2','af-hag-name','af-date-input'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', debounced);
   });
@@ -1720,8 +1728,8 @@ function adminClearForm() {
   updateImagePreview('');
   const status = document.getElementById('upload-status');
   if (status) status.style.display = 'none';
-  const cb = document.getElementById('af-combine-check');
-  if (cb) cb.checked = false;
+  const p2 = document.getElementById('af-parasha2');
+  if (p2) p2.value = '';
   adminUpdateCombined();
   setTodayDate();
   clearDraft();
@@ -1761,11 +1769,8 @@ async function adminEdit(id) {
     setTimeout(()=>{
       document.getElementById('af-parasha').value = a.parasha;
       adminUpdateCombined();
-      if (a.parasha2) {
-        const cb = document.getElementById('af-combine-check');
-        if (cb) cb.checked = true;
-      }
-    }, 60);
+      if (a.parasha2) { const p2 = document.getElementById('af-parasha2'); if (p2) p2.value = a.parasha2; }
+    }, 80);
   } else if (a.hag) {
     document.getElementById('af-cat').value = 'hag'; adminToggleCat();
     document.getElementById('af-hag-name').value = a.hag;

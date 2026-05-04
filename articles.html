@@ -263,15 +263,15 @@
               </select>
             </div>
             <div class="aform-group" id="af-parasha-wrap">
-              <label>Parascha</label>
+              <label>פרשה ראשונה / Parascha</label>
               <select id="af-parasha" onchange="adminUpdateCombined()"></select>
             </div>
-            <div class="aform-group" id="af-combine-wrap" style="display:none;">
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500;">
-                <input type="checkbox" id="af-combine-check" style="width:16px;height:16px;accent-color:var(--gold,#b8952a);cursor:pointer;">
-                <span id="af-combine-label">Doppelparascha</span>
-              </label>
-              <div style="font-size:0.78em;color:#888;margin-top:3px;padding-right:24px;">פרשה מחוברת — ייבחר אוטומטית לפי הפרשה שנבחרה</div>
+            <div class="aform-group" id="af-parasha2-wrap" style="display:none;">
+              <label style="color:var(--gold,#b8952a);font-weight:600;">פרשה מחוברת / Doppelparascha</label>
+              <select id="af-parasha2">
+                <option value="">— פרשה בודדת (keine Kombination) —</option>
+              </select>
+              <div style="font-size:0.78em;color:#888;margin-top:3px;">בחר את הפרשה השנייה אם מדובר בפרשות מחוברות</div>
             </div>
             <div class="aform-group" id="af-hag-wrap" style="display:none;">
               <label>Fest / Feiertag</label>
