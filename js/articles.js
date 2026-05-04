@@ -1592,7 +1592,7 @@ async function adminSave() {
     }
   };
   try {
-    var ghArticles = await loadGHArticles();
+    var ghArticles = await loadGHArticles(true);
     var allArticles = ghArticles !== null ? ghArticles : [];
 
     var savedId;
@@ -1871,7 +1871,7 @@ async function adminEdit(id) {
 async function adminDelete(id) {
   if (!confirm('Diesen Artikel wirklich löschen?')) return;
   try {
-    var ghArticles = await loadGHArticles();
+    var ghArticles = await loadGHArticles(true);
     var allArticles = ghArticles !== null ? ghArticles : [];
     allArticles = allArticles.filter(function(a) { return a.id !== id; });
     await saveGHArticles(allArticles);
@@ -1926,13 +1926,15 @@ var GH_ARTICLES_PATH = 'articles/data.json';
 // ── Load articles from GitHub JSON ──
 // Tries static file on this origin first (fast, no API rate limits, no auth needed).
 // Falls back to GitHub Contents API if static file is missing (e.g. first deploy).
-async function loadGHArticles() {
-  // Primary: static file served directly from GitHub Pages
-  try {
-    var sr = await fetch('/articles/data.json?_t=' + Date.now(), { cache: 'no-store' });
-    if (sr.ok) return await sr.json();
-  } catch(e) {}
-  // Fallback: GitHub Contents API (needed when file doesn't exist on Pages yet)
+// forceApi=true: always use GitHub Contents API (for admin saves — static file lags behind by ~1 min)
+// forceApi=false (default): try static file first (fast, for public display)
+async function loadGHArticles(forceApi) {
+  if (!forceApi) {
+    try {
+      var sr = await fetch('/articles/data.json?_t=' + Date.now(), { cache: 'no-store' });
+      if (sr.ok) return await sr.json();
+    } catch(e) {}
+  }
   try {
     var token = await getGitHubToken();
     var headers = { 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' };
