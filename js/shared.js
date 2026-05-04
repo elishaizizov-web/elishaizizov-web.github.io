@@ -237,11 +237,15 @@ function setLang(l) {
 function toggleMenu() {
   const isOpen = document.getElementById('hmenu').classList.toggle('open');
   document.getElementById('hmenu-overlay').classList.toggle('open');
+  document.getElementById('hamburger-btn').classList.toggle('active', isOpen);
   document.getElementById('hamburger-btn').setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  document.body.classList.toggle('menu-open', isOpen);
 }
 function closeMenu() {
   document.getElementById('hmenu').classList.remove('open');
   document.getElementById('hmenu-overlay').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('active');
+  document.body.classList.remove('menu-open');
   const sub = document.getElementById('hmenu-art-sub');
   const btn = document.getElementById('hmenu-art-btn');
   if (sub) { sub.classList.remove('open'); if (btn) btn.classList.remove('open'); }

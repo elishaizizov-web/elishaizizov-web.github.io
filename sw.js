@@ -1,10 +1,10 @@
-const CACHE = 'ezizov-v30';
+const CACHE = 'ezizov-v31';
 const PRECACHE = [
   '/',
   '/articles.html',
   '/contact.html',
-  '/css/global.css?v=23',
-  '/js/shared.js?v=24',
+  '/css/global.css?v=24',
+  '/js/shared.js?v=25',
   '/js/articles.js?v=21',
   '/logo.png'
 ];
