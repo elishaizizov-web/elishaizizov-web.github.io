@@ -1292,7 +1292,7 @@ function adminPreview() {
     date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
     parasha: isHag ? '' : ((document.getElementById('af-parasha')||{}).value||''),
     hag: isHag ? ((document.getElementById('af-hag-name')||{}).value||'') : '',
-    image: (document.getElementById('af-image')||{}).value||'',
+    image: window._articleImagePreview || (document.getElementById('af-image')||{}).value||'',
     text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
     translations: {
       de: { title: (document.getElementById('af-title-de')||{}).value||'', text: quillEditors.de ? quillEditors.de.root.innerHTML : '' },
@@ -1449,8 +1449,10 @@ async function uploadImageWithToken(file, status, urlInput) {
   }
   const imgUrl = '/' + path;
   if (urlInput) urlInput.value = imgUrl;
-  updateImagePreview(imgUrl + '?v=' + timestamp);
-  if (status) { status.textContent = '✓ התמונה הועלתה! (תופיע תוך ~דקה)'; status.style.color = 'green'; }
+  // Keep base64 for immediate local preview (GitHub Pages takes ~1min to deploy)
+  window._articleImagePreview = dataUrl;
+  updateImagePreview(dataUrl);
+  if (status) { status.textContent = '✓ התמונה הועלתה! תופיע באתר תוך ~דקה'; status.style.color = 'green'; }
 }
 
 function compressImageToBase64(file) {
@@ -1811,6 +1813,7 @@ function adminClearForm() {
   if (status) status.style.display = 'none';
   const p2 = document.getElementById('af-parasha2');
   if (p2) p2.value = '';
+  window._articleImagePreview = null;
   adminUpdateCombined();
   setTodayDate();
   clearDraft();
