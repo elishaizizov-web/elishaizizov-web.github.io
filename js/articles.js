@@ -1940,7 +1940,7 @@ async function loadGHArticles() {
     var r = await fetch(url, { headers: headers });
     if (!r.ok) return null;
     var d = await r.json();
-    return JSON.parse(atob(d.content.replace(/\s/g, '')));
+    return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\s/g, '')))));
   } catch(e) { return null; }
 }
 
