@@ -861,6 +861,18 @@ async function _loadArticlesImpl(silent) {
       const tb = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
       return tb - ta;
     });
+    // Merge in GitHub-stored articles (override Firestore articles with same id, add new ones)
+    loadGHArticles().then(function(ghArts) {
+      if (!ghArts || !ghArts.length) return;
+      var ghIds = new Set(ghArts.map(function(a){ return a.id; }));
+      var fsOnly = window._articles.filter(function(a){ return !ghIds.has(a.id); });
+      window._articles = ghArts.concat(fsOnly);
+      window._articles.sort(function(a,b){
+        return ((b.createdAt&&b.createdAt.seconds)||0) - ((a.createdAt&&a.createdAt.seconds)||0);
+      });
+      renderBooks(); renderHagim(); renderLatestArticle();
+      if (document.getElementById('admin-content')?.style.display !== 'none') renderAdminList();
+    }).catch(function(){});
     renderBooks();
     renderHagim();
     renderLatestArticle();
@@ -1372,7 +1384,6 @@ function adminUpdateParasha() {
 }
 
 async function adminSave() {
-  if (!db) { showToast('✗ Firebase nicht verfügbar!', 'error'); return; }
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
   if (!titleDE) { showToast('⚠ Kein deutscher Titel!', 'error'); return; }
@@ -1381,12 +1392,13 @@ async function adminSave() {
   msg.textContent = 'Speichere…';
   const isHag = document.getElementById('af-cat').value === 'hag';
   const dv    = document.getElementById('af-date-input').value;
+  const nowSec = Math.floor(Date.now() / 1000);
   const docData = {
     book: isHag ? '' : document.getElementById('af-book').value,
     parasha: isHag ? '' : document.getElementById('af-parasha').value,
     hag: isHag ? document.getElementById('af-hag-name').value.trim() : '',
     date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    createdAt: { seconds: nowSec },
     image: document.getElementById('af-image').value.trim(),
     title: titleDE,
     text: quillEditors.de ? quillEditors.de.root.innerHTML : '',
@@ -1397,34 +1409,41 @@ async function adminSave() {
     }
   };
   try {
+    // Load current articles from GitHub (falls back to in-memory cache from Firestore)
+    var ghArticles = await loadGHArticles();
+    var allArticles = ghArticles !== null ? ghArticles : (window._articles ? [...window._articles] : []);
+
+    var savedId;
     if (window._editingId) {
-      await db.collection('articles').doc(window._editingId).update(docData);
-      // Update local cache immediately
-      const idx = window._articles.findIndex(a => a.id === window._editingId);
-      if (idx !== -1) window._articles[idx] = { id: window._editingId, ...docData, createdAt: window._articles[idx].createdAt };
-      const updatedArticle = idx !== -1 ? window._articles[idx] : { id: window._editingId, ...docData };
+      savedId = window._editingId;
+      const updated = { id: savedId, ...docData };
+      const idx = allArticles.findIndex(a => a.id === savedId);
+      if (idx !== -1) allArticles[idx] = updated;
+      else allArticles.unshift(updated);
+      // Update local cache
+      const localIdx = window._articles.findIndex(a => a.id === savedId);
+      if (localIdx !== -1) window._articles[localIdx] = updated;
       document.getElementById('admin-edit-banner').style.display = 'none';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
       clearDraft();
-      updateSitemapOnGitHub(updatedArticle);
+      updateSitemapOnGitHub(updated);
       showToast('✓ Artikel aktualisiert!', 'success');
-      msg.textContent = '';
     } else {
-      const ref = await db.collection('articles').add(docData);
-      clearDraft();
-      // Add to local cache immediately so the article is visible right away
-      const newArticle = { id: ref.id, ...docData, createdAt: { seconds: Date.now()/1000 } };
+      savedId = 'art_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+      const newArticle = { id: savedId, ...docData };
+      allArticles.unshift(newArticle);
       window._articles.unshift(newArticle);
+      clearDraft();
       updateSitemapOnGitHub(newArticle);
       showToast('✓ Artikel veröffentlicht!', 'success');
-      msg.textContent = '';
     }
+
+    await saveGHArticles(allArticles);
+    msg.textContent = '';
     adminClearForm();
     renderBooks(); renderHagim(); renderLatestArticle();
     renderAdminList();
-    // Reload from server in background to sync — silent=true prevents error banner
-    loadArticles(true).catch(e => console.warn('Background reload failed:', e));
   } catch(e) {
     showToast('✗ Fehler: ' + e.message, 'error');
     console.error(e);
@@ -1658,9 +1677,17 @@ async function adminEdit(id) {
 async function adminDelete(id) {
   if (!confirm('Diesen Artikel wirklich löschen?')) return;
   try {
-    await db.collection('articles').doc(id).delete();
-    await loadArticles(); renderAdminList();
-  } catch(e) { alert('Error: '+e.message); }
+    var ghArticles = await loadGHArticles();
+    var allArticles = ghArticles !== null ? ghArticles : (window._articles ? [...window._articles] : []);
+    allArticles = allArticles.filter(function(a) { return a.id !== id; });
+    await saveGHArticles(allArticles);
+    window._articles = window._articles.filter(function(a) { return a.id !== id; });
+    renderAdminList(); renderBooks(); renderHagim(); renderLatestArticle();
+    showToast('✓ Artikel gelöscht', 'success');
+  } catch(e) {
+    showToast('✗ Fehler: ' + e.message, 'error');
+    console.error(e);
+  }
 }
 
 
@@ -1700,6 +1727,30 @@ window.addEventListener('beforeunload', e => {
 // ════════════════════════════════════════════════════════
 var GITHUB_REPO = 'elishaizizov-web/elishaizizov-web.github.io';
 var SITEMAP_PATH = 'sitemap.xml';
+var GH_ARTICLES_PATH = 'articles/data.json';
+
+// ── Load articles from GitHub JSON (returns null if file doesn't exist yet) ──
+async function loadGHArticles() {
+  try {
+    var token = await getGitHubToken();
+    var headers = { 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' };
+    if (token) headers['Authorization'] = 'token ' + token;
+    var url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + GH_ARTICLES_PATH + '?ref=main&_t=' + Date.now();
+    var r = await fetch(url, { headers: headers });
+    if (!r.ok) return null;
+    var d = await r.json();
+    return JSON.parse(atob(d.content.replace(/\s/g, '')));
+  } catch(e) { return null; }
+}
+
+// ── Save articles array to GitHub JSON ──
+async function saveGHArticles(articles) {
+  var token = await getGitHubToken();
+  if (!token) throw new Error('Kein GitHub-Token. Bitte im Hero-Tab einrichten.');
+  var headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+  await pushFileToGitHub(GH_ARTICLES_PATH, JSON.stringify(articles, null, 2), 'Update articles/data.json', headers);
+}
+
 
 async function saveGitHubToken() {
   var input = document.getElementById('admin-gh-token-input');
