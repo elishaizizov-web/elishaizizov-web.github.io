@@ -528,10 +528,12 @@ function nlSubscribe(e) {
 }
 
 // ════════════════════════════════════════════════════════
-// HOMEPAGE LATEST ARTICLES (Firestore REST, index.html only)
+// HOMEPAGE LATEST ARTICLES (index.html only)
+// Loads from /articles/data.json (static file, always up to date)
+// + Firestore as fallback for older articles not yet in GitHub
 // ════════════════════════════════════════════════════════
 (function() {
-  var API = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=100&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
+  var FS_API = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=100&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
 
   function esc(s) {
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -540,6 +542,7 @@ function nlSubscribe(e) {
   function parseDoc(doc) {
     var f = doc.fields; if (!f) return null;
     function sv(v) { return (v && v.stringValue) ? v.stringValue : ''; }
+    function iv(v) { return (v && v.integerValue) ? Number(v.integerValue) : 0; }
     var tr = {};
     if (f.translations && f.translations.mapValue) {
       var langs = f.translations.mapValue.fields || {};
@@ -548,7 +551,13 @@ function nlSubscribe(e) {
         if (lf) tr[lang] = { title: sv(lf.title), text: sv(lf.text) };
       });
     }
-    return { id: (doc.name || '').split('/').pop(), title: sv(f.title), text: sv(f.text), date: sv(f.date), image: sv(f.image), translations: tr };
+    var createdAt = null;
+    if (f.createdAt && f.createdAt.timestampValue) {
+      createdAt = { seconds: Math.floor(new Date(f.createdAt.timestampValue).getTime() / 1000) };
+    } else if (f.createdAt && f.createdAt.mapValue && f.createdAt.mapValue.fields && f.createdAt.mapValue.fields.seconds) {
+      createdAt = { seconds: iv(f.createdAt.mapValue.fields.seconds) };
+    }
+    return { id: (doc.name || '').split('/').pop(), title: sv(f.title), text: sv(f.text), date: sv(f.date), image: sv(f.image), translations: tr, createdAt: createdAt };
   }
 
   function renderCard(a, l) {
@@ -560,7 +569,8 @@ function nlSubscribe(e) {
       : '<div class="article-card-img-placeholder"></div>';
     var rm = { de: 'Weiterlesen', en: 'Read more', he: 'קרא עוד' }[l] || 'Weiterlesen';
     var lp = l !== 'de' ? '?lang=' + l : '';
-    return '<a href="/articles.html' + lp + '" style="text-decoration:none;color:inherit;display:block;">'
+    var href = '/articles.html' + (lp ? lp + '&' : '?') + 'article=' + encodeURIComponent(a.id);
+    return '<a href="' + href + '" style="text-decoration:none;color:inherit;display:block;">'
       + '<div class="article-card">' + imgHtml
       + '<div class="article-card-body">'
       + '<span class="article-card-date">' + esc(a.date) + '</span>'
@@ -570,20 +580,40 @@ function nlSubscribe(e) {
       + '</div></div></a>';
   }
 
+  function sortAndRender(articles, grid) {
+    var filtered = articles.filter(function(a) { return a && a.id && !String(a.id).startsWith('hero'); });
+    filtered.sort(function(a, b) {
+      var ta = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+      var tb = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+      return tb - ta;
+    });
+    var latest = filtered.slice(0, 4);
+    var l = currentLang;
+    grid.innerHTML = latest.length ? latest.map(function(a) { return renderCard(a, l); }).join('') : '';
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     var grid = document.getElementById('home-articles-grid');
     if (!grid) return;
     grid.innerHTML = '<div class="home-art-loading"></div>';
-    fetch(API)
-      .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function(data) {
-        var docs = (data.documents || []).map(parseDoc).filter(Boolean);
-        docs.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
-        var latest = docs.slice(0, 3);
-        var l = currentLang;
-        grid.innerHTML = latest.length ? latest.map(function(a) { return renderCard(a, l); }).join('') : '';
-      })
-      .catch(function() { grid.innerHTML = ''; });
+
+    // Load both sources in parallel, merge, render once
+    var ghPromise = fetch('/articles/data.json?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .catch(function() { return null; });
+
+    var fsPromise = fetch(FS_API)
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) { return data ? (data.documents || []).map(parseDoc).filter(Boolean) : []; })
+      .catch(function() { return []; });
+
+    Promise.all([ghPromise, fsPromise]).then(function(results) {
+      var ghArts = results[0] || [];
+      var fsArts = results[1] || [];
+      var ghIds = new Set(ghArts.map(function(a) { return a.id; }));
+      var merged = ghArts.concat(fsArts.filter(function(a) { return !ghIds.has(a.id); }));
+      sortAndRender(merged, grid);
+    });
   });
 })();
 
