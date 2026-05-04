@@ -70,6 +70,14 @@ function parashaNameForLang(parashaKey, lang) {
   return parashaKey;
 }
 
+// Returns the full parasha display name for an article (handles combined parasha)
+function articleParashaName(a, lang) {
+  if (!a || !a.parasha) return '';
+  var n1 = parashaNameForLang(a.parasha, lang);
+  if (!a.parasha2) return n1;
+  return n1 + '–' + parashaNameForLang(a.parasha2, lang);
+}
+
 // Returns hag name in the given language
 function hagNameForLang(hagKey, lang) {
   if (!hagKey) return '';
@@ -176,7 +184,7 @@ function showBook(book) {
   const list = document.getElementById('parasha-list');
   list.innerHTML = parashiot_de.map((pDe, i) => {
     const pDisplay = parashiot_display[i];
-    const n = articles.filter(a => a.book === book && a.parasha === pDe).length;
+    const n = articles.filter(a => a.book === book && (a.parasha === pDe || a.parasha2 === pDe)).length;
     const badge = n > 0 ? `<span class="nav-count">${n}</span>` : '';
     return `<button class="parasha-btn ${n > 0 ? 'has-articles' : ''}" onclick="showParasha('${pDe}','${pDisplay}')">${pDisplay}${badge}</button>`;
   }).join('');
@@ -185,7 +193,7 @@ function showBook(book) {
 function showParashiot() { showBook(currentBook); }
 
 function showParasha(parashaKey, parashaDisplay) {
-  const articles = getArticles().filter(a => a.book === currentBook && a.parasha === parashaKey);
+  const articles = getArticles().filter(a => a.book === currentBook && (a.parasha === parashaKey || a.parasha2 === parashaKey));
   document.getElementById('parasha-nav').style.display = 'none';
   document.getElementById('articles-list').style.display = 'block';
   document.getElementById('articles-list-title').textContent = parashaDisplay || parashaKey;
@@ -262,7 +270,7 @@ function renderCard(a, noClick) {
   const excerptHtml = excerpt ? `<p class="article-card-excerpt">${escHtml(excerpt)}${excerpt.length >= 200 ? '…' : ''}</p>` : '';
   const readMoreLabel = { de: 'Weiterlesen', en: 'Read more', fr: 'Lire la suite', es: 'Leer más', ru: 'Читать', he: 'קרא עוד' }[l] || 'Weiterlesen';
   const readMoreHtml = noClick ? '' : `<span class="article-card-readmore">${readMoreLabel} <span>→</span></span>`;
-  const cat = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
+  const cat = a.parasha ? articleParashaName(a, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   const tagHtml = cat ? `<span class="article-card-tag">${escHtml(cat)}</span>` : '';
   const heYear = toHebrewYear(a.date);
   const dateStr = a.date + (heYear ? ' · ' + heYear : '');
@@ -404,7 +412,7 @@ function _renderArticlePage(a, l) {
   const _heYear = toHebrewYear(a.date);
   document.getElementById('ap-date').textContent = (a.date || '') + (_heYear ? ' · ' + _heYear : '');
   const parashaEl = document.getElementById('ap-parasha');
-  const parashaDisplay = a.parasha ? parashaNameForLang(a.parasha, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
+  const parashaDisplay = a.parasha ? articleParashaName(a, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
   parashaEl.style.display = parashaDisplay ? 'block' : 'none';
   a._parashaDisplay = parashaDisplay;
@@ -537,7 +545,7 @@ function _renderArticlePage(a, l) {
   // related articles
   const relEl = document.getElementById('ap-related');
   if (relEl) {
-    const related = getArticles().filter(x => x.id !== a.id && ((a.parasha && x.parasha === a.parasha) || (a.hag && x.hag === a.hag))).slice(0, 3);
+    const related = getArticles().filter(x => x.id !== a.id && ((a.parasha && (x.parasha === a.parasha || x.parasha2 === a.parasha || (a.parasha2 && (x.parasha === a.parasha2 || x.parasha2 === a.parasha2)))) || (a.hag && x.hag === a.hag))).slice(0, 3);
     if (related.length > 0) {
       const relLabels = { de:'Weitere Beiträge', en:'More Articles', fr:'Plus d\'articles', es:'Más artículos', ru:'Ещё статьи', he:'כתבות נוספות' };
       relEl.innerHTML = `<div class="ap-related-title">${relLabels[l] || relLabels.de}</div><div class="articles-grid">${related.map(x => renderCard(x)).join('')}</div>`;
@@ -925,6 +933,17 @@ const PARASHA_MAP = {
   Vayikra:  ["Vayikra","Tzav","Shemini","Tazria","Metzora","Acharei Mot","Kedoshim","Emor","Behar","Bechukotai"],
   Bamidbar: ["Bamidbar","Nasso","Beha'alotcha","Shelach","Korach","Chukat","Balak","Pinchas","Matot","Masei"],
   Devarim:  ["Devarim","Vaetchanan","Eikev","Re'eh","Shoftim","Ki Teitzei","Ki Tavo","Nitzavim","Vayeilech","Ha'azinu","Vezot Habracha"]
+};
+
+// Parashiyot that can be read as combined double-parasha
+const COMBINED_PARASHAS = {
+  'Vayakhel':    'Pekudei',
+  'Tazria':      'Metzora',
+  'Acharei Mot': 'Kedoshim',
+  'Behar':       'Bechukotai',
+  'Chukat':      'Balak',
+  'Matot':       'Masei',
+  'Nitzavim':    'Vayeilech'
 };
 let quillEditors = {};
 
@@ -1373,6 +1392,14 @@ function adminToggleCat() {
   document.getElementById('af-book-wrap').style.display    = isHag ? 'none' : '';
   document.getElementById('af-parasha-wrap').style.display = isHag ? 'none' : '';
   document.getElementById('af-hag-wrap').style.display     = isHag ? '' : 'none';
+  if (isHag) {
+    const cb = document.getElementById('af-combine-check');
+    if (cb) cb.checked = false;
+    const cw = document.getElementById('af-combine-wrap');
+    if (cw) cw.style.display = 'none';
+  } else {
+    adminUpdateCombined();
+  }
 }
 
 function adminUpdateParasha() {
@@ -1381,6 +1408,31 @@ function adminUpdateParasha() {
   const displayNames = (TORAH[book] && TORAH[book].de_display) ? TORAH[book].de_display : keys;
   document.getElementById('af-parasha').innerHTML =
     keys.map((p, i) => `<option value="${p}">${displayNames[i] || p}</option>`).join('');
+  adminUpdateCombined();
+}
+
+function adminUpdateCombined() {
+  const book = (document.getElementById('af-book') || {}).value || 'Bereshit';
+  const parasha = (document.getElementById('af-parasha') || {}).value || '';
+  const wrap = document.getElementById('af-combine-wrap');
+  const check = document.getElementById('af-combine-check');
+  const label = document.getElementById('af-combine-label');
+  if (!wrap || !check || !label) return;
+
+  const paired = COMBINED_PARASHAS[parasha];
+  if (paired) {
+    const keys = PARASHA_MAP[book] || [];
+    const displayNames = (TORAH[book] && TORAH[book].de_display) ? TORAH[book].de_display : keys;
+    const pIdx = keys.indexOf(paired);
+    const pairDisplay = pIdx !== -1 ? (displayNames[pIdx] || paired) : paired;
+    const heIdx = PARASHA_MAP[book] ? PARASHA_MAP[book].indexOf(paired) : -1;
+    const heDisplay = (heIdx !== -1 && TORAH[book] && TORAH[book].he) ? TORAH[book].he[heIdx] : '';
+    label.textContent = '+ ' + pairDisplay + (heDisplay ? ' / ' + heDisplay : '');
+    wrap.style.display = '';
+  } else {
+    check.checked = false;
+    wrap.style.display = 'none';
+  }
 }
 
 async function adminSave() {
@@ -1391,11 +1443,15 @@ async function adminSave() {
   if (btn) { btn.classList.add('loading'); btn.disabled = true; }
   msg.textContent = 'Speichere…';
   const isHag = document.getElementById('af-cat').value === 'hag';
+  const parashaKey = isHag ? '' : document.getElementById('af-parasha').value;
+  const isCombined = !isHag && (document.getElementById('af-combine-check') || {}).checked;
+  const parasha2Key = (isCombined && parashaKey) ? (COMBINED_PARASHAS[parashaKey] || '') : '';
   const dv    = document.getElementById('af-date-input').value;
   const nowSec = Math.floor(Date.now() / 1000);
   const docData = {
     book: isHag ? '' : document.getElementById('af-book').value,
-    parasha: isHag ? '' : document.getElementById('af-parasha').value,
+    parasha: parashaKey,
+    parasha2: parasha2Key,
     hag: isHag ? document.getElementById('af-hag-name').value.trim() : '',
     date: dv ? new Date(dv).toLocaleDateString('de-DE') : new Date().toLocaleDateString('de-DE'),
     createdAt: { seconds: nowSec },
@@ -1409,41 +1465,39 @@ async function adminSave() {
     }
   };
   try {
-    // Load current articles from GitHub (falls back to in-memory cache from Firestore)
     var ghArticles = await loadGHArticles();
     var allArticles = ghArticles !== null ? ghArticles : (window._articles ? [...window._articles] : []);
 
     var savedId;
-    if (window._editingId) {
+    const isUpdate = !!window._editingId;
+    if (isUpdate) {
       savedId = window._editingId;
       const updated = { id: savedId, ...docData };
       const idx = allArticles.findIndex(a => a.id === savedId);
       if (idx !== -1) allArticles[idx] = updated;
       else allArticles.unshift(updated);
-      // Update local cache
       const localIdx = window._articles.findIndex(a => a.id === savedId);
       if (localIdx !== -1) window._articles[localIdx] = updated;
       document.getElementById('admin-edit-banner').style.display = 'none';
       window._editingId = null;
       document.getElementById('admin-cancel-btn').style.display = 'none';
       clearDraft();
-      updateSitemapOnGitHub(updated);
-      showToast('✓ Artikel aktualisiert!', 'success');
     } else {
       savedId = 'art_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
       const newArticle = { id: savedId, ...docData };
       allArticles.unshift(newArticle);
       window._articles.unshift(newArticle);
       clearDraft();
-      updateSitemapOnGitHub(newArticle);
-      showToast('✓ Artikel veröffentlicht!', 'success');
     }
 
-    await saveGHArticles(allArticles);
+    await saveGHArticles(allArticles);  // Save first — toast only after success
     msg.textContent = '';
     adminClearForm();
     renderBooks(); renderHagim(); renderLatestArticle();
     renderAdminList();
+    const savedArticle = allArticles.find(a => a.id === savedId);
+    if (savedArticle) updateSitemapOnGitHub(savedArticle);
+    showToast(isUpdate ? '✓ Artikel aktualisiert!' : '✓ Artikel veröffentlicht!', 'success');
   } catch(e) {
     showToast('✗ Fehler: ' + e.message, 'error');
     console.error(e);
@@ -1499,6 +1553,7 @@ function saveDraft() {
     cat: document.getElementById('af-cat')?.value||'parasha',
     book: document.getElementById('af-book')?.value||'Bereshit',
     parasha: document.getElementById('af-parasha')?.value||'',
+    combine: !!(document.getElementById('af-combine-check')?.checked),
     hag: document.getElementById('af-hag-name')?.value||'',
     date: document.getElementById('af-date-input')?.value||'',
     image: document.getElementById('af-image')?.value||''
@@ -1535,7 +1590,11 @@ function restoreDraft() {
     });
     if (d.cat) { document.getElementById('af-cat').value = d.cat; adminToggleCat(); }
     if (d.book) { document.getElementById('af-book').value = d.book; adminUpdateParasha(); }
-    if (d.parasha) setTimeout(()=>{ document.getElementById('af-parasha').value = d.parasha; }, 60);
+    if (d.parasha) setTimeout(()=>{
+      document.getElementById('af-parasha').value = d.parasha;
+      adminUpdateCombined();
+      if (d.combine) { const cb = document.getElementById('af-combine-check'); if (cb) cb.checked = true; }
+    }, 60);
     if (d.hag) document.getElementById('af-hag-name').value = d.hag;
     if (d.date) document.getElementById('af-date-input').value = d.date;
     else setTodayDate();
@@ -1552,7 +1611,7 @@ function setupDraftAutoSave() {
     if (el) el.addEventListener('input', debounced);
     if (quillEditors[l]) quillEditors[l].on('text-change', debounced);
   });
-  ['af-cat','af-book','af-parasha','af-hag-name','af-date-input'].forEach(id => {
+  ['af-cat','af-book','af-parasha','af-hag-name','af-date-input','af-combine-check'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', debounced);
   });
@@ -1628,6 +1687,9 @@ function adminClearForm() {
   updateImagePreview('');
   const status = document.getElementById('upload-status');
   if (status) status.style.display = 'none';
+  const cb = document.getElementById('af-combine-check');
+  if (cb) cb.checked = false;
+  adminUpdateCombined();
   setTodayDate();
   clearDraft();
   switchLangTab('de');
@@ -1663,7 +1725,14 @@ async function adminEdit(id) {
   if (a.book) {
     document.getElementById('af-cat').value = 'parasha'; adminToggleCat();
     document.getElementById('af-book').value = a.book; adminUpdateParasha();
-    setTimeout(()=>{ document.getElementById('af-parasha').value = a.parasha; }, 50);
+    setTimeout(()=>{
+      document.getElementById('af-parasha').value = a.parasha;
+      adminUpdateCombined();
+      if (a.parasha2) {
+        const cb = document.getElementById('af-combine-check');
+        if (cb) cb.checked = true;
+      }
+    }, 60);
   } else if (a.hag) {
     document.getElementById('af-cat').value = 'hag'; adminToggleCat();
     document.getElementById('af-hag-name').value = a.hag;
@@ -1748,7 +1817,12 @@ async function saveGHArticles(articles) {
   var token = await getGitHubToken();
   if (!token) throw new Error('Kein GitHub-Token. Bitte im Hero-Tab einrichten.');
   var headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
-  await pushFileToGitHub(GH_ARTICLES_PATH, JSON.stringify(articles, null, 2), 'Update articles/data.json', headers);
+  var resp = await pushFileToGitHub(GH_ARTICLES_PATH, JSON.stringify(articles, null, 2), 'Update articles/data.json', headers);
+  if (!resp || !resp.ok) {
+    var errBody = null;
+    try { errBody = await resp.json(); } catch(e) {}
+    throw new Error('GitHub Fehler ' + (resp ? resp.status : '?') + ': ' + ((errBody && errBody.message) || (resp && resp.statusText) || 'Unbekannter Fehler'));
+  }
 }
 
 
