@@ -598,7 +598,9 @@ function copyShareLink(url, copyLabel) {
 }
 
 function closeArticlePage() {
-  document.getElementById('article-page').style.display  = 'none';
+  const ap = document.getElementById('article-page');
+  ap.style.display  = 'none';
+  ap.style.paddingTop = '';
   document.getElementById('lang-back-btn').style.display = 'none';
   const prog = document.getElementById('ap-progress');
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
@@ -1308,17 +1310,25 @@ function adminPreview() {
   document.querySelector('.page-body').style.display = 'none';
   const _sf = document.querySelector('.main-footer'); if (_sf) _sf.style.display = 'none';
   document.getElementById('article-page').style.display = 'block';
-  document.getElementById('lang-back-btn').style.display = 'inline-flex';
+  document.getElementById('article-page').style.paddingTop = '52px';
+  document.getElementById('lang-back-btn').style.display = 'none';
   var banner = document.getElementById('admin-preview-notice');
   if (!banner) {
     banner = document.createElement('div');
     banner.id = 'admin-preview-notice';
-    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#b8952a;color:#fff;text-align:center;padding:9px 16px;font-size:11px;font-family:Raleway,sans-serif;font-weight:700;letter-spacing:0.15em;z-index:9999;text-transform:uppercase;';
-    banner.textContent = '— Vorschau — Nicht veröffentlicht —';
     document.body.appendChild(banner);
-  } else {
-    banner.style.display = 'block';
   }
+  var articleTitle = (document.getElementById('af-title-de')||{}).value || '';
+  banner.innerHTML =
+    '<span style="display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.9;">' +
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
+    'Vorschau</span>' +
+    (articleTitle ? '<span style="font-size:13px;font-weight:500;opacity:0.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px;">' + articleTitle + '</span>' : '') +
+    '<button onclick="closeArticlePage()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);color:#fff;border-radius:6px;padding:5px 13px;font-size:12px;font-family:Raleway,sans-serif;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:background 0.15s;"' +
+    ' onmouseover="this.style.background=\'rgba(255,255,255,0.3)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.18)\'">' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>' +
+    'Zurück zur Bearbeitung</button>';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:linear-gradient(90deg,#b8952a,#d4af37);color:#fff;display:flex;align-items:center;gap:14px;padding:0 20px;height:48px;font-family:Raleway,sans-serif;font-weight:700;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,0.18);';
   window.scrollTo(0, 0);
 }
 
