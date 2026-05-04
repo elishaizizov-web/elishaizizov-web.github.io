@@ -3258,3 +3258,28 @@ html[lang="he"] .bio-split-text::before { left: auto; right: -16px; }
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Combined parasha button in nav ── */
+.parasha-btn-combined {
+  background: rgba(212,175,55,0.06);
+  border-color: rgba(212,175,55,0.4);
+  color: var(--gold-new, #b8952a);
+  font-style: italic;
+  position: relative;
+}
+.parasha-btn-combined::before {
+  content: '⟡ ';
+  font-style: normal;
+  font-size: 10px;
+  opacity: 0.7;
+}
+.parasha-btn-combined:hover {
+  background: var(--gold-new, #b8952a);
+  border-color: var(--gold-new, #b8952a);
+  color: #fff;
+}
+.parasha-btn-combined.has-articles {
+  border-color: var(--gold-new, #b8952a);
+  color: var(--gold-new, #b8952a);
+  font-weight: 700;
+}

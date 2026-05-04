@@ -172,6 +172,7 @@ function showBook(book) {
   const articles = getArticles();
   const isHe = currentLang === 'he';
   const parashiot_de = TORAH[book].de;
+  const parashiot_he = TORAH[book].he || [];
   const parashiot_display = isHe ? TORAH[book].he :
     (currentLang === 'de' && TORAH[book].de_display ? TORAH[book].de_display :
     (TORAH[book][currentLang] || TORAH[book].de));
@@ -182,18 +183,44 @@ function showBook(book) {
   document.querySelectorAll('#parasha-nav .back-btn').forEach(b => b.textContent = getTN().back);
 
   const list = document.getElementById('parasha-list');
-  list.innerHTML = parashiot_de.map((pDe, i) => {
-    const pDisplay = parashiot_display[i];
-    const n = articles.filter(a => a.book === book && (a.parasha === pDe || a.parasha2 === pDe)).length;
-    const badge = n > 0 ? `<span class="nav-count">${n}</span>` : '';
-    return `<button class="parasha-btn ${n > 0 ? 'has-articles' : ''}" onclick="showParasha('${pDe}','${pDisplay}')">${pDisplay}${badge}</button>`;
-  }).join('');
+  const keys = PARASHA_MAP[book] || parashiot_de;
+  let html = '';
+  parashiot_de.forEach((pDe, i) => {
+    const pKey = keys[i] || pDe;
+    const pDisplay = parashiot_display[i] || pDe;
+    // individual parasha button
+    const nSingle = articles.filter(a => a.book === book && a.parasha === pKey && !a.parasha2).length;
+    const nAny    = articles.filter(a => a.book === book && (a.parasha === pKey || a.parasha2 === pKey)).length;
+    const badge   = nAny > 0 ? `<span class="nav-count">${nAny}</span>` : '';
+    html += `<button class="parasha-btn ${nAny > 0 ? 'has-articles' : ''}" onclick="showParasha('${pKey}','${pDisplay.replace(/'/g,"\\'")}',false)">${pDisplay}${badge}</button>`;
+    // combined parasha button (right after the first parasha)
+    const paired = COMBINED_PARASHAS[pKey];
+    if (paired) {
+      const p2i = keys.indexOf(paired);
+      if (p2i !== -1) {
+        const p2Display = parashiot_display[p2i] || paired;
+        const combinedDisplay = pDisplay + '–' + p2Display;
+        const nCombined = articles.filter(a => a.book === book && a.parasha === pKey && a.parasha2 === paired).length;
+        const cbadge = nCombined > 0 ? `<span class="nav-count">${nCombined}</span>` : '';
+        const safeDisplay = combinedDisplay.replace(/'/g,"\\'");
+        html += `<button class="parasha-btn parasha-btn-combined ${nCombined > 0 ? 'has-articles' : ''}" onclick="showParasha('${pKey}','${safeDisplay}',true,'${paired}')">${combinedDisplay}${cbadge}</button>`;
+      }
+    }
+  });
+  list.innerHTML = html;
 }
 
 function showParashiot() { showBook(currentBook); }
 
-function showParasha(parashaKey, parashaDisplay) {
-  const articles = getArticles().filter(a => a.book === currentBook && (a.parasha === parashaKey || a.parasha2 === parashaKey));
+function showParasha(parashaKey, parashaDisplay, isCombined, parasha2Key) {
+  let articles;
+  if (isCombined && parasha2Key) {
+    // Combined: show only articles tagged for exactly this combination
+    articles = getArticles().filter(a => a.book === currentBook && a.parasha === parashaKey && a.parasha2 === parasha2Key);
+  } else {
+    // Individual: show articles that have this parasha (either primary or secondary) — but exclude pure-combined ones if they have a pair
+    articles = getArticles().filter(a => a.book === currentBook && (a.parasha === parashaKey || a.parasha2 === parashaKey));
+  }
   document.getElementById('parasha-nav').style.display = 'none';
   document.getElementById('articles-list').style.display = 'block';
   document.getElementById('articles-list-title').textContent = parashaDisplay || parashaKey;
