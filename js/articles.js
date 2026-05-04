@@ -838,13 +838,15 @@ async function _loadArticlesImpl(silent) {
     });
   }
 
-  let articles = null;
-
-  // Show loading indicator
   const loadingEl = document.getElementById('articles-loading-msg');
   if (loadingEl) loadingEl.style.display = 'block';
 
-  // Attempt 1: REST without API key
+  // Start GitHub static file fetch in parallel — don't block Firestore
+  const ghPromise = loadGHArticles().catch(function() { return null; });
+
+  let articles = null;
+
+  // Attempt 1: Firestore REST without API key
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 12000);
@@ -854,7 +856,7 @@ async function _loadArticlesImpl(silent) {
     else { console.warn('REST no-key returned', res.status); }
   } catch(e) { console.warn('REST no-key failed:', e.message); }
 
-  // Attempt 2: REST with API key
+  // Attempt 2: Firestore REST with API key
   if (!articles || !articles.length) {
     try {
       const ctrl2 = new AbortController();
@@ -875,45 +877,36 @@ async function _loadArticlesImpl(silent) {
     } catch(e) { console.warn('SDK failed:', e.message); }
   }
 
-  if (loadingEl) loadingEl.style.display = 'none';
-
-  // Filter out internal hero/config docs stored in the articles collection
+  // Filter internal hero/config docs
   if (articles) articles = articles.filter(a => !String(a.id).startsWith('hero') && !a._hero);
 
+  // Wait for GitHub articles, then merge (GitHub takes priority over Firestore)
+  const ghArts = await ghPromise;
+  let merged = articles || [];
+  if (ghArts && ghArts.length) {
+    const ghIds = new Set(ghArts.map(function(a) { return a.id; }));
+    const fsOnly = merged.filter(function(a) { return !ghIds.has(a.id); });
+    merged = ghArts.concat(fsOnly);
+  }
+
+  if (loadingEl) loadingEl.style.display = 'none';
+
   const retryBtn = document.getElementById('articles-retry-btn');
-  if (!articles || !articles.length) {
-    console.warn('loadArticles: Firestore returned no articles — keeping fallback data');
-    // Do NOT overwrite window._articles — fallback articles remain visible
+  if (!merged.length) {
+    console.warn('loadArticles: No articles found — keeping fallback data');
     if (!silent && retryBtn && !window._articles.length) retryBtn.style.display = 'inline-block';
     return;
   }
-  // Firestore returned real articles — hide retry button
   if (retryBtn) retryBtn.style.display = 'none';
 
   try {
-    window._articles = articles;
-    // Sort by createdAt descending; articles without createdAt go to the end
+    window._articles = merged;
     window._articles.sort((a, b) => {
       const ta = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
       const tb = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
       return tb - ta;
     });
-    // Merge in GitHub-stored articles (override Firestore articles with same id, add new ones)
-    loadGHArticles().then(function(ghArts) {
-      if (!ghArts || !ghArts.length) return;
-      var ghIds = new Set(ghArts.map(function(a){ return a.id; }));
-      var fsOnly = window._articles.filter(function(a){ return !ghIds.has(a.id); });
-      window._articles = ghArts.concat(fsOnly);
-      window._articles.sort(function(a,b){
-        return ((b.createdAt&&b.createdAt.seconds)||0) - ((a.createdAt&&a.createdAt.seconds)||0);
-      });
-      renderBooks(); renderHagim(); renderLatestArticle();
-      if (document.getElementById('admin-content')?.style.display !== 'none') renderAdminList();
-    }).catch(function(){});
-    renderBooks();
-    renderHagim();
-    renderLatestArticle();
-    // If admin is open, refresh the list too
+    renderBooks(); renderHagim(); renderLatestArticle();
     if (document.getElementById('admin-content')?.style.display !== 'none') renderAdminList();
     // Support: sessionStorage redirect (from 404.html), path-based, and old ?article= links
     const redirectSlug = sessionStorage.getItem('redirect_article');
@@ -1930,8 +1923,16 @@ var GITHUB_REPO = 'elishaizizov-web/elishaizizov-web.github.io';
 var SITEMAP_PATH = 'sitemap.xml';
 var GH_ARTICLES_PATH = 'articles/data.json';
 
-// ── Load articles from GitHub JSON (returns null if file doesn't exist yet) ──
+// ── Load articles from GitHub JSON ──
+// Tries static file on this origin first (fast, no API rate limits, no auth needed).
+// Falls back to GitHub Contents API if static file is missing (e.g. first deploy).
 async function loadGHArticles() {
+  // Primary: static file served directly from GitHub Pages
+  try {
+    var sr = await fetch('/articles/data.json?_t=' + Date.now(), { cache: 'no-store' });
+    if (sr.ok) return await sr.json();
+  } catch(e) {}
+  // Fallback: GitHub Contents API (needed when file doesn't exist on Pages yet)
   try {
     var token = await getGitHubToken();
     var headers = { 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' };
