@@ -222,11 +222,12 @@
           <div style="font-weight:700;color:#856404;font-size:14px;margin-bottom:8px;">⚠️ GitHub-Token fehlt — Artikel können nicht gespeichert werden!</div>
           <div style="font-size:12px;color:#664d03;margin-bottom:10px;">Bitte gib deinen GitHub Personal Access Token ein. Ohne ihn werden keine Artikel gespeichert.</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <input type="password" id="admin-token-warn-input" placeholder="ghp_xxxxxxxxxxxxxxxx" style="flex:1;min-width:200px;padding:8px 12px;border:1px solid #ffc107;border-radius:6px;font-size:13px;font-family:monospace;">
+            <input type="text" id="admin-token-warn-input" placeholder="ghp_... או github_pat_..." style="flex:1;min-width:200px;padding:8px 12px;border:1px solid #ffc107;border-radius:6px;font-size:13px;font-family:monospace;direction:ltr;">
             <button onclick="saveGitHubTokenFromWarn()" style="background:#1b2a3b;color:#fff;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;">שמור טוקן</button>
           </div>
           <div id="admin-token-warn-status" style="font-size:12px;margin-top:6px;"></div>
-          <div style="font-size:11px;color:#888;margin-top:8px;line-height:1.5;">כיצד לקבל טוקן: <strong>github.com</strong> → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → בחר <strong>repo</strong> → העתק</div>
+          <div style="font-size:11px;color:#664d03;margin-top:8px;font-weight:600;">⚠️ Token יכול להתחיל ב-ghp_ או ב-github_pat_ — שניהם תקינים</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;line-height:1.5;">github.com → Settings → Developer settings → Personal access tokens → Generate new token → בחר <strong>repo</strong> → העתק</div>
         </div>
 
         <!-- Edit mode banner -->
@@ -683,6 +684,6 @@
 </div>
 
 <script src="/js/shared.js?v=26"></script>
-<script src="/js/articles.js?v=25"></script>
+<script src="/js/articles.js?v=26"></script>
 </body>
 </html>

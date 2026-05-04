@@ -1160,7 +1160,7 @@ function heroCheckToken() {
   var msg = document.getElementById('hero-token-status-msg');
   var box = document.getElementById('hero-token-box');
   var tok = localStorage.getItem('gh_token');
-  if (tok && tok.startsWith('ghp_')) {
+  if (tok && tok && tok.length > 10) {
     if (msg) msg.innerHTML = '\u2705 Token gespeichert (' + tok.slice(0, 8) + '\u2026). Bildupload aktiv.';
     if (msg) msg.style.color = 'green';
     if (box) box.style.border = '2px solid #43a047';
@@ -1394,12 +1394,13 @@ function showInlineTokenForm(statusEl, onSaved) {
   wrap.innerHTML =
     '<div style="font-size:12px;color:#664d03;margin-bottom:8px;font-weight:600;">הכנס את ה-GitHub Personal Access Token שלך:</div>' +
     '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
-    '<input type="password" id="upload-inline-token-input" placeholder="ghp_xxxxxxxxxxxxxxxx" ' +
+    '<input type="text" id="upload-inline-token-input" placeholder="ghp_... או github_pat_..." ' +
       'style="flex:1;min-width:180px;padding:8px 10px;border:1px solid #ffc107;border-radius:6px;font-size:13px;font-family:monospace;direction:ltr;">' +
     '<button onclick="saveInlineToken()" ' +
       'style="background:#1b2a3b;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;">שמור ונסה שוב</button>' +
     '</div>' +
-    '<div style="font-size:11px;color:#888;margin-top:6px;">github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → בחר <b>repo</b></div>';
+    '<div style="font-size:11px;color:#664d03;margin-top:8px;">⚠️ GitHub יצר סוג חדש של token שמתחיל ב-<b>github_pat_</b> — גם זה עובד</div>' +
+    '<div style="font-size:11px;color:#888;margin-top:4px;">github.com → Settings → Developer settings → Personal access tokens → בחר <b>repo</b></div>';
   statusEl.insertAdjacentElement('afterend', wrap);
   wrap._onSaved = onSaved;
   setTimeout(() => { var inp = document.getElementById('upload-inline-token-input'); if (inp) inp.focus(); }, 100);
@@ -1410,7 +1411,7 @@ async function saveInlineToken() {
   var tokenInput = document.getElementById('upload-inline-token-input');
   if (!tokenInput) return;
   var val = tokenInput.value.trim();
-  if (!val.startsWith('ghp_')) { tokenInput.style.borderColor = 'red'; return; }
+  if (!val || val.length < 10) { tokenInput.style.borderColor = 'red'; return; }
   localStorage.setItem('gh_token', val);
   if (db) db.collection('settings').doc('github').set({ token: val }).catch(function(){});
   var warn = document.getElementById('admin-token-warn');
@@ -1948,7 +1949,7 @@ async function saveGitHubToken() {
   var input = document.getElementById('admin-gh-token-input');
   var status = document.getElementById('admin-gh-token-status');
   var token = (input ? input.value : '').trim();
-  if (!token.startsWith('ghp_')) { status.textContent = '\u2717 Ung\u00fcltiges Token-Format'; status.style.color='#c00'; return; }
+  if (!token || token.length < 10) { status.textContent = '\u2717 Token zu kurz'; status.style.color='#c00'; return; }
   try {
     localStorage.setItem('gh_token', token);
     if (db) await db.collection('settings').doc('github').set({ token: token }).catch(function(){});
@@ -1961,7 +1962,7 @@ async function saveGitHubToken() {
 
 async function getGitHubToken() {
   var local = localStorage.getItem('gh_token');
-  if (local && local.startsWith('ghp_')) return local;
+  if (local && local && local.length > 10) return local;
   try {
     var doc = await db.collection('settings').doc('github').get();
     var t = doc.exists ? doc.data().token : null;
@@ -2119,8 +2120,8 @@ async function saveGitHubTokenFromWarn() {
   var input = document.getElementById('admin-token-warn-input');
   var statusEl = document.getElementById('admin-token-warn-status');
   var val = (input ? input.value : '').trim();
-  if (!val.startsWith('ghp_')) {
-    if (statusEl) { statusEl.textContent = '✗ פורמט שגוי — חייב להתחיל ב-ghp_'; statusEl.style.color = '#c00'; }
+  if (!val || val.length < 10) {
+    if (statusEl) { statusEl.textContent = '✗ הטוקן קצר מדי'; statusEl.style.color = '#c00'; }
     return;
   }
   localStorage.setItem('gh_token', val);
