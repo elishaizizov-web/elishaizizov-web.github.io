@@ -1319,9 +1319,10 @@ function updateImagePreview(url) {
 
 function clearImageUpload() {
   document.getElementById('af-image').value = '';
+  document.getElementById('af-image-file').value = '';
   updateImagePreview('');
   const status = document.getElementById('upload-status');
-  status.style.display = 'none';
+  if (status) status.style.display = 'none';
 }
 
 async function uploadImage(e) {
@@ -1331,18 +1332,50 @@ async function uploadImage(e) {
   const urlInput = document.getElementById('af-image');
 
   status.style.display = 'block';
-  status.textContent = 'Bild wird verarbeitet...';
+  status.textContent = 'מכין תמונה...';
   status.style.color = '#b8952a';
 
   try {
-    const base64 = await compressImageToBase64(file);
-    urlInput.value = base64;
-    updateImagePreview(base64);
-    status.textContent = '✓ Bild erfolgreich hochgeladen!';
+    const token = await getGitHubToken();
+    if (!token) {
+      const warn = document.getElementById('admin-token-warn');
+      if (warn) { warn.style.display = ''; warn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      throw new Error('GitHub-Token fehlt. Bitte zuerst den Token eingeben.');
+    }
+
+    // Compress image client-side first
+    const dataUrl = await compressImageToBase64(file);
+    const rawBase64 = dataUrl.split(',')[1];
+
+    status.textContent = 'מעלה ל-GitHub...';
+
+    const timestamp = Date.now();
+    const ext = file.type === 'image/png' ? 'png' : 'jpg';
+    const path = 'articles/images/' + timestamp + '.' + ext;
+    const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+    const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+    const body = { message: 'Article image upload', content: rawBase64, branch: 'main' };
+
+    const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+    if (!res.ok) {
+      const errData = await res.json().catch(function() { return {}; });
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('gh_token');
+        const warn = document.getElementById('admin-token-warn');
+        if (warn) { warn.style.display = ''; warn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        throw new Error('Token ungültig oder abgelaufen. Bitte neuen Token eingeben.');
+      }
+      throw new Error(errData.message || 'GitHub Fehler ' + res.status);
+    }
+
+    const imgUrl = '/' + path;
+    urlInput.value = imgUrl;
+    updateImagePreview(imgUrl + '?v=' + timestamp);
+    status.textContent = '✓ התמונה הועלתה! (תופיע תוך ~דקה)';
     status.style.color = 'green';
   } catch (err) {
     console.error(err);
-    status.textContent = '❌ Upload fehlgeschlagen: ' + err.message;
+    status.textContent = '❌ ' + err.message;
     status.style.color = 'red';
   }
 }
@@ -1836,6 +1869,8 @@ async function saveGitHubToken() {
     if (db) await db.collection('settings').doc('github').set({ token: token }).catch(function(){});
     status.textContent = '\u2713 Token gespeichert!'; status.style.color='green';
     input.value = '';
+    var warn = document.getElementById('admin-token-warn');
+    if (warn) warn.style.display = 'none';
   } catch(e) { status.textContent = '\u2717 Fehler: ' + e.message; status.style.color='#c00'; }
 }
 
@@ -1988,10 +2023,33 @@ async function updateSitemapOnGitHub(article) {
 }
 
 async function checkGitHubTokenSetup() {
-  var card = document.getElementById('admin-github-card');
-  if (!card) return;
   var token = await getGitHubToken();
-  card.style.display = token ? 'none' : 'block';
+  var card = document.getElementById('admin-github-card');
+  if (card) card.style.display = token ? 'none' : 'block';
+  var warn = document.getElementById('admin-token-warn');
+  if (warn) warn.style.display = token ? 'none' : '';
+}
+
+async function saveGitHubTokenFromWarn() {
+  var input = document.getElementById('admin-token-warn-input');
+  var statusEl = document.getElementById('admin-token-warn-status');
+  var val = (input ? input.value : '').trim();
+  if (!val.startsWith('ghp_')) {
+    if (statusEl) { statusEl.textContent = '✗ פורמט שגוי — חייב להתחיל ב-ghp_'; statusEl.style.color = '#c00'; }
+    return;
+  }
+  localStorage.setItem('gh_token', val);
+  if (db) db.collection('settings').doc('github').set({ token: val }).catch(function(){});
+  if (input) input.value = '';
+  if (statusEl) { statusEl.textContent = '✓ Token gespeichert!'; statusEl.style.color = 'green'; }
+  var warn = document.getElementById('admin-token-warn');
+  setTimeout(function() { if (warn) warn.style.display = 'none'; }, 1500);
+  var card = document.getElementById('admin-github-card');
+  if (card) card.style.display = 'none';
+  // Sync to hero token input too
+  var heroInput = document.getElementById('admin-gh-token-input');
+  if (heroInput) heroInput.value = '';
+  heroCheckToken && heroCheckToken();
 }
 
 // ════════════════════════════════════════════════════════
