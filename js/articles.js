@@ -1361,50 +1361,95 @@ async function uploadImage(e) {
   status.style.display = 'block';
   status.textContent = 'מכין תמונה...';
   status.style.color = '#b8952a';
+  // Remove any previously injected inline token form
+  var oldInline = document.getElementById('upload-inline-token');
+  if (oldInline) oldInline.remove();
 
   try {
-    const token = await getGitHubToken();
+    var token = await getGitHubToken();
     if (!token) {
-      const warn = document.getElementById('admin-token-warn');
-      if (warn) { warn.style.display = ''; warn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-      throw new Error('GitHub-Token fehlt. Bitte zuerst den Token eingeben.');
+      showInlineTokenForm(status, function(savedToken) {
+        token = savedToken;
+        // Re-trigger upload with the same file now that token is saved
+        uploadImageWithToken(file, status, urlInput);
+      });
+      status.textContent = '⚠️ הכנס את ה-GitHub Token כדי להעלות תמונות:';
+      status.style.color = '#856404';
+      return;
     }
-
-    // Compress image client-side first
-    const dataUrl = await compressImageToBase64(file);
-    const rawBase64 = dataUrl.split(',')[1];
-
-    status.textContent = 'מעלה ל-GitHub...';
-
-    const timestamp = Date.now();
-    const ext = file.type === 'image/png' ? 'png' : 'jpg';
-    const path = 'articles/images/' + timestamp + '.' + ext;
-    const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
-    const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
-    const body = { message: 'Article image upload', content: rawBase64, branch: 'main' };
-
-    const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
-    if (!res.ok) {
-      const errData = await res.json().catch(function() { return {}; });
-      if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('gh_token');
-        const warn = document.getElementById('admin-token-warn');
-        if (warn) { warn.style.display = ''; warn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-        throw new Error('Token ungültig oder abgelaufen. Bitte neuen Token eingeben.');
-      }
-      throw new Error(errData.message || 'GitHub Fehler ' + res.status);
-    }
-
-    const imgUrl = '/' + path;
-    urlInput.value = imgUrl;
-    updateImagePreview(imgUrl + '?v=' + timestamp);
-    status.textContent = '✓ התמונה הועלתה! (תופיע תוך ~דקה)';
-    status.style.color = 'green';
+    await uploadImageWithToken(file, status, urlInput);
   } catch (err) {
     console.error(err);
     status.textContent = '❌ ' + err.message;
     status.style.color = 'red';
   }
+}
+
+function showInlineTokenForm(statusEl, onSaved) {
+  var old = document.getElementById('upload-inline-token');
+  if (old) old.remove();
+  var wrap = document.createElement('div');
+  wrap.id = 'upload-inline-token';
+  wrap.style.cssText = 'margin-top:10px;background:#fff8e1;border:1px solid #ffc107;border-radius:8px;padding:12px 14px;text-align:right;direction:rtl;';
+  wrap.innerHTML =
+    '<div style="font-size:12px;color:#664d03;margin-bottom:8px;font-weight:600;">הכנס את ה-GitHub Personal Access Token שלך:</div>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+    '<input type="password" id="upload-inline-token-input" placeholder="ghp_xxxxxxxxxxxxxxxx" ' +
+      'style="flex:1;min-width:180px;padding:8px 10px;border:1px solid #ffc107;border-radius:6px;font-size:13px;font-family:monospace;direction:ltr;">' +
+    '<button onclick="saveInlineToken()" ' +
+      'style="background:#1b2a3b;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;">שמור ונסה שוב</button>' +
+    '</div>' +
+    '<div style="font-size:11px;color:#888;margin-top:6px;">github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → בחר <b>repo</b></div>';
+  statusEl.insertAdjacentElement('afterend', wrap);
+  wrap._onSaved = onSaved;
+  setTimeout(() => { var inp = document.getElementById('upload-inline-token-input'); if (inp) inp.focus(); }, 100);
+}
+
+async function saveInlineToken() {
+  var inp = document.getElementById('upload-inline-token');
+  var tokenInput = document.getElementById('upload-inline-token-input');
+  if (!tokenInput) return;
+  var val = tokenInput.value.trim();
+  if (!val.startsWith('ghp_')) { tokenInput.style.borderColor = 'red'; return; }
+  localStorage.setItem('gh_token', val);
+  if (db) db.collection('settings').doc('github').set({ token: val }).catch(function(){});
+  var warn = document.getElementById('admin-token-warn');
+  if (warn) warn.style.display = 'none';
+  if (inp) inp.remove();
+  var status = document.getElementById('upload-status');
+  if (status) { status.textContent = '✓ Token gespeichert! מעלה תמונה...'; status.style.color = '#b8952a'; }
+  // Re-trigger upload for any pending file
+  var fileInput = document.getElementById('af-image-file');
+  if (fileInput && fileInput.files[0]) {
+    await uploadImageWithToken(fileInput.files[0], status, document.getElementById('af-image'));
+  }
+}
+
+async function uploadImageWithToken(file, status, urlInput) {
+  var token = await getGitHubToken();
+  if (!token) throw new Error('Token fehlt.');
+  const dataUrl = await compressImageToBase64(file);
+  const rawBase64 = dataUrl.split(',')[1];
+  if (status) { status.textContent = 'מעלה ל-GitHub...'; status.style.color = '#b8952a'; }
+  const timestamp = Date.now();
+  const ext = file.type === 'image/png' ? 'png' : 'jpg';
+  const path = 'articles/images/' + timestamp + '.' + ext;
+  const apiUrl = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+  const headers = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+  const body = { message: 'Article image upload', content: rawBase64, branch: 'main' };
+  const res = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) {
+    const errData = await res.json().catch(function() { return {}; });
+    if (res.status === 401 || res.status === 403) {
+      localStorage.removeItem('gh_token');
+      throw new Error('Token ungültig oder abgelaufen. בטוקן שגוי — הכנס שוב.');
+    }
+    throw new Error(errData.message || 'GitHub Fehler ' + res.status);
+  }
+  const imgUrl = '/' + path;
+  if (urlInput) urlInput.value = imgUrl;
+  updateImagePreview(imgUrl + '?v=' + timestamp);
+  if (status) { status.textContent = '✓ התמונה הועלתה! (תופיע תוך ~דקה)'; status.style.color = 'green'; }
 }
 
 function compressImageToBase64(file) {
@@ -1508,6 +1553,14 @@ async function adminSave() {
   const msg = document.getElementById('admin-msg');
   const titleDE = document.getElementById('af-title-de').value.trim();
   if (!titleDE) { showToast('⚠ Kein deutscher Titel!', 'error'); return; }
+  // Check token before anything else
+  const preToken = await getGitHubToken();
+  if (!preToken) {
+    const warn = document.getElementById('admin-token-warn');
+    if (warn) { warn.style.display = ''; warn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    showToast('⚠️ הכנס GitHub Token לפני פרסום', 'error');
+    return;
+  }
   const btn = document.getElementById('admin-publish-btn');
   if (btn) { btn.classList.add('loading'); btn.disabled = true; }
   msg.textContent = 'Speichere…';
