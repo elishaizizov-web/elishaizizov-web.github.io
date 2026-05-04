@@ -3008,3 +3008,190 @@ html[lang="he"] .hero-section::after {
 }
 html[lang="he"] .quote-strip-text { direction: rtl; }
 @media (max-width: 640px) { .quote-strip { padding: 52px 24px; } }
+
+
+/* ══════════════════════════════════════════════════════════
+   SECTIONS 2–12 UPGRADE — Animations, Polish & Loading
+══════════════════════════════════════════════════════════ */
+
+/* ── §2 / §12: selection + focus-visible ── */
+::selection { background: rgba(212,175,55,0.35); color: var(--text); }
+
+/* ── §3: Reveal animation classes ── */
+.reveal-up, .reveal-left, .reveal-right, .reveal-scale {
+  opacity: 0;
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-up    { transform: translateY(40px); }
+.reveal-left  { transform: translateX(-44px); }
+.reveal-right { transform: translateX(44px); }
+.reveal-scale { transform: scale(0.88); }
+.reveal-up.revealed,
+.reveal-left.revealed,
+.reveal-right.revealed,
+.reveal-scale.revealed { opacity: 1; transform: none; }
+
+/* data-delay shorthand */
+[data-delay="0.1s"] { transition-delay: 0.1s !important; }
+[data-delay="0.2s"] { transition-delay: 0.2s !important; }
+[data-delay="0.3s"] { transition-delay: 0.3s !important; }
+[data-delay="0.4s"] { transition-delay: 0.4s !important; }
+
+/* ── §2: Utility classes ── */
+.glass-panel {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 12px;
+}
+.gold-gradient-text {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-new) 50%, var(--gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── §3: Button shine effect ── */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.55s ease;
+  pointer-events: none;
+}
+.btn:hover::after { left: 160%; }
+
+/* ── §5: Enhanced scrolled header ── */
+.main-header.scrolled {
+  background: rgba(255,255,255,0.99) !important;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* ── §6: Footer enhancements ── */
+.mf-nl-input:focus {
+  border-color: var(--gold-new, #D4AF37) !important;
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.14) !important;
+}
+.mf-social-icon {
+  transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.2s, box-shadow 0.2s !important;
+}
+.mf-social-icon:hover {
+  box-shadow: 0 4px 18px rgba(212,175,55,0.3) !important;
+  transform: scale(1.15) translateY(-2px) !important;
+}
+
+/* ── §7: Contact form label focus-within ── */
+.form-group:focus-within label { color: var(--navy); }
+.form-group input:focus,
+.form-group textarea:focus {
+  background: #fff !important;
+}
+
+/* ── §8: CTA banner gradient + shimmer ── */
+.cta-banner {
+  background: linear-gradient(135deg, #0a1220 0%, #192538 45%, rgba(101,41,129,0.12) 100%) !important;
+  border-top: none !important;
+  position: relative;
+  overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-new, #D4AF37) 50%, transparent 100%);
+  z-index: 1;
+}
+.cta-banner-inner { position: relative; z-index: 2; }
+
+/* ── §9: Loading screen ── */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #0f1a2e;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 28px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  opacity: 1;
+  visibility: visible;
+}
+.first-visit #loading-screen { display: flex; }
+#loading-screen.hidden { opacity: 0; visibility: hidden; }
+.loading-logo { width: 68px; height: auto; opacity: 0.9; }
+.loading-spinner {
+  width: 36px; height: 36px;
+  border: 2px solid rgba(212,175,55,0.2);
+  border-top-color: var(--gold-new, #D4AF37);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+/* ── §10: Station card gold hover ── */
+.station-card:hover {
+  background: linear-gradient(135deg, rgba(212,175,55,0.05) 0%, #fff 100%) !important;
+  border-left-color: var(--gold-new, #D4AF37) !important;
+  box-shadow: 0 6px 28px rgba(212,175,55,0.13) !important;
+}
+html[lang="he"] .station-card:hover {
+  border-right-color: var(--gold-new, #D4AF37) !important;
+}
+.station-card .station-period,
+.station-card strong { transition: color 0.22s; }
+.station-card:hover strong { color: var(--gold-new, #D4AF37) !important; }
+
+/* ── §11: Bio photo hover ── */
+.bio-split-photo { overflow: hidden; border-radius: 2px; }
+.bio-split-photo img {
+  transition: transform 0.45s ease, box-shadow 0.45s ease !important;
+}
+.bio-split-photo:hover img {
+  transform: scale(1.03) !important;
+  box-shadow: 0 22px 64px rgba(0,0,0,0.22) !important;
+}
+
+/* Bio-split-text gold accent line */
+.bio-split-text { position: relative; }
+.bio-split-text::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: -16px;
+  width: 3px; height: calc(100% - 12px);
+  background: linear-gradient(to bottom, var(--gold-new, #D4AF37), rgba(212,175,55,0.08));
+  border-radius: 2px;
+  pointer-events: none;
+}
+html[lang="he"] .bio-split-text::before { left: auto; right: -16px; }
+@media (max-width: 860px) { .bio-split-text::before { display: none; } }
+
+/* ── §3: Article card 3D hover ── */
+@media (hover: hover) {
+  .article-card {
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .article-card:hover {
+    transform: translateY(-4px) rotateX(1.5deg) !important;
+  }
+}
+
+/* ── §3: Stat numbers gold gradient on scroll in ── */
+.stats-bar.is-visible .stat-num {
+  background: linear-gradient(135deg, var(--gold-light, #d4aa40) 0%, var(--gold-new, #D4AF37) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -599,3 +599,49 @@ function acceptCookies() {
   if (b) { b.style.opacity = '0'; setTimeout(function() { b.style.display = 'none'; }, 300); }
 }
 function dismissCookies() { acceptCookies(); }
+
+// ════════════════════════════════════════════════════════
+// REVEAL ANIMATIONS (§3 — IntersectionObserver)
+// ════════════════════════════════════════════════════════
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!window.IntersectionObserver) {
+      // Fallback: show everything immediately
+      document.querySelectorAll('.reveal-up,.reveal-left,.reveal-right,.reveal-scale').forEach(function(el) {
+        el.classList.add('revealed');
+      });
+      return;
+    }
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        var delay = e.target.getAttribute('data-delay');
+        if (delay) e.target.style.transitionDelay = delay;
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal-up,.reveal-left,.reveal-right,.reveal-scale').forEach(function(el) {
+      obs.observe(el);
+    });
+  });
+})();
+
+// ════════════════════════════════════════════════════════
+// LOADING SCREEN (§9 — first visit only)
+// ════════════════════════════════════════════════════════
+(function() {
+  if (!document.documentElement.classList.contains('first-visit')) return;
+  var ls = document.getElementById('loading-screen');
+  if (!ls) return;
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      ls.classList.add('hidden');
+      setTimeout(function() {
+        ls.style.display = 'none';
+        sessionStorage.setItem('loaded', '1');
+        document.documentElement.classList.remove('first-visit');
+      }, 520);
+    }, 700);
+  });
+})();

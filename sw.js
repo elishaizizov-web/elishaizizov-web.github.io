@@ -1,4 +1,4 @@
-const CACHE = 'ezizov-v24';
+const CACHE = 'ezizov-v32';
 const PRECACHE = [
   '/',
   '/articles.html',
