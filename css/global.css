@@ -157,9 +157,9 @@ body {
 
 /* BODY */
 .page-body {
-  max-width: 1060px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 64px 48px 80px;
+  padding: 72px 48px 88px;
 }
 
 /* BIO */
@@ -2640,11 +2640,13 @@ html[lang="he"] .mh-back-btn { margin-inline-start: 0; margin-inline-end: auto; 
   .mh-langs .lang-btn:first-child { border-left: none; }
   .mh-langs .lang-btn.active { color: var(--navy); }
 }
+@media (min-width: 1025px) {
+  .hamburger-btn { display: none; }
+}
 @media (max-width: 768px) {
   .mh-inner { padding: 0 12px; gap: 6px; height: 56px; }
   .mh-logo img { height: 30px; }
 }
-/* Hamburger always visible — desktop nav handles large screens */
 
 /* ── HERO SECTION ── */
 .hero-section {
@@ -2653,6 +2655,7 @@ html[lang="he"] .mh-back-btn { margin-inline-start: 0; margin-inline-end: auto; 
   height: 520px;
   background: var(--navy);
 }
+@media (min-width: 1025px) { .hero-section { height: 640px; } }
 @media (max-width: 640px) { .hero-section { height: 420px; } }
 .hero-carousel { position: absolute; inset: 0; }
 .hero-slide {
@@ -3065,8 +3068,8 @@ html[lang="he"] .mf-brand-socials { justify-content: flex-end; }
 /* ── BIO SPLIT ───────────────────────────────────────── */
 .bio-split {
   display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 60px;
+  grid-template-columns: 1fr 400px;
+  gap: 72px;
   align-items: start;
   margin-bottom: 56px;
   padding-bottom: 56px;
@@ -3104,7 +3107,7 @@ html[lang="he"] .mf-brand-socials { justify-content: flex-end; }
 html[lang="he"] .bio-split { direction: rtl; }
 html[lang="he"] .bio-split-photo { order: -1; }
 @media (min-width: 861px) {
-  html[lang="he"] .bio-split { grid-template-columns: 340px 1fr; }
+  html[lang="he"] .bio-split { grid-template-columns: 400px 1fr; }
 }
 @media (max-width: 860px) {
   .bio-split { grid-template-columns: 1fr; gap: 32px; }
