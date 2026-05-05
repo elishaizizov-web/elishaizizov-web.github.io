@@ -422,7 +422,6 @@ function openArticle(id) {
   // switch views
   const _ph = document.querySelector('.page-band'); if (_ph) _ph.style.display = 'none';
   document.querySelector('.page-body').style.display   = 'none';
-  const _sf = document.querySelector('.main-footer');if (_sf) _sf.style.display = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('lang-back-btn').style.display = 'inline-flex';
   window.scrollTo(0, 0);
@@ -606,7 +605,6 @@ function closeArticlePage() {
   if (prog) { prog.style.width = '0%'; prog.classList.remove('visible'); }
   const _ph2 = document.querySelector('.page-band'); if (_ph2) _ph2.style.display = '';
   document.querySelector('.page-body').style.display     = 'block';
-  const _sf2 = document.querySelector('.main-footer');if (_sf2) _sf2.style.display = '';
   const previewBanner = document.getElementById('admin-preview-notice');
   if (previewBanner) previewBanner.style.display = 'none';
   if (window._previewMode) {
@@ -940,7 +938,6 @@ window.addEventListener('popstate', () => {
   document.getElementById('article-page').style.display = 'none';
   const _ph3 = document.querySelector('.page-band'); if (_ph3) _ph3.style.display = '';
   document.querySelector('.page-body').style.display    = 'block';
-  const _sf3 = document.querySelector('.main-footer');if (_sf3) _sf3.style.display = '';
 });
 
 // ════════════════════════════════════════════════════════
@@ -1302,7 +1299,6 @@ function adminPreview() {
   _renderArticlePage(mock, currentLang);
   const _ph = document.querySelector('.page-band'); if (_ph) _ph.style.display = 'none';
   document.querySelector('.page-body').style.display = 'none';
-  const _sf = document.querySelector('.main-footer'); if (_sf) _sf.style.display = 'none';
   document.getElementById('article-page').style.display = 'block';
   document.getElementById('article-page').style.paddingTop = '52px';
   document.getElementById('lang-back-btn').style.display = 'none';
