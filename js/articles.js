@@ -308,8 +308,7 @@ function renderCard(a, noClick) {
   }
   const slug = articleSlug(a);
   const langParam = l !== 'de' ? '?lang=' + l : '';
-  const safeId = escHtml(a.id).replace(/'/g, '&#39;');
-  return `<a href="/${slug}${langParam}" data-article-id="${escHtml(a.id)}" onclick="event.preventDefault();openArticle(this.dataset.articleId);" style="text-decoration:none;color:inherit;display:block;cursor:pointer;"><div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
+  return `<a href="/articles/${escHtml(a.id)}${langParam}" style="text-decoration:none;color:inherit;display:block;"><div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
 
 function showHagim() {

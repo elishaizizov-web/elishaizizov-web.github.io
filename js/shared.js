@@ -569,7 +569,7 @@ function nlSubscribe(e) {
       : '<div class="article-card-img-placeholder"></div>';
     var rm = { de: 'Weiterlesen', en: 'Read more', he: 'קרא עוד' }[l] || 'Weiterlesen';
     var lp = l !== 'de' ? '?lang=' + l : '';
-    var href = '/articles.html' + (lp ? lp + '&' : '?') + 'article=' + encodeURIComponent(a.id);
+    var href = '/articles/' + encodeURIComponent(a.id) + lp;
     return '<a href="' + href + '" style="text-decoration:none;color:inherit;display:block;">'
       + '<div class="article-card">' + imgHtml
       + '<div class="article-card-body">'
