@@ -144,7 +144,6 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
-  <div style="max-width:820px;margin:0 auto;padding:0 48px 80px;">
     ${cat?`<div id="ap-parasha">${esc(cat)}</div>`:''}
     <div class="ap-topbar">
       <div class="ap-lang-bar">${langBtns}</div>
@@ -156,7 +155,6 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
     <div style="margin-top:48px;padding-top:24px;border-top:1px solid #e0ddd6;">
       <a href="/articles.html" style="font-family:Raleway,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8952a;text-decoration:none;">← Alle Beiträge</a>
     </div>
-  </div>
 </div>
 
 <footer class="main-footer">
