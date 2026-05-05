@@ -2155,7 +2155,7 @@ async function saveGitHubTokenFromWarn() {
 }
 
 // ════════════════════════════════════════════════════════
-// PDF DOWNLOAD — opens a print-ready window (handles all Unicode/German chars)
+// PDF DOWNLOAD — opens a styled print window that mirrors the site design
 // ════════════════════════════════════════════════════════
 function downloadArticlePDF() {
   const a = window._currentArticle;
@@ -2163,12 +2163,19 @@ function downloadArticlePDF() {
   const l = currentLang;
   const tr = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title || '', text: a.text || '' };
   const title = tr.title || a.title || '';
-  const text  = tr.text  || a.text  || '';
   const isRTL = (l === 'he');
   const logoUrl = window.location.origin + '/logo.png';
 
-  // Build drop cap for PDF
-  let pdfText = text;
+  // Strip inline font/size/weight/line-height styles (same as _renderArticlePage)
+  let pdfText = (tr.text || a.text || '')
+    .replace(/font-family:[^;"']*/gi, '')
+    .replace(/font-size:\s*[\d.]+(\s*(px|pt|em|rem|%))[^;"']*/gi, '')
+    .replace(/font-weight:\s*(?:normal|bold|bolder|lighter|\d+)[^;"']*/gi, '')
+    .replace(/line-height:\s*[\d.][^;"']*/gi, '')
+    .replace(/color\s*:\s*(?:rgb[^)]+\)|#[0-9a-fA-F]{3,6}|[a-z]+)[^;"']*/gi, '')
+    .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>');
+
+  // Add drop cap to first paragraph
   if (isRTL) {
     pdfText = pdfText.replace(/^(\s*<p[^>]*>)(\s*)([^<\s])/, (m, tag, sp, ch) =>
       tag + sp + '<span class="drop-cap drop-cap-rtl">' + ch + '</span>');
@@ -2178,65 +2185,174 @@ function downloadArticlePDF() {
   }
 
   const pdfTopicLabel = a._parashaDisplay || '';
-  const htmlStr = `<!DOCTYPE html><html lang="${l}" dir="${isRTL?'rtl':'ltr'}"><head>
-<meta charset="UTF-8"><title>${title.replace(/</g,'&lt;')}</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Raleway:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+  const imgHtml = a.image ? `<img class="art-img" src="${a.image}" alt="">` : '';
+  const dateHtml = a.date ? `<span class="pdf-date">${a.date}${toHebrewYear(a.date) ? ' · ' + toHebrewYear(a.date) : ''}</span>` : '';
+
+  const htmlStr = `<!DOCTYPE html>
+<html lang="${l}" dir="${isRTL ? 'rtl' : 'ltr'}">
+<head>
+<meta charset="UTF-8">
+<title>${title.replace(/</g, '&lt;')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Raleway:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Source Serif 4',Georgia,serif;color:#1c1c1c;background:#fff;padding:20mm 24mm 18mm;font-size:${isRTL?'12.5':'11.5'}pt;line-height:${isRTL?'2.05':'1.85'};direction:${isRTL?'rtl':'ltr'}}
-  /* ── header ── */
-  .pdf-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;margin-bottom:28px;border-bottom:2px solid #1a2744}
-  .pdf-header img{height:52px;width:auto}
-  .pdf-header-right{text-align:right;font-family:'Raleway',sans-serif}
-  .pdf-site{font-size:7.5pt;letter-spacing:.24em;text-transform:uppercase;color:#1a2744;font-weight:700}
-  .pdf-date{font-size:7pt;color:#999;letter-spacing:.1em;margin-top:3px}
-  /* ── topic / parasha ── */
-  .pdf-topic{font-family:'Raleway',sans-serif;font-size:8pt;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#b8952a;margin-bottom:10px}
-  /* ── title ── */
-  h1{font-family:'Playfair Display',serif;font-size:${isRTL?'24':'22'}pt;font-weight:700;line-height:1.18;color:#1a2744;margin-bottom:16px}
-  /* ── gold rule ── */
-  .gold-rule{height:1px;background:linear-gradient(90deg,#b8952a 0%,rgba(184,149,42,.15) 100%);margin-bottom:24px;${isRTL?'background:linear-gradient(270deg,#b8952a 0%,rgba(184,149,42,.15) 100%)':''}}
-  /* ── image ── */
-  img.art-img{width:100%;max-height:220px;object-fit:cover;display:block;margin-bottom:24px;border-radius:1px}
-  /* ── body text ── */
-  p{margin-bottom:12px;font-weight:300;font-size:${isRTL?'12.5':'11.5'}pt;line-height:${isRTL?'2.05':'1.85'};text-align:justify}
-  /* ── drop caps ── */
-  .drop-cap{font-family:'Playfair Display',serif;font-size:5em;font-weight:700;color:#b8952a;float:left;line-height:0.7;margin:0.06em 0.1em 0 0;padding:0}
-  .drop-cap-rtl{font-family:'Frank Ruhl Libre',serif;font-size:5em;font-weight:700;color:#b8952a;float:right;line-height:0.7;margin:0.06em 0 0 0.1em;padding:0}
-  /* ── footer ── */
-  .pdf-footer{margin-top:40px;padding-top:10px;border-top:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;font-family:'Raleway',sans-serif;font-size:7pt;color:#bbb;letter-spacing:.12em;text-transform:uppercase}
-  @media print{body{padding:14mm 18mm}@page{size:A4;margin:0}}
-</style></head><body>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    color: #1c1c1c;
+    background: #fff;
+    padding: 20mm 22mm 18mm;
+    font-size: ${isRTL ? '13' : '11.5'}pt;
+    line-height: ${isRTL ? '2.1' : '1.85'};
+    direction: ${isRTL ? 'rtl' : 'ltr'};
+  }
+  /* Header */
+  .pdf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    margin-bottom: 26px;
+    border-bottom: 2px solid #1a2744;
+  }
+  .pdf-header img { height: 50px; width: auto; }
+  .pdf-header-right { text-align: ${isRTL ? 'left' : 'right'}; font-family: 'Raleway', sans-serif; }
+  .pdf-site { font-size: 8pt; letter-spacing: .22em; text-transform: uppercase; color: #1a2744; font-weight: 700; }
+  .pdf-date { font-size: 7.5pt; color: #999; letter-spacing: .08em; margin-top: 4px; display: block; }
+  /* Parasha label */
+  .pdf-topic {
+    font-family: 'Raleway', sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: #b8952a;
+    margin-bottom: 10px;
+  }
+  /* Title */
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: ${isRTL ? '25' : '23'}pt;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1a2744;
+    margin-bottom: 18px;
+  }
+  /* Gold rule */
+  .gold-rule {
+    height: 2px;
+    background: linear-gradient(${isRTL ? '270deg' : '90deg'}, #b8952a 0%, rgba(184,149,42,.1) 100%);
+    margin-bottom: 22px;
+  }
+  /* Image */
+  img.art-img {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 24px;
+  }
+  /* Body text */
+  p {
+    margin-bottom: 11pt !important;
+    font-family: 'Source Serif 4', Georgia, serif !important;
+    font-weight: ${isRTL ? '400' : '300'} !important;
+    font-size: ${isRTL ? '13' : '11.5'}pt !important;
+    line-height: ${isRTL ? '2.1' : '1.85'} !important;
+    color: #1c1c1c !important;
+    text-align: justify;
+  }
+  span { font-family: inherit !important; font-size: inherit !important; color: inherit !important; }
+  strong, b { font-weight: 700 !important; color: #111 !important; }
+  em, i { font-style: italic !important; }
+  /* Blockquote */
+  blockquote {
+    border-${isRTL ? 'right' : 'left'}: 3px solid #b8952a;
+    margin: 18pt 0 !important;
+    padding: 10pt ${isRTL ? '16pt 10pt 0' : '0 10pt 16pt'};
+    font-style: italic;
+    color: #333 !important;
+    page-break-inside: avoid;
+  }
+  blockquote p { text-align: ${isRTL ? 'right' : 'left'} !important; }
+  /* Headings inside text */
+  h2, h3 {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    color: #1a2744 !important;
+    margin: 18pt 0 7pt !important;
+    page-break-after: avoid;
+  }
+  /* Drop caps */
+  .drop-cap {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.8em;
+    font-weight: 700;
+    color: #b8952a;
+    float: left;
+    line-height: 0.72;
+    margin: 0.06em 0.12em 0 0;
+  }
+  .drop-cap-rtl {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 4.8em;
+    font-weight: 900;
+    color: #b8952a;
+    float: right;
+    line-height: 0.72;
+    margin: 0.06em 0 0 0.12em;
+  }
+  /* Footer */
+  .pdf-footer {
+    margin-top: 36pt;
+    padding-top: 10pt;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Raleway', sans-serif;
+    font-size: 7pt;
+    color: #bbb;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  /* Lists */
+  ul, ol { padding-${isRTL ? 'right' : 'left'}: 1.5em; margin-bottom: 11pt; }
+  li { margin-bottom: 4pt; font-family: 'Source Serif 4', Georgia, serif !important; }
+  /* Avoid breaks */
+  p, li, blockquote { page-break-inside: avoid; orphans: 3; widows: 3; }
+  @media print { @page { size: A4; margin: 0; } body { padding: 14mm 18mm; } }
+</style>
+</head>
+<body>
 <div class="pdf-header">
-  <img src="${logoUrl}" crossorigin="anonymous" alt="Rabbiner Elishai Zizov">
+  <img src="${logoUrl}" alt="Rabbiner Elishai Zizov">
   <div class="pdf-header-right">
     <div class="pdf-site">Rabbiner Elishai Zizov</div>
-    ${a.date ? `<div class="pdf-date">${a.date}</div>` : ''}
+    ${dateHtml}
   </div>
 </div>
 ${pdfTopicLabel ? `<div class="pdf-topic">${pdfTopicLabel}</div>` : ''}
-<h1>${title.replace(/</g,'&lt;')}</h1>
+<h1>${title.replace(/</g, '&lt;')}</h1>
 <div class="gold-rule"></div>
-${a.image ? `<img class="art-img" src="${a.image}" crossorigin="anonymous">` : ''}
-<div>${pdfText}</div>
+${imgHtml}
+<div class="pdf-body">${pdfText}</div>
 <div class="pdf-footer">
   <span>elishaizizov.com</span>
-  <span>Rabbiner Elishai Zizov</span>
+  <span>© Rabbiner Elishai Zizov</span>
 </div>
-<script>window.onload=function(){window.print();}<\/script>
+<script>
+  // Wait for fonts before printing
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function() { setTimeout(function(){ window.print(); }, 120); });
+  } else {
+    window.onload = function() { setTimeout(function(){ window.print(); }, 400); };
+  }
+<\/script>
 </body></html>`;
 
-  // Try popup (desktop/Android); fall back to srcdoc iframe for iOS Safari
   let opened = false;
   try {
     const w = window.open('', '_blank');
-    if (w) {
-      w.document.write(htmlStr);
-      w.document.close();
-      opened = true;
-    }
+    if (w) { w.document.write(htmlStr); w.document.close(); opened = true; }
   } catch(e) {}
-
   if (!opened) {
     const frame = document.createElement('iframe');
     frame.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:none;';
@@ -2244,8 +2360,7 @@ ${a.image ? `<img class="art-img" src="${a.image}" crossorigin="anonymous">` : '
     frame.srcdoc = htmlStr;
     frame.addEventListener('load', function() {
       frame.contentWindow.focus();
-      frame.contentWindow.print();
-      setTimeout(() => frame.remove(), 2000);
+      setTimeout(function() { frame.contentWindow.print(); setTimeout(() => frame.remove(), 2000); }, 400);
     });
   }
 }
