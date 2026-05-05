@@ -151,11 +151,13 @@ function renderLatestArticle() {
   // Only hide if no articles AND the card has no pre-rendered static HTML
   if (!articles.length) { if (!card.innerHTML.trim()) block.style.display = 'none'; return; }
   block.style.display = 'block';
-  // Show up to 4 most recent articles
-  const recent = articles.slice(0, 4);
-  card.innerHTML = recent.map(a => renderCard(a)).join('');
+  // Show all articles sorted by date, newest first
+  const sorted = articles.slice().sort(function(a, b) {
+    return ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0);
+  });
+  card.innerHTML = sorted.map(a => renderCard(a)).join('');
   card.style.display = 'grid';
-  card.style.gridTemplateColumns = recent.length > 1 ? 'repeat(auto-fill,minmax(260px,1fr))' : '1fr';
+  card.style.gridTemplateColumns = sorted.length > 1 ? 'repeat(auto-fill,minmax(260px,1fr))' : '1fr';
   card.style.gap = '20px';
 }
 
