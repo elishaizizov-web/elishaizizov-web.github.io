@@ -1284,25 +1284,242 @@ body.menu-open { overflow: hidden; }
 
     /* ── PRINT ───────────────────────────────────────────────── */
     @media print {
-      body > *:not(#article-page) { display:none !important; }
-      .logo-band { display:none !important; }
-      #article-page { display:block !important; padding:0; margin:0; }
-      .ap-back, #ap-share, .ap-lang-bar, .print-btn-wrap, .admin-fab { display:none !important; }
-      .ap-print-logo { display:block !important; text-align:center; margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid #ddd; }
-      .ap-print-logo img { width:110px; height:auto; }
-      .ap-print-logo p { font-family:'Raleway',sans-serif; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#444; margin-top:6px; }
+      @page {
+        size: A4;
+        margin: 18mm 20mm 20mm 20mm;
+      }
+
+      /* Hide everything except the article */
+      body > *:not(#article-page) { display: none !important; }
+      #article-page {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        background: #fff !important;
+        color: #1a1a1a !important;
+      }
+
+      /* Hide UI elements inside article-page */
+      #ap-progress,
+      #ap-share,
+      #ap-related,
+      .ap-back,
+      .ap-lang-bar,
+      .print-btn-wrap,
+      .admin-fab,
+      .admin-preview-notice,
+      #admin-preview-notice,
+      .ap-divider { display: none !important; }
+
+      /* ── Print logo header ── */
+      .ap-print-logo {
+        display: flex !important;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #c9a84c;
+      }
+      .ap-print-logo img {
+        width: 56px;
+        height: auto;
+      }
+      .ap-print-logo p {
+        font-family: 'Raleway', Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #2c3e52;
+        line-height: 1.3;
+      }
+      .ap-print-logo p::after {
+        content: '\A Rabbiner · elishaizizov.com';
+        white-space: pre;
+        display: block;
+        font-size: 9px;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        color: #888;
+        margin-top: 2px;
+      }
+
+      /* ── Breadcrumb ── */
+      #ap-breadcrumb {
+        display: flex !important;
+        margin-bottom: 10px;
+      }
+      .ap-breadcrumb-item {
+        font-family: 'Raleway', Helvetica, Arial, sans-serif;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #888 !important;
+      }
+      .ap-breadcrumb-sep { color: #bbb !important; font-size: 8px; margin: 0 4px; }
+
+      /* ── Parasha label ── */
+      #ap-parasha {
+        font-family: 'Raleway', Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #c9a84c !important;
+        margin-bottom: 10px;
+      }
+
+      /* ── Title ── */
+      #ap-title {
+        font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #1b2a3b !important;
+        margin-bottom: 14px;
+        page-break-after: avoid;
+      }
+
+      /* ── Date and reading time ── */
+      .ap-img-wrap {
+        margin-bottom: 6px;
+      }
+      #ap-date {
+        font-family: 'Raleway', Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        color: #888 !important;
+        letter-spacing: 0.06em;
+      }
+      .ap-reading-time {
+        font-family: 'Raleway', Helvetica, Arial, sans-serif;
+        font-size: 9px;
+        color: #aaa !important;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      /* ── Article image ── */
+      #ap-img {
+        display: block !important;
+        width: 100% !important;
+        max-height: 340px;
+        object-fit: cover;
+        margin: 16px 0 22px;
+        page-break-inside: avoid;
+      }
+
+      /* ── Gold divider line between meta and text ── */
+      #ap-text::before {
+        content: '';
+        display: block;
+        height: 1px;
+        background: #c9a84c;
+        margin-bottom: 22px;
+        opacity: 0.4;
+      }
+
+      /* ── Body text ── */
+      #ap-text {
+        font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif !important;
+        font-size: 11.5pt !important;
+        line-height: 1.85 !important;
+        color: #222 !important;
+        font-weight: 400 !important;
+      }
+      #ap-text p {
+        font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif !important;
+        font-size: 11.5pt !important;
+        line-height: 1.85 !important;
+        color: #222 !important;
+        font-weight: 400 !important;
+        margin-bottom: 10px !important;
+      }
+      #ap-text h1, #ap-text h2, #ap-text h3 {
+        font-family: 'Playfair Display', Georgia, serif !important;
+        color: #1b2a3b !important;
+        margin: 20px 0 8px !important;
+        page-break-after: avoid;
+      }
+      #ap-text strong, #ap-text b {
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+      }
+      #ap-text em { font-style: italic; }
+      #ap-text blockquote {
+        border-left: 3px solid #c9a84c !important;
+        margin: 18px 0 !important;
+        padding: 10px 18px !important;
+        color: #333 !important;
+        font-style: italic;
+        background: none !important;
+        page-break-inside: avoid;
+      }
+      #ap-text.ap-rtl blockquote {
+        border-left: none !important;
+        border-right: 3px solid #c9a84c !important;
+        padding: 10px 18px 10px 0 !important;
+      }
+      #ap-text span {
+        font-family: 'Source Serif 4', Georgia, serif !important;
+        font-size: inherit !important;
+        color: inherit !important;
+      }
+      .drop-cap {
+        float: left;
+        font-size: 52pt !important;
+        line-height: 0.82;
+        margin: 4px 6px 0 0;
+        font-family: 'Playfair Display', Georgia, serif !important;
+        color: #c9a84c !important;
+        font-weight: 700;
+      }
+      .drop-cap-rtl {
+        float: right;
+        font-size: 52pt !important;
+        line-height: 0.82;
+        margin: 4px 0 0 6px;
+        font-family: 'Playfair Display', Georgia, serif !important;
+        color: #c9a84c !important;
+        font-weight: 700;
+      }
+      .ap-end-rule { border: none; border-top: 1px solid #ddd; margin: 24px 0 0; }
+      .art-spacer { height: 8px; display: block; }
+
+      /* ── RTL (Hebrew) ── */
+      #ap-text.ap-rtl,
+      #ap-text.ap-rtl p,
+      #ap-text.ap-rtl span {
+        direction: rtl !important;
+        text-align: right !important;
+        font-size: 13pt !important;
+        line-height: 2 !important;
+      }
+      #ap-title[style*="rtl"],
+      #ap-title[dir="rtl"] {
+        text-align: right !important;
+        direction: rtl !important;
+        font-size: 26px;
+      }
+
+      /* ── Page footer attribution ── */
       #article-page::after {
-        content: 'Verfasst von Rabbiner Elishai Zizov – Alle Rechte vorbehalten · elishaizizov.com';
+        content: 'Verfasst von Rabbiner Elishai Zizov  ·  elishaizizov.com  ·  Alle Rechte vorbehalten';
         display: block;
         text-align: center;
-        font-size: 10px;
-        color: #888;
-        margin-top: 40px;
-        padding-top: 12px;
-        border-top: 1px solid #ddd;
-        font-family: 'Raleway', sans-serif;
+        font-size: 8pt;
+        color: #aaa;
+        margin-top: 32px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;
+        font-family: 'Raleway', Helvetica, Arial, sans-serif;
         letter-spacing: 0.05em;
       }
+
+      /* Avoid page breaks inside paragraphs */
+      p, li, blockquote { page-break-inside: avoid; orphans: 3; widows: 3; }
     }
 
   
