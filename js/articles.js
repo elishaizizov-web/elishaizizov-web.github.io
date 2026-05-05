@@ -919,9 +919,10 @@ async function _loadArticlesImpl(silent) {
       const urlParams = new URLSearchParams(window.location.search);
       const langFromUrl = urlParams.get('lang');
       if (langFromUrl && TORAH_NAMES[langFromUrl]) setLang(langFromUrl);
-      const slug = window.location.pathname.replace(/^\//, '') || urlParams.get('article');
+      const pathSlug = window.location.pathname.replace(/^\//, '');
       const knownPages = ['articles.html', 'index.html', 'contact.html', ''];
-      if (slug && !knownPages.includes(slug)) openArticle(slug);
+      const slug = (!pathSlug || knownPages.includes(pathSlug)) ? urlParams.get('article') : pathSlug;
+      if (slug) openArticle(slug);
     }
   } catch(e) {
     console.error('Render error after loading articles:', e);

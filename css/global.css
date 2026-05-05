@@ -227,6 +227,87 @@ html[lang="he"] .hero-cta-btn svg { transform: scaleX(-1); }
   padding-bottom: 52px;
   border-bottom: 1px solid var(--rule);
 }
+/* ── Career Timeline ── */
+.timeline-section {
+  margin-bottom: 52px;
+  padding-bottom: 52px;
+  border-bottom: 1px solid var(--rule);
+}
+.career-timeline {
+  position: relative;
+  margin-top: 32px;
+  padding-left: 28px;
+  max-width: 600px;
+}
+.career-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(184,149,42,0) 0%, rgba(184,149,42,0.45) 8%, rgba(184,149,42,0.45) 92%, rgba(184,149,42,0) 100%);
+}
+.tl-item {
+  position: relative;
+  padding-bottom: 36px;
+}
+.tl-item:last-child { padding-bottom: 0; }
+.tl-dot {
+  position: absolute;
+  left: -33px;
+  top: 7px;
+  width: 11px;
+  height: 11px;
+  background: var(--gold, #b8952a);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(184,149,42,0.12);
+}
+.tl-period {
+  display: block;
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold, #b8952a);
+  margin-bottom: 5px;
+}
+.tl-title {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--navy, #1b2a3b);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.tl-desc {
+  font-size: 14px;
+  color: var(--text-soft, #5a6a7a);
+  line-height: 1.65;
+  font-weight: 300;
+  margin: 0;
+}
+/* RTL */
+html[lang="he"] .career-timeline {
+  padding-left: 0;
+  padding-right: 28px;
+}
+html[lang="he"] .career-timeline::before {
+  left: auto;
+  right: 0;
+}
+html[lang="he"] .tl-dot {
+  left: auto;
+  right: -33px;
+}
+@media (max-width: 600px) {
+  .career-timeline { padding-left: 22px; }
+  .tl-dot { left: -27px; }
+  html[lang="he"] .career-timeline { padding-left: 0; padding-right: 22px; }
+  html[lang="he"] .tl-dot { right: -27px; }
+}
 .section-label {
   font-family: 'Raleway', sans-serif;
   font-size: 9.5px;

@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css?v=27">
+<link rel="stylesheet" href="/css/global.css?v=28">
 </head>
 <body>
 <script>if(!sessionStorage.getItem('loaded')){document.documentElement.classList.add('first-visit');}</script>
@@ -96,12 +96,7 @@
   <div class="carousel-dots" id="carousel-dots"></div>
 </section>
 
-<div class="stats-bar fade-in-on-scroll">
-  <div class="stat-item"><span class="stat-num">1997</span><span class="stat-label" data-t="stat-born">Jahrgang</span></div>
-  <div class="stat-item"><span class="stat-num">24</span><span class="stat-label" data-t="stat-ord">Ordination im Alter von</span></div>
-  <div class="stat-item"><span class="stat-num">2020</span><span class="stat-label" data-t="stat-since">Rabbiner seit</span></div>
-  <div class="stat-item"><span class="stat-num">5+</span><span class="stat-label" data-t="stat-langs">Lehrsprachen</span></div>
-</div>
+
 
 <main class="page-body">
 
@@ -118,28 +113,32 @@
   </div>
 </div>
 
-  <section class="stations-section fade-in-on-scroll">
+  <section class="timeline-section fade-in-on-scroll">
     <span class="section-label" data-t="sl">Karriere</span>
-    <div class="stations-grid">
-      <div class="station-card reveal-up" data-delay="0.1s">
-        <span class="station-period" data-t="y1">Ab 2024</span>
-        <strong data-t="s1h">Frankfurt am Main</strong>
-        <span data-t="s1d">Ernannt zum Rabbiner von Bait Sfaradi Frankfurt am Main</span>
+    <div class="career-timeline">
+      <div class="tl-item reveal-up" data-delay="0.1s">
+        <div class="tl-dot"></div>
+        <span class="tl-period" data-t="y1">Ab 2024</span>
+        <strong class="tl-title" data-t="s1h">Frankfurt am Main</strong>
+        <p class="tl-desc" data-t="s1d">Ernannt zum Rabbiner von Bait Sfaradi Frankfurt am Main</p>
       </div>
-      <div class="station-card reveal-up" data-delay="0.2s">
-        <span class="station-period" data-t="y2">Ab Ende 2023</span>
-        <strong data-t="s2h">Frankfurt am Main</strong>
-        <span data-t="s2d">Rabbiner für Jugend, Gymnasium und Gemeindearbeit</span>
+      <div class="tl-item reveal-up" data-delay="0.2s">
+        <div class="tl-dot"></div>
+        <span class="tl-period" data-t="y2">Ab Ende 2023</span>
+        <strong class="tl-title" data-t="s2h">Frankfurt am Main</strong>
+        <p class="tl-desc" data-t="s2d">Rabbiner für Jugend, Gymnasium und Gemeindearbeit</p>
       </div>
-      <div class="station-card reveal-up" data-delay="0.3s">
-        <span class="station-period" data-t="y3">2020 bis 2023</span>
-        <strong data-t="s3h">Basel</strong>
-        <span data-t="s3d">Rabbiner und Vortragsredner, Schomre Tora Institut Basel</span>
+      <div class="tl-item reveal-up" data-delay="0.3s">
+        <div class="tl-dot"></div>
+        <span class="tl-period" data-t="y3">2020 bis 2023</span>
+        <strong class="tl-title" data-t="s3h">Basel</strong>
+        <p class="tl-desc" data-t="s3d">Rabbiner und Vortragsredner, Schomre Tora Institut Basel</p>
       </div>
-      <div class="station-card reveal-up" data-delay="0.4s">
-        <span class="station-period" data-t="y4">Ordination</span>
-        <strong data-t="s4h">Rabbinatsordination, Alter 24</strong>
-        <span data-t="s4d">Talmud, Halacha und jüdisches Denken</span>
+      <div class="tl-item reveal-up" data-delay="0.4s">
+        <div class="tl-dot"></div>
+        <span class="tl-period" data-t="y4">Ordination</span>
+        <strong class="tl-title" data-t="s4h">Rabbinatsordination, Alter 24</strong>
+        <p class="tl-desc" data-t="s4d">Talmud, Halacha und jüdisches Denken</p>
       </div>
     </div>
   </section>
