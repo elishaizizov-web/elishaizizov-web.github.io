@@ -1,9 +1,9 @@
-const CACHE = 'ezizov-v48';
+const CACHE = 'ezizov-v49';
 const PRECACHE = [
   '/',
   '/articles.html',
   '/contact.html',
-  '/css/global.css?v=28',
+  '/css/global.css?v=29',
   '/js/shared.js?v=27',
   '/js/articles.js?v=35',
   '/logo.png'
