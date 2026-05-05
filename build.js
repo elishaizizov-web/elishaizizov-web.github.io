@@ -1,9 +1,50 @@
-// Generates static HTML pages for each article in articles/data.json
+// Generates static HTML pages for each article.
+// Sources: articles/data.json (primary) + Firestore REST API (fallback for older articles)
 // Run: node build.js
 // Vercel runs this automatically on every deploy (via vercel.json buildCommand)
 
 const fs   = require('fs');
 const path = require('path');
+const https = require('https');
+
+const FS_URL = 'https://firestore.googleapis.com/v1/projects/elishai-zizov/databases/(default)/documents/articles?pageSize=200&key=AIzaSyDmEpaog0ZVYI4ZU87IfcjiSbRizQITn5o';
+
+function httpsGet(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, res => {
+      let data = '';
+      res.on('data', c => data += c);
+      res.on('end', () => { try { resolve(JSON.parse(data)); } catch(e) { reject(e); } });
+    }).on('error', reject);
+  });
+}
+
+function parseFirestoreDoc(doc) {
+  const f = doc.fields; if (!f) return null;
+  const sv = v => (v && v.stringValue) ? v.stringValue : '';
+  const iv = v => (v && v.integerValue) ? Number(v.integerValue) : 0;
+  const tr = {};
+  if (f.translations && f.translations.mapValue) {
+    const langs = f.translations.mapValue.fields || {};
+    Object.keys(langs).forEach(lang => {
+      const lf = langs[lang].mapValue && langs[lang].mapValue.fields;
+      if (lf) tr[lang] = { title: sv(lf.title), text: sv(lf.text) };
+    });
+  }
+  let createdAt = null;
+  if (f.createdAt && f.createdAt.timestampValue) {
+    createdAt = { seconds: Math.floor(new Date(f.createdAt.timestampValue).getTime() / 1000) };
+  } else if (f.createdAt && f.createdAt.mapValue && f.createdAt.mapValue.fields && f.createdAt.mapValue.fields.seconds) {
+    createdAt = { seconds: iv(f.createdAt.mapValue.fields.seconds) };
+  }
+  return {
+    id: (doc.name || '').split('/').pop(),
+    title: sv(f.title), text: sv(f.text),
+    date: sv(f.date), image: sv(f.image),
+    book: sv(f.book), parasha: sv(f.parasha), hag: sv(f.hag),
+    translations: tr, createdAt
+  };
+}
 
 const SITE_URL   = 'https://elishaizizov.com';
 const CSS_VER    = '33';
@@ -168,25 +209,43 @@ window.addEventListener('scroll', function() {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-let articles = [];
-try {
-  articles = JSON.parse(fs.readFileSync('./articles/data.json', 'utf-8'));
-  if (!Array.isArray(articles)) articles = [];
-} catch(e) {
-  console.log('articles/data.json not found – skipping static generation.');
-  process.exit(0);
-}
+(async function() {
+  // 1. Load from data.json (primary — includes all admin-published articles)
+  let ghArticles = [];
+  try {
+    ghArticles = JSON.parse(fs.readFileSync('./articles/data.json', 'utf-8'));
+    if (!Array.isArray(ghArticles)) ghArticles = [];
+    console.log(`data.json: ${ghArticles.length} article(s)`);
+  } catch(e) {
+    console.log('data.json not found or empty.');
+  }
 
-console.log(`Building ${articles.length} article page(s)...`);
-let count = 0;
-for (const a of articles) {
-  if (!a.id) continue;
-  const html = buildPage(a);
-  if (!html) { console.log(`  ⚠ skipped ${a.id} (no translations)`); continue; }
-  const dir = path.join('articles', a.id);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf-8');
-  console.log(`  ✓ /articles/${a.id}`);
-  count++;
-}
-console.log(`Done. Generated ${count} page(s).`);
+  // 2. Load from Firestore (catches older articles not yet in data.json)
+  let fsArticles = [];
+  try {
+    const data = await httpsGet(FS_URL);
+    fsArticles = (data.documents || []).map(parseFirestoreDoc).filter(Boolean);
+    console.log(`Firestore: ${fsArticles.length} article(s)`);
+  } catch(e) {
+    console.log('Firestore fetch failed (continuing with data.json only):', e.message);
+  }
+
+  // 3. Merge: data.json takes priority, Firestore fills in any missing IDs
+  const seen = new Set(ghArticles.map(a => a.id));
+  const merged = [...ghArticles, ...fsArticles.filter(a => !seen.has(a.id))];
+  console.log(`Total unique articles: ${merged.length}`);
+
+  // 4. Generate a static page for each article
+  let count = 0;
+  for (const a of merged) {
+    if (!a.id) continue;
+    const html = buildPage(a);
+    if (!html) { console.log(`  ⚠ skipped ${a.id} (no translations)`); continue; }
+    const dir = path.join('articles', a.id);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf-8');
+    console.log(`  ✓ /articles/${a.id}`);
+    count++;
+  }
+  console.log(`Done. Generated ${count} page(s).`);
+})();
