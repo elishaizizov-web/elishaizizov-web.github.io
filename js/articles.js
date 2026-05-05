@@ -2175,11 +2175,8 @@ function downloadArticlePDF() {
     .replace(/color\s*:\s*(?:rgb[^)]+\)|#[0-9a-fA-F]{3,6}|[a-z]+)[^;"']*/gi, '')
     .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>');
 
-  // Add drop cap to first paragraph
-  if (isRTL) {
-    pdfText = pdfText.replace(/^(\s*<p[^>]*>)(\s*)([^<\s])/, (m, tag, sp, ch) =>
-      tag + sp + '<span class="drop-cap drop-cap-rtl">' + ch + '</span>');
-  } else {
+  // Drop cap — LTR only (Hebrew typography doesn't use drop caps)
+  if (!isRTL) {
     pdfText = pdfText.replace(/^(\s*<p[^>]*>)(\s*)([^<\s])/, (m, tag, sp, ch) =>
       tag + sp + '<span class="drop-cap">' + ch + '</span>');
   }
@@ -2252,8 +2249,10 @@ function downloadArticlePDF() {
     margin-bottom: 24px;
   }
   /* Body text */
+  .pdf-body { padding-top: ${isRTL ? '6pt' : '0'}; }
+  .pdf-clearfix { clear: both; }
   p {
-    margin-bottom: 11pt !important;
+    margin-bottom: ${isRTL ? '13' : '11'}pt !important;
     font-family: 'Source Serif 4', Georgia, serif !important;
     font-weight: ${isRTL ? '400' : '300'} !important;
     font-size: ${isRTL ? '13' : '11.5'}pt !important;
@@ -2333,7 +2332,7 @@ ${pdfTopicLabel ? `<div class="pdf-topic">${pdfTopicLabel}</div>` : ''}
 <h1>${title.replace(/</g, '&lt;')}</h1>
 <div class="gold-rule"></div>
 ${imgHtml}
-<div class="pdf-body">${pdfText}</div>
+<div class="pdf-body">${pdfText}${!isRTL ? '<div class="pdf-clearfix"></div>' : ''}</div>
 <div class="pdf-footer">
   <span>elishaizizov.com</span>
   <span>© Rabbiner Elishai Zizov</span>
