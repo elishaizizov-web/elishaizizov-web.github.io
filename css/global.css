@@ -422,7 +422,7 @@ html[lang="he"] .station::before {
 /* RESPONSIVE */
 @media (max-width: 640px) {
   .page-header { padding: 48px 24px 44px; }
-  .page-body { padding: 48px 24px 64px; }
+  .page-body { padding: 24px 24px 64px; }
   .lang-bar { padding: 0 24px; }
   .lang-back-btn { padding: 6px 20px 6px 4px; }
   .timeline { padding-left: 18px; }
@@ -3062,7 +3062,7 @@ html[lang="he"] .mf-brand-socials { justify-content: flex-end; }
   overflow: hidden;
 }
 @media (max-width: 640px) {
-  .home-lift { margin-top: -40px; border-radius: 18px 18px 0 0; }
+  .home-lift { margin-top: -24px; border-radius: 18px 18px 0 0; }
 }
 
 /* ── BIO SPLIT ───────────────────────────────────────── */
