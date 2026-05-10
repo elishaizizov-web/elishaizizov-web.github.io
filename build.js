@@ -47,7 +47,7 @@ function parseFirestoreDoc(doc) {
 }
 
 const SITE_URL   = 'https://elishaizizov.com';
-const CSS_VER    = '33';
+const CSS_VER    = '34';
 const FONTS_URL  = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap';
 
 function stripHtml(html) {
@@ -60,6 +60,30 @@ function isoDate(createdAt) {
   if (!createdAt) return '';
   const s = createdAt.seconds || createdAt._seconds;
   return s ? new Date(s * 1000).toISOString().slice(0,10) : '';
+}
+
+function _remToHebrew(n) {
+  const H = ['','ק','ר','ש','ת','תק','תר','תש','תת','תתק'];
+  const T = ['','י','כ','ל','מ','נ','ס','ע','פ','צ'];
+  const O = ['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
+  const h = Math.floor(n/100), t = Math.floor((n%100)/10), o = n%10;
+  let r = (H[h]||'');
+  if (t===1 && o===5) r += 'טו';
+  else if (t===1 && o===6) r += 'טז';
+  else r += (T[t]||'') + (O[o]||'');
+  if (r.length > 1) r = r.slice(0,-1) + '״' + r.slice(-1);
+  else if (r.length === 1) r += '׳';
+  return r;
+}
+function hebrewYear(createdAt) {
+  if (!createdAt) return '';
+  const s = createdAt.seconds || createdAt._seconds;
+  if (!s) return '';
+  const d = new Date(s * 1000);
+  const m = d.getMonth() + 1;
+  const hy = (m >= 10 || (m === 9 && d.getDate() >= 10)) ? d.getFullYear() + 3761 : d.getFullYear() + 3760;
+  const mil = Math.floor(hy / 1000);
+  return ('אבגדהוזחט'[mil-1]||'') + '׳' + _remToHebrew(hy % 1000);
 }
 
 function buildPage(article) {
@@ -103,6 +127,10 @@ function buildPage(article) {
     ? `<div class="ap-img-wrap"><img id="ap-img" src="${esc(article.image)}" alt="${esc(title)}" loading="lazy"></div>`
     : '';
 
+  const hyStr   = hebrewYear(article.createdAt);
+  const wordCount = stripHtml(tr[def].text || '').split(/\s+/).filter(Boolean).length;
+  const readMins  = Math.max(1, Math.ceil(wordCount / 200));
+
   // Share URLs (computed at build time)
   const safeUrl = url.replace(/'/g, "\\'");
   const waUrl  = 'https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url);
@@ -134,7 +162,7 @@ function buildPage(article) {
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1a2b4a">
 <link rel="canonical" href="${url}">
-${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?lang='+l:''}">`).join('\n')}
+${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?lang='+l:''}">` ).join('\n')}
 <link rel="alternate" hreflang="x-default" href="${url}">
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="apple-touch-icon" href="/logo.png">
@@ -143,7 +171,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 <link href="${FONTS_URL}" rel="stylesheet">
 <link rel="stylesheet" href="/css/global.css?v=${CSS_VER}">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":${JSON.stringify(title)},"description":${JSON.stringify(excerpt)},"author":{"@type":"Person","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}"},"publisher":{"@type":"Organization","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}","logo":{"@type":"ImageObject","url":"${SITE_URL}/logo.png"}}${date?`,"datePublished":"${date}"`:''},"url":"${url}"}
+{"@context":"https://schema.org","@type":"Article","headline":${JSON.stringify(title)},"description":${JSON.stringify(excerpt)},"author":{"@type":"Person","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}"},"publisher":{"@type":"Organization","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}","logo":{"@type":"ImageObject","url":"${SITE_URL}/logo.png"}}${date?`,"datePublished":"${date}"` :''},"url":"${url}"}
 </script>
 </head>
 <body>
@@ -157,7 +185,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
       <a class="mh-nav-link" href="/contact.html">Anfragen</a>
     </nav>
     <div class="mh-langs">${mhLangs}</div>
-    <a href="/articles.html" class="mh-back-btn" style="display:inline-flex;margin-left:auto;" aria-label="Zurück zu Beiträge">
+    <a href="/" class="mh-back-btn" style="display:inline-flex;margin-left:auto;" aria-label="Startseite">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </a>
   </div>
@@ -168,7 +196,11 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
     ${cat?`<div id="ap-parasha">${esc(cat)}</div>`:''}
     <div class="ap-topbar">
       <div class="ap-lang-bar">${langBtns}</div>
-      ${date?`<span id="ap-date">${date}</span>`:''}
+      <div class="ap-topbar-meta" style="display:flex;align-items:center;gap:12px;">
+        ${hyStr?`<span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:13px;font-weight:700;color:#b8952a;letter-spacing:.04em;">${hyStr}</span>`:''}
+        ${date?`<span id="ap-date">${date}</span>`:''}
+        <span class="ap-reading-time">${readMins} Min.</span>
+      </div>
     </div>
     ${titleBlocks}
     ${imgHtml}
@@ -266,6 +298,28 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 var _langs = ${JSON.stringify(langs)};
 var _cur = '${def}';
 
+var _parashaHe = {
+  'Bereshit':'בראשית','Noach':'נח','Lech Lecha':'לך לך','Vayera':'וירא','Chayei Sara':'חיי שרה',
+  'Toldot':'תולדות','Vayetze':'ויצא','Vayishlach':'וישלח','Vayeshev':'וישב',
+  'Miketz':'מקץ','Vayigash':'ויגש','Vayechi':'ויחי',
+  'Shemot':'שמות','Vaera':'וארא','Bo':'בא','Beshalach':'בשלח','Yitro':'יתרו',
+  'Mishpatim':'משפטים','Terumah':'תרומה','Tetzaveh':'תצוה','Ki Tissa':'כי תשא',
+  'Vayakhel':'ויקהל','Pekudei':'פקודי',
+  'Vayikra':'ויקרא','Tzav':'צו','Shemini':'שמיני','Tazria':'תזריע','Metzora':'מצרע',
+  'Acharei Mot':'אחרי מות','Kedoshim':'קדושים','Emor':'אמור','Behar':'בהר','Bechukotai':'בחקתי',
+  'Bamidbar':'במדבר','Nasso':'נשא','Behaalotecha':'בהעלתך','Shelach':'שלח','Korach':'קרח',
+  'Chukat':'חקת','Balak':'בלק','Pinchas':'פינחס','Matot':'מטות','Masei':'מסעי',
+  'Devarim':'דברים','Vaetchanan':'ואתחנן','Ekev':'עקב','Reeh':'ראה','Shoftim':'שופטים',
+  'Ki Teitzei':'כי תצא','Ki Tavo':'כי תבוא','Nitzavim':'ניצבים','Vayeilech':'וילך',
+  'Haazinu':'האזינו','Vezot Haberacha':'וזאת הברכה',
+  'Pesach':'פסח','Sukkot':'סוכות','Shavuot':'שבועות','Rosh Hashana':'ראש השנה',
+  'Yom Kippur':'יום כיפור','Purim':'פורים','Chanukah':'חנוכה','Tisha BeAv':'תשעה באב',
+  'Behar Bechukotai':'בהר בחקתי','Tazria Metzora':'תזריע מצרע',
+  'Acharei Kedoshim':'אחרי מות קדושים','Vayakhel Pekudei':'ויקהל פקודי',
+  'Matot Masei':'מטות מסעי','Nitzavim Vayeilech':'ניצבים וילך'
+};
+var _shareLabels = {de:'Teilen', en:'Share', he:'שיתוף'};
+
 function switchLang(lang) {
   if (!_langs.includes(lang)) return;
   _cur = lang;
@@ -282,6 +336,13 @@ function switchLang(lang) {
   } else {
     document.getElementById('article-page').style.direction = '';
   }
+  var parashaEl = document.getElementById('ap-parasha');
+  if (parashaEl) {
+    if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent;
+    parashaEl.textContent = (lang === 'he' && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
+  }
+  var shareLabel = document.querySelector('.ap-share-label');
+  if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
   history.replaceState({}, '', lang !== 'de' ? '?lang=' + lang : window.location.pathname);
 }
 
@@ -316,7 +377,7 @@ window.addEventListener('scroll', function() {
 </html>`;
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────────────────
 (async function() {
   // 1. Load from data.json (primary — includes all admin-published articles)
   let ghArticles = [];
