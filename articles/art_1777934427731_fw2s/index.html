@@ -46,13 +46,12 @@
 
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
-    <div id="ap-parasha">Behar</div>
-    <div class="ap-topbar">
-      <div class="ap-lang-bar"><button class="ap-lang-btn active" onclick="switchLang('de')">DE</button><button class="ap-lang-btn" onclick="switchLang('en')">EN</button><button class="ap-lang-btn" onclick="switchLang('he')">עב</button></div>
-      <div class="ap-topbar-meta" style="display:flex;align-items:center;gap:12px;">
-        <span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:13px;font-weight:700;color:#b8952a;letter-spacing:.04em;">ה׳תשפ״ו</span>
-        <span id="ap-date" dir="ltr">2026-05-04</span>
-        <span class="ap-reading-time" dir="ltr">4 Min.</span>
+    <div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;">Behar Bechukotai</div>
+    <div class="ap-topbar" style="justify-content:flex-end;">
+      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+        <span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">ה׳תשפ״ו</span>
+        <span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">2026-05-04</span>
+        <span class="ap-reading-time" dir="ltr" data-mins="4" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ 4 Min. Lesezeit</span>
       </div>
     </div>
     <h1 id="ap-title" data-lang="de" style="display:block;">„Das siebte Jahr“: Wenn die Tora eine wirtschaftliche Revolution auslöst</h1>
@@ -261,13 +260,19 @@ function switchLang(lang) {
   });
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
-    if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent;
+    if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent.trim();
     parashaEl.textContent = (lang === 'he' && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
     parashaEl.style.direction = lang === 'he' ? 'rtl' : '';
     parashaEl.style.textAlign = lang === 'he' ? 'right' : '';
   }
   var shareLabel = document.querySelector('.ap-share-label');
   if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
+  var rtEl = document.querySelector('.ap-reading-time');
+  if (rtEl) {
+    var m = rtEl.getAttribute('data-mins') || '?';
+    var rtL = {de:'~ '+m+' Min. Lesezeit', en:'~ '+m+' min. read', he:'~ '+m+' דק׳ קריאה'};
+    rtEl.textContent = rtL[lang] || rtL.de;
+  }
   history.replaceState({}, '', lang !== 'de' ? '?lang=' + lang : window.location.pathname);
 }
 
