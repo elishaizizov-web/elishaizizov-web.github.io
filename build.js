@@ -100,7 +100,7 @@ function buildPage(article) {
   const cat     = article.parasha || article.hag || '';
 
   const titleBlocks = langs.map(l =>
-    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'}">${esc(tr[l].title)}</h1>`
+    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':''}}">${esc(tr[l].title)}</h1>`
   ).join('\n    ');
 
   const textBlocks = langs.map(l => {
@@ -132,7 +132,7 @@ function buildPage(article) {
   const readMins  = Math.max(1, Math.ceil(wordCount / 200));
 
   // Share URLs (computed at build time)
-  const safeUrl = url.replace(/'/g, "\\'");
+  const safeUrl = url.replace(/'/g, "\\'" );
   const waUrl  = 'https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url);
   const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
   const thrUrl = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(title + '\n\n' + url);
@@ -184,8 +184,8 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
       <a class="mh-nav-link active" href="/articles.html">Beiträge</a>
       <a class="mh-nav-link" href="/contact.html">Anfragen</a>
     </nav>
-    <div class="mh-langs">${mhLangs}</div>
-    <a href="/" class="mh-back-btn" style="display:inline-flex;margin-left:auto;" aria-label="Startseite">
+    <div class="mh-langs" style="margin-right:0">${mhLangs}</div>
+    <a href="/" class="mh-back-btn" style="display:inline-flex;margin-left:auto;flex-shrink:0;" aria-label="Startseite">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </a>
   </div>
@@ -198,8 +198,8 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
       <div class="ap-lang-bar">${langBtns}</div>
       <div class="ap-topbar-meta" style="display:flex;align-items:center;gap:12px;">
         ${hyStr?`<span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:13px;font-weight:700;color:#b8952a;letter-spacing:.04em;">${hyStr}</span>`:''}
-        ${date?`<span id="ap-date">${date}</span>`:''}
-        <span class="ap-reading-time">${readMins} Min.</span>
+        ${date?`<span id="ap-date" dir="ltr">${date}</span>`:''}
+        <span class="ap-reading-time" dir="ltr">${readMins} Min.</span>
       </div>
     </div>
     ${titleBlocks}
@@ -264,7 +264,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
     </div>
   </div>
   <div class="mf-bottom">
-    <p class="mf-copy">Frankfurt am Main &nbsp;·&nbsp; © ${new Date().getFullYear()} &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+    <p class="mf-copy">Frankfurt am Main &nbsp;·&nbsp; © 2025 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
   </div>
 </footer>
 
@@ -331,15 +331,12 @@ function switchLang(lang) {
     var map = {DE:'de',EN:'en','עב':'he'};
     btn.classList.toggle('active', map[btn.textContent.trim()] === lang);
   });
-  if (lang === 'he') {
-    document.getElementById('article-page').style.direction = 'rtl';
-  } else {
-    document.getElementById('article-page').style.direction = '';
-  }
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
     if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent;
     parashaEl.textContent = (lang === 'he' && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
+    parashaEl.style.direction = lang === 'he' ? 'rtl' : '';
+    parashaEl.style.textAlign = lang === 'he' ? 'right' : '';
   }
   var shareLabel = document.querySelector('.ap-share-label');
   if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
@@ -377,7 +374,7 @@ window.addEventListener('scroll', function() {
 </html>`;
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────────────
+// ── Main ────────────────────────────────────────────────────────────────────────────────────
 (async function() {
   // 1. Load from data.json (primary — includes all admin-published articles)
   let ghArticles = [];
