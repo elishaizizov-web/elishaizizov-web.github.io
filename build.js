@@ -86,6 +86,15 @@ function hebrewYear(createdAt) {
   return ('אבגדהוזחט'[mil-1]||'') + '׳' + _remToHebrew(hy % 1000);
 }
 
+const COMBINED_PARASHOT = {
+  'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora',
+  'Acharei Mot':'Acharei Kedoshim','Kedoshim':'Acharei Kedoshim',
+  'Behar':'Behar Bechukotai','Bechukotai':'Behar Bechukotai',
+  'Vayakhel':'Vayakhel Pekudei','Pekudei':'Vayakhel Pekudei',
+  'Matot':'Matot Masei','Masei':'Matot Masei',
+  'Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'
+};
+
 function buildPage(article) {
   const tr   = article.translations || {};
   const langs = ['de','en','he'].filter(l => tr[l] && tr[l].title);
@@ -97,7 +106,7 @@ function buildPage(article) {
   const slug    = article.id;
   const url     = `${SITE_URL}/articles/${slug}`;
   const date    = isoDate(article.createdAt);
-  const cat     = article.parasha || article.hag || '';
+  const cat     = (article.parasha ? (COMBINED_PARASHOT[article.parasha] || article.parasha) : '') || article.hag || '';
 
   const titleBlocks = langs.map(l =>
     `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':''}">${esc(tr[l].title)}</h1>`
@@ -193,13 +202,12 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
-    ${cat?`<div id="ap-parasha">${esc(cat)}</div>`:''}
-    <div class="ap-topbar">
-      <div class="ap-lang-bar">${langBtns}</div>
-      <div class="ap-topbar-meta" style="display:flex;align-items:center;gap:12px;">
-        ${hyStr?`<span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:13px;font-weight:700;color:#b8952a;letter-spacing:.04em;">${hyStr}</span>`:''}
-        ${date?`<span id="ap-date" dir="ltr">${date}</span>`:''}
-        <span class="ap-reading-time" dir="ltr">${readMins} Min.</span>
+    ${cat?`<div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;">${esc(cat)}</div>`:''}
+    <div class="ap-topbar" style="justify-content:flex-end;">
+      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+        ${hyStr?`<span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">${hyStr}</span>`:''}
+        ${date?`<span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">${date}</span>`:''}
+        <span class="ap-reading-time" dir="ltr" data-mins="${readMins}" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ ${readMins} Min. Lesezeit</span>
       </div>
     </div>
     ${titleBlocks}
@@ -333,13 +341,19 @@ function switchLang(lang) {
   });
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
-    if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent;
+    if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent.trim();
     parashaEl.textContent = (lang === 'he' && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
     parashaEl.style.direction = lang === 'he' ? 'rtl' : '';
     parashaEl.style.textAlign = lang === 'he' ? 'right' : '';
   }
   var shareLabel = document.querySelector('.ap-share-label');
   if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
+  var rtEl = document.querySelector('.ap-reading-time');
+  if (rtEl) {
+    var m = rtEl.getAttribute('data-mins') || '?';
+    var rtL = {de:'~ '+m+' Min. Lesezeit', en:'~ '+m+' min. read', he:'~ '+m+' דק׳ קריאה'};
+    rtEl.textContent = rtL[lang] || rtL.de;
+  }
   history.replaceState({}, '', lang !== 'de' ? '?lang=' + lang : window.location.pathname);
 }
 
