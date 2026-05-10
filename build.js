@@ -100,7 +100,7 @@ function buildPage(article) {
   const cat     = article.parasha || article.hag || '';
 
   const titleBlocks = langs.map(l =>
-    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':''}}">${esc(tr[l].title)}</h1>`
+    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':''}">${esc(tr[l].title)}</h1>`
   ).join('\n    ');
 
   const textBlocks = langs.map(l => {
@@ -132,7 +132,7 @@ function buildPage(article) {
   const readMins  = Math.max(1, Math.ceil(wordCount / 200));
 
   // Share URLs (computed at build time)
-  const safeUrl = url.replace(/'/g, "\\'" );
+  const safeUrl = url.replace(/'/g, "\\'");
   const waUrl  = 'https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url);
   const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
   const thrUrl = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(title + '\n\n' + url);
@@ -264,7 +264,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
     </div>
   </div>
   <div class="mf-bottom">
-    <p class="mf-copy">Frankfurt am Main &nbsp;·&nbsp; © 2025 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
+    <p class="mf-copy">Frankfurt am Main &nbsp;·&nbsp; © ${new Date().getFullYear()} &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
   </div>
 </footer>
 
@@ -374,7 +374,7 @@ window.addEventListener('scroll', function() {
 </html>`;
 }
 
-// ── Main ────────────────────────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────────────────
 (async function() {
   // 1. Load from data.json (primary — includes all admin-published articles)
   let ghArticles = [];
