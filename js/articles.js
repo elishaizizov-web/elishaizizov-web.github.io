@@ -305,12 +305,13 @@ function renderCard(a, noClick) {
   const readMoreHtml = noClick ? '' : `<span class="article-card-readmore">${readMoreLabel} <span>→</span></span>`;
   const tagHtml = cat ? `<span class="article-card-tag">${escHtml(cat)}</span>` : '';
   const heYear = toHebrewYear(a.date);
-  const dateStr = a.date + (heYear ? ' · ' + heYear : '') + ' · ' + mins + ' Min.';
+  const rtLabel = { de: 'Min. Lesezeit', en: 'min. read', he: 'דק׳ קריאה', fr: 'min de lecture', es: 'min de lectura', ru: 'мин чтения' }[l] || 'Min. Lesezeit';
+  const dateStr = a.date + (heYear ? ' · ' + heYear : '') + ' · ~ ' + mins + ' ' + rtLabel;
   if (noClick) {
-    return `<div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
+    return `<div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date" dir="ltr">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
   }
   const langParam = l !== 'de' ? '?lang=' + l : '';
-  return `<a href="/articles/${escHtml(a.id)}${langParam}" style="text-decoration:none;color:inherit;display:block;"><div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
+  return `<a href="/articles/${escHtml(a.id)}${langParam}" style="text-decoration:none;color:inherit;display:block;"><div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date" dir="ltr">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
 
 function showHagim() {
