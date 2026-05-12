@@ -61,6 +61,13 @@ function isoDate(createdAt) {
   const s = createdAt.seconds || createdAt._seconds;
   return s ? new Date(s * 1000).toISOString().slice(0,10) : '';
 }
+function displayDate(createdAt) {
+  if (!createdAt) return '';
+  const s = createdAt.seconds || createdAt._seconds;
+  if (!s) return '';
+  const d = new Date(s * 1000);
+  return d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear();
+}
 
 function _remToHebrew(n) {
   const H = ['','ק','ר','ש','ת','תק','תר','תש','תת','תתק'];
@@ -85,6 +92,14 @@ function hebrewYear(createdAt) {
   const mil = Math.floor(hy / 1000);
   return ('אבגדהוזחט'[mil-1]||'') + '׳' + _remToHebrew(hy % 1000);
 }
+function hebrewYearNumeric(createdAt) {
+  if (!createdAt) return '';
+  const s = createdAt.seconds || createdAt._seconds;
+  if (!s) return '';
+  const d = new Date(s * 1000);
+  const m = d.getMonth() + 1;
+  return String((m >= 10 || (m === 9 && d.getDate() >= 10)) ? d.getFullYear() + 3761 : d.getFullYear() + 3760);
+}
 
 const COMBINED_PARASHOT = {
   'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora',
@@ -105,7 +120,7 @@ function buildPage(article) {
   const excerpt = stripHtml(tr[def].text || '').slice(0, 160);
   const slug    = article.id;
   const url     = `${SITE_URL}/articles/${slug}`;
-  const date    = isoDate(article.createdAt);
+  const date    = displayDate(article.createdAt) || isoDate(article.createdAt);
   const cat     = (article.parasha ? (COMBINED_PARASHOT[article.parasha] || article.parasha) : '') || article.hag || '';
 
   const titleBlocks = langs.map(l =>
@@ -137,6 +152,8 @@ function buildPage(article) {
     : '';
 
   const hyStr   = hebrewYear(article.createdAt);
+  const hyNum   = hebrewYearNumeric(article.createdAt);
+  const isRtl   = def === 'he';
   const wordCount = stripHtml(tr[def].text || '').split(/\s+/).filter(Boolean).length;
   const readMins  = Math.max(1, Math.ceil(wordCount / 200));
 
@@ -202,10 +219,10 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
-    ${cat?`<div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;">${esc(cat)}</div>`:''}
-    <div class="ap-topbar" style="justify-content:flex-end;">
-      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-        ${hyStr?`<span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">${hyStr}</span>`:''}
+    ${cat?`<div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;text-align:${isRtl?'right':'left'};">${esc(cat)}</div>`:''}
+    <div class="ap-topbar" style="justify-content:${isRtl?'flex-end':'flex-start'};">
+      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:${isRtl?'flex-end':'flex-start'};gap:3px;">
+        ${(hyStr||hyNum)?`<span class="ap-hebrew-year" data-letters="${esc(hyStr)}" data-numeric="${hyNum}" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">${isRtl?hyStr:hyNum}</span>`:''}
         ${date?`<span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">${date}</span>`:''}
         <span class="ap-reading-time" dir="ltr" data-mins="${readMins}" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ ${readMins} Min. Lesezeit</span>
       </div>
@@ -339,13 +356,20 @@ function switchLang(lang) {
     var map = {DE:'de',EN:'en','עב':'he'};
     btn.classList.toggle('active', map[btn.textContent.trim()] === lang);
   });
+  var isHe = lang === 'he';
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
     if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent.trim();
-    parashaEl.textContent = (lang === 'he' && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
-    parashaEl.style.direction = lang === 'he' ? 'rtl' : '';
-    parashaEl.style.textAlign = lang === 'he' ? 'right' : '';
+    parashaEl.textContent = (isHe && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
+    parashaEl.style.direction = isHe ? 'rtl' : 'ltr';
+    parashaEl.style.textAlign = isHe ? 'right' : 'left';
   }
+  var topbar = document.querySelector('.ap-topbar');
+  var meta = document.querySelector('.ap-topbar-meta');
+  if (topbar) topbar.style.justifyContent = isHe ? 'flex-end' : 'flex-start';
+  if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
+  var hyEl = document.querySelector('.ap-hebrew-year');
+  if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
   var shareLabel = document.querySelector('.ap-share-label');
   if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
   var rtEl = document.querySelector('.ap-reading-time');
