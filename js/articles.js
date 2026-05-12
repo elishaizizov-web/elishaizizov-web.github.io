@@ -304,7 +304,9 @@ function renderCard(a, noClick) {
   const readMoreLabel = { de: 'Weiterlesen', en: 'Read more', fr: 'Lire la suite', es: 'Leer más', ru: 'Читать', he: 'קרא עוד' }[l] || 'Weiterlesen';
   const readMoreHtml = noClick ? '' : `<span class="article-card-readmore">${readMoreLabel} <span>→</span></span>`;
   const tagHtml = cat ? `<span class="article-card-tag">${escHtml(cat)}</span>` : '';
-  const heYear = toHebrewYear(a.date);
+  const heYearLetters = toHebrewYear(a.date);
+  const heYearNumeric = (function(ds){ const p=ds.split('.'); if(p.length<3)return ''; const m=parseInt(p[1],10),y=parseInt(p[2],10); return (y&&y>=100)?(y+(m>=9?3761:3760))+'':''; })(a.date);
+  const heYear = (l === 'he') ? heYearLetters : heYearNumeric;
   const rtLabel = { de: 'Min. Lesezeit', en: 'min. read', he: 'דק׳ קריאה', fr: 'min de lecture', es: 'min de lectura', ru: 'мин чтения' }[l] || 'Min. Lesezeit';
   const dateStr = a.date + (heYear ? ' · ' + heYear : '') + ' · ~ ' + mins + ' ' + rtLabel;
   if (noClick) {
