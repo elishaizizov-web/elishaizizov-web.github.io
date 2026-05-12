@@ -294,19 +294,21 @@ function readingTime(html, lang) {
 function renderCard(a, noClick) {
   const l = currentLang;
   const t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
-  const img = a.image ? `<img class="article-card-img" src="${escHtml(a.image)}" alt="${escHtml(t.title)}" loading="lazy">` : `<div class="article-card-img-placeholder"></div>`;
+  const cat = a.parasha ? articleParashaName(a, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
+  const words = stripHtml(t.text).trim().split(/\s+/).filter(Boolean).length;
+  const mins = Math.max(1, Math.round(words / 200));
+  const overlay = cat ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);padding:6px 12px;font-family:Raleway,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#d4aa40;">${escHtml(cat)}</div>` : '';
+  const img = a.image ? `<div style="position:relative"><img class="article-card-img" src="${escHtml(a.image)}" alt="${escHtml(t.title)}" loading="lazy">${overlay}</div>` : `<div class="article-card-img-placeholder"></div>`;
   const excerpt = stripHtml(t.text).substring(0, 200).trim();
   const excerptHtml = excerpt ? `<p class="article-card-excerpt">${escHtml(excerpt)}${excerpt.length >= 200 ? '…' : ''}</p>` : '';
   const readMoreLabel = { de: 'Weiterlesen', en: 'Read more', fr: 'Lire la suite', es: 'Leer más', ru: 'Читать', he: 'קרא עוד' }[l] || 'Weiterlesen';
   const readMoreHtml = noClick ? '' : `<span class="article-card-readmore">${readMoreLabel} <span>→</span></span>`;
-  const cat = a.parasha ? articleParashaName(a, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   const tagHtml = cat ? `<span class="article-card-tag">${escHtml(cat)}</span>` : '';
   const heYear = toHebrewYear(a.date);
-  const dateStr = a.date + (heYear ? ' · ' + heYear : '');
+  const dateStr = a.date + (heYear ? ' · ' + heYear : '') + ' · ' + mins + ' Min.';
   if (noClick) {
     return `<div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
   }
-  const slug = articleSlug(a);
   const langParam = l !== 'de' ? '?lang=' + l : '';
   return `<a href="/articles/${escHtml(a.id)}${langParam}" style="text-decoration:none;color:inherit;display:block;"><div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}${readMoreHtml}</div></div></a>`;
 }
