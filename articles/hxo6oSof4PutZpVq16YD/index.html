@@ -24,7 +24,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/global.css?v=34">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"Das Geheimnis der heilenden Einsamkeit: Die Begegnung zwischen Worten und Schweigen","description":"Viele von uns neigen dazu, die Tora-Abschnitte Tasria und Mezora schnell zu überspringen. Diese Abschnitte, die sich mit Hauterscheinungen, Untersuchungen und R","author":{"@type":"Person","name":"Rabbiner Elishai Zizov","url":"https://elishaizizov.com"},"publisher":{"@type":"Organization","name":"Rabbiner Elishai Zizov","url":"https://elishaizizov.com","logo":{"@type":"ImageObject","url":"https://elishaizizov.com/logo.png"}},"datePublished":"2026-04-17","url":"https://elishaizizov.com/articles/hxo6oSof4PutZpVq16YD"}
+{"@context":"https://schema.org","@type":"Article","headline":"Das Geheimnis der heilenden Einsamkeit: Die Begegnung zwischen Worten und Schweigen","description":"Viele von uns neigen dazu, die Tora-Abschnitte Tasria und Mezora schnell zu überspringen. Diese Abschnitte, die sich mit Hauterscheinungen, Untersuchungen und R","author":{"@type":"Person","name":"Rabbiner Elishai Zizov","url":"https://elishaizizov.com"},"publisher":{"@type":"Organization","name":"Rabbiner Elishai Zizov","url":"https://elishaizizov.com","logo":{"@type":"ImageObject","url":"https://elishaizizov.com/logo.png"}},"datePublished":"17.4.2026","url":"https://elishaizizov.com/articles/hxo6oSof4PutZpVq16YD"}
 </script>
 </head>
 <body>
@@ -46,11 +46,11 @@
 
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
-    <div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;">Tazria Metzora</div>
-    <div class="ap-topbar" style="justify-content:flex-end;">
-      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-        <span class="ap-hebrew-year" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">ה׳תשפ״ו</span>
-        <span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">2026-04-17</span>
+    <div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;text-align:left;">Tazria Metzora</div>
+    <div class="ap-topbar" style="justify-content:flex-start;">
+      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;">
+        <span class="ap-hebrew-year" data-letters="ה׳תשפ״ו" data-numeric="5786" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">5786</span>
+        <span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">17.4.2026</span>
         <span class="ap-reading-time" dir="ltr" data-mins="3" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ 3 Min. Lesezeit</span>
       </div>
     </div>
@@ -199,13 +199,20 @@ function switchLang(lang) {
     var map = {DE:'de',EN:'en','עב':'he'};
     btn.classList.toggle('active', map[btn.textContent.trim()] === lang);
   });
+  var isHe = lang === 'he';
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
     if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent.trim();
-    parashaEl.textContent = (lang === 'he' && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
-    parashaEl.style.direction = lang === 'he' ? 'rtl' : '';
-    parashaEl.style.textAlign = lang === 'he' ? 'right' : '';
+    parashaEl.textContent = (isHe && _parashaHe[parashaEl._orig]) ? _parashaHe[parashaEl._orig] : parashaEl._orig;
+    parashaEl.style.direction = isHe ? 'rtl' : 'ltr';
+    parashaEl.style.textAlign = isHe ? 'right' : 'left';
   }
+  var topbar = document.querySelector('.ap-topbar');
+  var meta = document.querySelector('.ap-topbar-meta');
+  if (topbar) topbar.style.justifyContent = isHe ? 'flex-end' : 'flex-start';
+  if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
+  var hyEl = document.querySelector('.ap-hebrew-year');
+  if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
   var shareLabel = document.querySelector('.ap-share-label');
   if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
   var rtEl = document.querySelector('.ap-reading-time');
