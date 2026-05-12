@@ -557,23 +557,51 @@ function nlSubscribe(e) {
     } else if (f.createdAt && f.createdAt.mapValue && f.createdAt.mapValue.fields && f.createdAt.mapValue.fields.seconds) {
       createdAt = { seconds: iv(f.createdAt.mapValue.fields.seconds) };
     }
-    return { id: (doc.name || '').split('/').pop(), title: sv(f.title), text: sv(f.text), date: sv(f.date), image: sv(f.image), translations: tr, createdAt: createdAt };
+    return { id: (doc.name || '').split('/').pop(), title: sv(f.title), text: sv(f.text), date: sv(f.date), image: sv(f.image), parasha: sv(f.parasha), hag: sv(f.hag), translations: tr, createdAt: createdAt };
   }
+
+  var _COMBINED = {'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora','Acharei Mot':'Acharei Kedoshim','Kedoshim':'Acharei Kedoshim','Behar':'Behar Bechukotai','Bechukotai':'Behar Bechukotai','Vayakhel':'Vayakhel Pekudei','Pekudei':'Vayakhel Pekudei','Matot':'Matot Masei','Masei':'Matot Masei','Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'};
 
   function renderCard(a, l) {
     var t = (a.translations && a.translations[l]) ? a.translations[l] : { title: a.title, text: a.text };
     var title = t.title || a.title;
-    var excerpt = ((t.text || a.text || '').replace(/<[^>]+>/g, '') || '').substring(0, 160).trim();
+    var text = t.text || a.text || '';
+    var excerpt = (text.replace(/<[^>]+>/g, '') || '').substring(0, 160).trim();
+
+    var cat = a.parasha ? (_COMBINED[a.parasha] || a.parasha) : (a.hag || '');
+    var overlay = cat ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);padding:6px 12px;font-family:Raleway,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#d4aa40;">' + esc(cat) + '</div>' : '';
     var imgHtml = a.image
-      ? '<img class="article-card-img" src="' + esc(a.image) + '" alt="' + esc(title) + '" loading="lazy">'
+      ? '<div style="position:relative"><img class="article-card-img" src="' + esc(a.image) + '" alt="' + esc(title) + '" loading="lazy">' + overlay + '</div>'
       : '<div class="article-card-img-placeholder"></div>';
-    var rm = { de: 'Weiterlesen', en: 'Read more', he: 'קרא עוד' }[l] || 'Weiterlesen';
+
+    var month = 0, year = 0, dateDisplay = a.date || '';
+    if (a.date) {
+      var dp = a.date.split('.');
+      if (dp.length === 3) { month = parseInt(dp[1],10); year = parseInt(dp[2],10); }
+      else { var diso = new Date(a.date); if (!isNaN(diso)) { month = diso.getMonth()+1; year = diso.getFullYear(); dateDisplay = diso.getDate()+'.'+month+'.'+year; } }
+    }
+    if (!year && a.createdAt && a.createdAt.seconds) {
+      var dd = new Date(a.createdAt.seconds * 1000);
+      month = dd.getMonth()+1; year = dd.getFullYear();
+      if (!dateDisplay) dateDisplay = dd.getDate()+'.'+month+'.'+year;
+    }
+    var hyNum = year ? String(year + (month >= 9 ? 3761 : 3760)) : '';
+
+    var words = text.replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length;
+    var mins = Math.max(1, Math.round(words / 200));
+    var rtLabel = {de:'Min. Lesezeit', en:'min. read', he:'דק׳ קריאה'}[l] || 'Min. Lesezeit';
+
+    var tagHtml = cat ? '<span class="article-card-tag">' + esc(cat) + '</span>' : '';
+    var dateStr = dateDisplay + (hyNum ? ' · ' + hyNum : '') + ' · ~ ' + mins + ' ' + rtLabel;
+
+    var rm = {de:'Weiterlesen', en:'Read more', he:'קרא עוד'}[l] || 'Weiterlesen';
     var lp = l !== 'de' ? '?lang=' + l : '';
     var href = '/articles/' + encodeURIComponent(a.id) + lp;
     return '<a href="' + href + '" style="text-decoration:none;color:inherit;display:block;">'
       + '<div class="article-card">' + imgHtml
       + '<div class="article-card-body">'
-      + '<span class="article-card-date">' + esc(a.date) + '</span>'
+      + tagHtml
+      + '<span class="article-card-date" dir="ltr">' + esc(dateStr) + '</span>'
       + '<h3 class="article-card-title">' + esc(title) + '</h3>'
       + (excerpt ? '<p class="article-card-excerpt">' + esc(excerpt) + (excerpt.length >= 160 ? '…' : '') + '</p>' : '')
       + '<span class="article-card-readmore">' + rm + ' <span>→</span></span>'
