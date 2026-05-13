@@ -2603,8 +2603,10 @@ html[lang="he"] .mh-logo { margin-right: 8px; margin-left: 8px; }
 html[lang="he"] .mh-langs { margin-right: auto; }
 html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; }
 
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
   .mh-nav { display: none; }
+}
+@media (max-width: 1024px) {
   .mh-langs {
     background: transparent;
     border-radius: 0;
