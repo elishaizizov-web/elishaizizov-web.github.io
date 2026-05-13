@@ -212,8 +212,9 @@ function setLang(l) {
       var title=t.title||a.title;
       var text=t.text||a.text||'';
       var excerpt=(text.replace(/<[^>]+>/g,'')||'').substring(0,160).trim();
-      var COMBINED={'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora','Acharei Mot':'Acharei Kedoshim','Kedoshim':'Acharei Kedoshim','Behar':'Behar Bechukotai','Bechukotai':'Behar Bechukotai','Vayakhel':'Vayakhel Pekudei','Pekudei':'Vayakhel Pekudei','Matot':'Matot Masei','Masei':'Matot Masei','Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'};
-      var cat=a.parasha?(COMBINED[a.parasha]||a.parasha):(a.hag||'');
+      var _COMB={'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora','Acharei Mot':'Acharei Kedoshim','Kedoshim':'Acharei Kedoshim','Behar':'Behar Bechukotai','Bechukotai':'Behar Bechukotai','Vayakhel':'Vayakhel Pekudei','Pekudei':'Vayakhel Pekudei','Matot':'Matot Masei','Masei':'Matot Masei','Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'};
+      var _catEn=a.parasha?(_COMB[a.parasha]||a.parasha):(a.hag||'');
+      var cat=l==='he'?(a.parasha?(_PARASHA_HE[_catEn]||_catEn):(a.hag?(_HAG_HE[a.hag]||a.hag):'')):_catEn;
       var esc=function(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
       var overlay=cat?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);padding:6px 12px;font-family:Raleway,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#d4aa40;">'+esc(cat)+'</div>':'';
       var imgHtml=a.image?'<div style="position:relative"><img class="article-card-img" src="'+esc(a.image)+'" alt="'+esc(title)+'" loading="lazy">'+overlay+'</div>':'<div class="article-card-img-placeholder"></div>';
@@ -223,9 +224,9 @@ function setLang(l) {
       var hyNum=year?String(year+(month>=9?3761:3760)):'';
       var words=text.replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length;
       var mins=Math.max(1,Math.round(words/200));
-      var rtLabel={de:'Min. Lesezeit',en:'min. read',he:'דק׳ קריאה'}[l]||'Min. Lesezeit';
+      var rtLabel={de:'~ '+mins+' Min. Lesezeit',en:'~ '+mins+' min. read',he:'כ-'+mins+' דק׳ קריאה'}[l]||('~ '+mins+' Min. Lesezeit');
       var tagHtml=cat?'<span class="article-card-tag">'+esc(cat)+'</span>':'';
-      var dateStr=dateDisplay+(hyNum?' · '+hyNum:'')+(mins?' · ~ '+mins+' '+rtLabel:'');
+      var dateStr=dateDisplay+(hyNum?' · '+hyNum:'')+' · '+rtLabel;
       var rm={de:'Weiterlesen',en:'Read more',he:'קרא עוד'}[l]||'Weiterlesen';
       var lp=l!=='de'?'?lang='+l:'';
       return '<a href="/articles/'+encodeURIComponent(a.id)+lp+'" style="text-decoration:none;color:inherit;display:block;"><div class="article-card">'+imgHtml+'<div class="article-card-body">'+tagHtml+'<span class="article-card-date" dir="ltr">'+esc(dateStr)+'</span><h3 class="article-card-title">'+esc(title)+'</h3>'+(excerpt?'<p class="article-card-excerpt">'+esc(excerpt)+(excerpt.length>=160?'…':'')+'</p>':'')+'<span class="article-card-readmore">'+rm+' <span>→</span></span></div></div></a>';
@@ -556,6 +557,17 @@ function nlSubscribe(e) {
   }
 }
 
+// Hebrew name lookups (used by home page cards + setLang re-render)
+var _PARASHA_HE = {
+  'Bereshit':'בראשית','Noach':'נח','Lech Lecha':'לך לך','Vayera':'וירא','Chayei Sara':'חיי שרה','Toldot':'תולדות','Vayetzé':'ויצא','Vayishlach':'וישלח','Vayeshev':'וישב','Miketz':'מקץ','Vayigash':'ויגש','Vayechi':'ויחי',
+  'Shemot':'שמות','Vaera':'וארא','Bo':'בא','Beshalach':'בשלח','Yitro':'יתרו','Mishpatim':'משפטים','Teruma':'תרומה','Tetzavé':'תצוה','Ki Tissa':'כי תשא','Vayakhel':'ויקהל','Pekudei':'פקודי',
+  'Vayikra':'ויקרא','Tzav':'צו','Shemini':'שמיני','Tazria':'תזריע','Metzora':'מצורע','Acharei Mot':'אחרי מות','Kedoshim':'קדושים','Emor':'אמור','Behar':'בהר','Bechukotai':'בחוקותי',
+  'Bamidbar':'במדבר','Nasso':'נשא','Behaalotcha':'בהעלותך','Shelach':'שלח','Korach':'קורח','Chukat':'חוקת','Balak':'בלק','Pinchas':'פינחס','Matot':'מטות','Masei':'מסעי',
+  'Devarim':'דברים','Vaetchanan':'ואתחנן','Ekev':'עקב','Ree':'ראה','Shoftim':'שופטים','Ki Tetze':'כי תצא','Ki Tavo':'כי תבוא','Nitzavim':'נצבים','Vayelech':'וילך','Vayeilech':'וילך','Haazinu':'האזינו','Vezot Habracha':'וזאת הברכה',
+  'Tazria Metzora':'תזריע מצורע','Acharei Kedoshim':'אחרי מות קדושים','Behar Bechukotai':'בהר בחוקותי','Vayakhel Pekudei':'ויקהל פקודי','Matot Masei':'מטות מסעי','Nitzavim Vayeilech':'נצבים וילך'
+};
+var _HAG_HE = {'Rosh Hashanah':'ראש השנה','Yom Kippur':'יום כיפור','Sukkot':'סוכות','Shemini Atzeret':'שמיני עצרת','Chanukah':'חנוכה','Asarah BeTevet':'עשרה בטבת','Tu BiShvat':'ט"ו בשבט','Purim':'פורים','Pesach':'פסח','Sefirat HaOmer':'ספירת העומר','Yom HaShoah':'יום השואה','Yom HaZikaron':'יום הזיכרון','Yom HaAtzmaut':'יום העצמאות','Lag BaOmer':'ל"ג בעומר','Yom Yerushalayim':'יום ירושלים','Shavuot':'שבועות','Shiva Asar BeTammuz':'שבעה עשר בתמוז','Tisha BAv':'תשעה באב'};
+
 // ════════════════════════════════════════════════════════
 // HOMEPAGE LATEST ARTICLES (index.html only)
 // Loads from /articles/data.json (static file, always up to date)
@@ -597,7 +609,8 @@ function nlSubscribe(e) {
     var text = t.text || a.text || '';
     var excerpt = (text.replace(/<[^>]+>/g, '') || '').substring(0, 160).trim();
 
-    var cat = a.parasha ? (_COMBINED[a.parasha] || a.parasha) : (a.hag || '');
+    var _catEn = a.parasha ? (_COMBINED[a.parasha] || a.parasha) : (a.hag || '');
+    var cat = l === 'he' ? (a.parasha ? (_PARASHA_HE[_catEn] || _catEn) : (a.hag ? (_HAG_HE[a.hag] || a.hag) : '')) : _catEn;
     var overlay = cat ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);padding:6px 12px;font-family:Raleway,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#d4aa40;">' + esc(cat) + '</div>' : '';
     var imgHtml = a.image
       ? '<div style="position:relative"><img class="article-card-img" src="' + esc(a.image) + '" alt="' + esc(title) + '" loading="lazy">' + overlay + '</div>'
@@ -618,10 +631,10 @@ function nlSubscribe(e) {
 
     var words = text.replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length;
     var mins = Math.max(1, Math.round(words / 200));
-    var rtLabel = {de:'Min. Lesezeit', en:'min. read', he:'דק׳ קריאה'}[l] || 'Min. Lesezeit';
+    var rtLabel = {de:'~ ' + mins + ' Min. Lesezeit', en:'~ ' + mins + ' min. read', he:'כ-' + mins + ' דק׳ קריאה'}[l] || ('~ ' + mins + ' Min. Lesezeit');
 
     var tagHtml = cat ? '<span class="article-card-tag">' + esc(cat) + '</span>' : '';
-    var dateStr = dateDisplay + (hyNum ? ' · ' + hyNum : '') + ' · ~ ' + mins + ' ' + rtLabel;
+    var dateStr = dateDisplay + (hyNum ? ' · ' + hyNum : '') + ' · ' + rtLabel;
 
     var rm = {de:'Weiterlesen', en:'Read more', he:'קרא עוד'}[l] || 'Weiterlesen';
     var lp = l !== 'de' ? '?lang=' + l : '';
