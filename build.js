@@ -220,12 +220,10 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
     ${cat?`<div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;text-align:${isRtl?'right':'left'};">${esc(cat)}</div>`:''}
-    <div class="ap-topbar" style="justify-content:${isRtl?'flex-end':'flex-start'};">
-      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:${isRtl?'flex-end':'flex-start'};gap:3px;">
-        ${(hyStr||hyNum)?`<span class="ap-hebrew-year" data-letters="${esc(hyStr)}" data-numeric="${hyNum}" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">${isRtl?hyStr:hyNum}</span>`:''}
-        ${date?`<span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">${date}</span>`:''}
-        <span class="ap-reading-time" dir="ltr" data-mins="${readMins}" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ ${readMins} Min. Lesezeit</span>
-      </div>
+    <div class="ap-topbar" style="width:100%;padding:10px 0 14px;text-align:${isRtl?'right':'left'};">
+      ${(hyStr||hyNum)?`<span class="ap-hebrew-year" data-letters="${esc(hyStr)}" data-numeric="${hyNum}" style="display:block;font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">${isRtl?hyStr:hyNum}</span>`:''}
+      ${date?`<span id="ap-date" style="display:block;font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">${date}</span>`:''}
+      <span class="ap-reading-time" data-mins="${readMins}" style="display:block;font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ ${readMins} Min. Lesezeit</span>
     </div>
     ${titleBlocks}
     ${imgHtml}
@@ -365,9 +363,7 @@ function switchLang(lang) {
     parashaEl.style.textAlign = isHe ? 'right' : 'left';
   }
   var topbar = document.querySelector('.ap-topbar');
-  var meta = document.querySelector('.ap-topbar-meta');
-  if (topbar) topbar.style.justifyContent = isHe ? 'flex-end' : 'flex-start';
-  if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
+  if (topbar) topbar.style.textAlign = isHe ? 'right' : 'left';
   var hyEl = document.querySelector('.ap-hebrew-year');
   if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
   var shareLabel = document.querySelector('.ap-share-label');
@@ -375,7 +371,7 @@ function switchLang(lang) {
   var rtEl = document.querySelector('.ap-reading-time');
   if (rtEl) {
     var m = rtEl.getAttribute('data-mins') || '?';
-    var rtL = {de:'~ '+m+' Min. Lesezeit', en:'~ '+m+' min. read', he:'~ '+m+' דק׳ קריאה'};
+    var rtL = {de:'~ '+m+' Min. Lesezeit', en:'~ '+m+' min. read', he:'כ-'+m+' דק׳ קריאה'};
     rtEl.textContent = rtL[lang] || rtL.de;
   }
   history.replaceState({}, '', lang !== 'de' ? '?lang=' + lang : window.location.pathname);
