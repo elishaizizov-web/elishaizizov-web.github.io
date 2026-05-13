@@ -47,12 +47,10 @@
 <div id="ap-progress"></div>
 <div id="article-page" style="display:block; padding-top:56px;">
     <div id="ap-parasha" style="font-family:Raleway,sans-serif;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#b8952a;margin-bottom:6px;text-align:left;">Pesach</div>
-    <div class="ap-topbar" style="justify-content:flex-start;">
-      <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;">
-        <span class="ap-hebrew-year" data-letters="ה׳תשפ״ו" data-numeric="5786" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">5786</span>
-        <span id="ap-date" dir="ltr" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">29.3.2026</span>
-        <span class="ap-reading-time" dir="ltr" data-mins="2" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ 2 Min. Lesezeit</span>
-      </div>
+    <div class="ap-topbar" style="width:100%;padding:10px 0 14px;text-align:left;">
+      <span class="ap-hebrew-year" data-letters="ה׳תשפ״ו" data-numeric="5786" style="display:block;font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">5786</span>
+      <span id="ap-date" style="display:block;font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">29.3.2026</span>
+      <span class="ap-reading-time" data-mins="2" style="display:block;font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ 2 Min. Lesezeit</span>
     </div>
     <h1 id="ap-title" data-lang="de" style="display:block;">Die Pessach-Haggada: Die Schrift der Ewigkeit, verfasst von einem ganzen Volk</h1>
     <h1 id="ap-title" data-lang="en" style="display:none;">The Passover Haggadah: An Eternal Text Written by an Entire People</h1>
@@ -221,9 +219,7 @@ function switchLang(lang) {
     parashaEl.style.textAlign = isHe ? 'right' : 'left';
   }
   var topbar = document.querySelector('.ap-topbar');
-  var meta = document.querySelector('.ap-topbar-meta');
-  if (topbar) topbar.style.justifyContent = isHe ? 'flex-end' : 'flex-start';
-  if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
+  if (topbar) topbar.style.textAlign = isHe ? 'right' : 'left';
   var hyEl = document.querySelector('.ap-hebrew-year');
   if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
   var shareLabel = document.querySelector('.ap-share-label');
@@ -231,7 +227,7 @@ function switchLang(lang) {
   var rtEl = document.querySelector('.ap-reading-time');
   if (rtEl) {
     var m = rtEl.getAttribute('data-mins') || '?';
-    var rtL = {de:'~ '+m+' Min. Lesezeit', en:'~ '+m+' min. read', he:'~ '+m+' דק׳ קריאה'};
+    var rtL = {de:'~ '+m+' Min. Lesezeit', en:'~ '+m+' min. read', he:'כ-'+m+' דק׳ קריאה'};
     rtEl.textContent = rtL[lang] || rtL.de;
   }
   history.replaceState({}, '', lang !== 'de' ? '?lang=' + lang : window.location.pathname);
