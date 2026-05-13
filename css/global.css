@@ -2539,7 +2539,11 @@ body.menu-open { overflow: hidden; }
 }
 .mh-logo img { height: 36px; width: auto; }
 .mh-nav {
-  display: none;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  justify-content: center;
 }
 .mh-nav-link {
   font-family: 'Raleway', sans-serif;
@@ -2600,6 +2604,7 @@ html[lang="he"] .mh-langs { margin-right: auto; }
 html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; }
 
 @media (max-width: 1024px) {
+  .mh-nav { display: none; }
   .mh-langs {
     background: transparent;
     border-radius: 0;
