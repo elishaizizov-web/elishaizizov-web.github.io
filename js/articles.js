@@ -307,8 +307,8 @@ function renderCard(a, noClick) {
   const heYearLetters = toHebrewYear(a.date);
   const heYearNumeric = (function(ds){ const p=ds.split('.'); if(p.length<3)return ''; const m=parseInt(p[1],10),y=parseInt(p[2],10); return (y&&y>=100)?(y+(m>=9?3761:3760))+'':''; })(a.date);
   const heYear = (l === 'he') ? heYearLetters : heYearNumeric;
-  const rtLabel = { de: 'Min. Lesezeit', en: 'min. read', he: 'דק׳ קריאה', fr: 'min de lecture', es: 'min de lectura', ru: 'мин чтения' }[l] || 'Min. Lesezeit';
-  const dateStr = a.date + (heYear ? ' · ' + heYear : '') + ' · ~ ' + mins + ' ' + rtLabel;
+  const rtSuffix = { de: '~ ' + mins + ' Min. Lesezeit', en: '~ ' + mins + ' min. read', he: 'כ-' + mins + ' דק׳ קריאה', fr: '~ ' + mins + ' min de lecture', es: '~ ' + mins + ' min de lectura', ru: '~ ' + mins + ' мин чтения' }[l] || ('~ ' + mins + ' Min. Lesezeit');
+  const dateStr = a.date + (heYear ? ' · ' + heYear : '') + ' · ' + rtSuffix;
   if (noClick) {
     return `<div class="article-card">${img}<div class="article-card-body">${tagHtml}<span class="article-card-date" dir="ltr">${escHtml(dateStr)}</span><h3 class="article-card-title">${escHtml(t.title)}</h3>${excerptHtml}</div></div>`;
   }
