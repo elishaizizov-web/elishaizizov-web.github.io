@@ -202,6 +202,35 @@ function setLang(l) {
     const bl = b.id.replace('lb-','');
     b.classList.toggle('active', bl === l || (bl === 'he' && l === 'he'));
   });
+  // Re-render home articles grid in the correct language
+  if (window._homeArticles && window._homeGrid) {
+    var _hf = window._homeArticles.filter(function(a) { return a && a.id && !String(a.id).startsWith('hero'); });
+    _hf.sort(function(a,b){ return (((b.createdAt&&b.createdAt.seconds)||0)-((a.createdAt&&a.createdAt.seconds)||0)); });
+    var _hl = _hf.slice(0,4);
+    window._homeGrid.innerHTML = _hl.length ? _hl.map(function(a){ return (function(){
+      var t=(a.translations&&a.translations[l])?a.translations[l]:{title:a.title,text:a.text};
+      var title=t.title||a.title;
+      var text=t.text||a.text||'';
+      var excerpt=(text.replace(/<[^>]+>/g,'')||'').substring(0,160).trim();
+      var COMBINED={'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora','Acharei Mot':'Acharei Kedoshim','Kedoshim':'Acharei Kedoshim','Behar':'Behar Bechukotai','Bechukotai':'Behar Bechukotai','Vayakhel':'Vayakhel Pekudei','Pekudei':'Vayakhel Pekudei','Matot':'Matot Masei','Masei':'Matot Masei','Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'};
+      var cat=a.parasha?(COMBINED[a.parasha]||a.parasha):(a.hag||'');
+      var esc=function(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+      var overlay=cat?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);padding:6px 12px;font-family:Raleway,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#d4aa40;">'+esc(cat)+'</div>':'';
+      var imgHtml=a.image?'<div style="position:relative"><img class="article-card-img" src="'+esc(a.image)+'" alt="'+esc(title)+'" loading="lazy">'+overlay+'</div>':'<div class="article-card-img-placeholder"></div>';
+      var month=0,year=0,dateDisplay=a.date||'';
+      if(a.date){var dp=a.date.split('.');if(dp.length===3){month=parseInt(dp[1],10);year=parseInt(dp[2],10);}else{var di=new Date(a.date);if(!isNaN(di)){month=di.getMonth()+1;year=di.getFullYear();dateDisplay=di.getDate()+'.'+month+'.'+year;}}}
+      if(!year&&a.createdAt&&a.createdAt.seconds){var dd=new Date(a.createdAt.seconds*1000);month=dd.getMonth()+1;year=dd.getFullYear();if(!dateDisplay)dateDisplay=dd.getDate()+'.'+month+'.'+year;}
+      var hyNum=year?String(year+(month>=9?3761:3760)):'';
+      var words=text.replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length;
+      var mins=Math.max(1,Math.round(words/200));
+      var rtLabel={de:'Min. Lesezeit',en:'min. read',he:'דק׳ קריאה'}[l]||'Min. Lesezeit';
+      var tagHtml=cat?'<span class="article-card-tag">'+esc(cat)+'</span>':'';
+      var dateStr=dateDisplay+(hyNum?' · '+hyNum:'')+(mins?' · ~ '+mins+' '+rtLabel:'');
+      var rm={de:'Weiterlesen',en:'Read more',he:'קרא עוד'}[l]||'Weiterlesen';
+      var lp=l!=='de'?'?lang='+l:'';
+      return '<a href="/articles/'+encodeURIComponent(a.id)+lp+'" style="text-decoration:none;color:inherit;display:block;"><div class="article-card">'+imgHtml+'<div class="article-card-body">'+tagHtml+'<span class="article-card-date" dir="ltr">'+esc(dateStr)+'</span><h3 class="article-card-title">'+esc(title)+'</h3>'+(excerpt?'<p class="article-card-excerpt">'+esc(excerpt)+(excerpt.length>=160?'…':'')+'</p>':'')+'<span class="article-card-readmore">'+rm+' <span>→</span></span></div></div></a>';
+    })(); }).join('') : '';
+  }
   // Article-page specific calls (guarded — only run if articles.js is loaded)
   if (typeof updateNavLabels === 'function') updateNavLabels();
   if (typeof renderBooks === 'function') renderBooks();
@@ -641,6 +670,8 @@ function nlSubscribe(e) {
       var ghIds = new Set(ghArts.map(function(a) { return a.id; }));
       var merged = ghArts.concat(fsArts.filter(function(a) { return !ghIds.has(a.id); }));
       sortAndRender(merged, grid);
+      window._homeArticles = merged;
+      window._homeGrid = grid;
     });
   });
 })();
