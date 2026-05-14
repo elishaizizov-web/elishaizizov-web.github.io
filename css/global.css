@@ -2609,6 +2609,7 @@ html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; 
     background: transparent;
     border-radius: 0;
     border-left: 1px solid var(--rule);
+    margin-left: auto;
   }
   .mh-langs .lang-btn {
     background: none;
