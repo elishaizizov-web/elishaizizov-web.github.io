@@ -2620,9 +2620,6 @@ html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; 
   .mh-langs .lang-btn:first-child { border-left: none; }
   .mh-langs .lang-btn.active { color: var(--navy); }
 }
-@media (min-width: 1025px) {
-  .hamburger-btn { display: none; }
-}
 @media (max-width: 768px) {
   .mh-inner { padding: 0 12px; gap: 6px; height: 56px; }
   .mh-logo img { height: 30px; }
