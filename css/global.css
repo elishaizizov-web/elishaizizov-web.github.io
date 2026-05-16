@@ -234,28 +234,19 @@ html[lang="he"] .hero-cta-btn svg { transform: scaleX(-1); }
   border-bottom: 1px solid var(--rule);
 }
 .career-cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
   margin-top: 28px;
 }
 .career-card {
-  border-left: 3px solid var(--gold, #b8952a);
-  padding: 18px 16px 18px 20px;
-  background: #fdfcfa;
-  border-top: 1px solid var(--rule, #e0ddd6);
-  border-right: 1px solid var(--rule, #e0ddd6);
-  border-bottom: 1px solid var(--rule, #e0ddd6);
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: box-shadow 0.22s, border-left-color 0.22s, background 0.22s;
+  gap: 5px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule, #e0ddd6);
 }
-.career-card:hover {
-  box-shadow: 0 4px 20px rgba(27,42,59,0.09);
-  border-left-color: var(--navy, #1b2a3b);
-  background: linear-gradient(135deg, rgba(184,149,42,0.04) 0%, #fff 100%);
-}
+.career-card:first-child { border-top: 1px solid var(--rule, #e0ddd6); }
+.career-card:hover { background: none; box-shadow: none; }
 .cc-period {
   display: block;
   font-family: 'Raleway', sans-serif;
@@ -268,24 +259,21 @@ html[lang="he"] .hero-cta-btn svg { transform: scaleX(-1); }
 .cc-title {
   display: block;
   font-family: 'Playfair Display', serif;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--navy, #1b2a3b);
-  line-height: 1.25;
+  line-height: 1.3;
+  margin-top: 2px;
 }
 .cc-desc {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-soft, #5a6a7a);
-  line-height: 1.6;
+  line-height: 1.65;
   font-weight: 300;
   margin: 0;
 }
 html[lang="he"] .career-cards { direction: rtl; }
-html[lang="he"] .career-card { border-left: none; border-right: 3px solid var(--gold, #b8952a); padding: 18px 20px 18px 16px; }
-html[lang="he"] .career-card:hover { border-right-color: var(--navy, #1b2a3b); }
-@media (max-width: 480px) {
-  .career-cards { grid-template-columns: 1fr; gap: 12px; }
-}
+html[lang="he"] .career-card { border-left: none; padding: 22px 0; }
 .section-label {
   font-family: 'Raleway', sans-serif;
   font-size: 9.5px;
