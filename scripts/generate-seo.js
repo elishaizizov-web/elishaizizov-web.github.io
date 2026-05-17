@@ -428,6 +428,17 @@ async function main() {
   articles = articles.concat(localArticles);
   console.log(`  ${articles.length} article(s) total`);
 
+  // Sort by date ascending so first article on a parasha always gets the base slug,
+  // newer ones get -2, -3, etc. — this keeps URLs stable as more articles are added.
+  articles.sort(function(a, b) {
+    const toMs = function(d) {
+      if (!d) return 0;
+      const p = d.split('.');
+      return p.length === 3 ? new Date(p[2]+'-'+p[1]+'-'+p[0]).getTime() : 0;
+    };
+    return toMs(a.date) - toMs(b.date);
+  });
+
   const prevSlugs    = readGeneratedSlugs();
   const currentSlugs = [];
   const usedBaseSlugs = {};
