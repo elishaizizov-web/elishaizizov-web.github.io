@@ -441,11 +441,6 @@ function switchLang(lang) {
 }
 
 (function() {
-  // Update address bar to show clean SEO URL without breaking back-button
-  var _seoUrl = '${safeShareUrl}';
-  if (_seoUrl && window.location.href.indexOf('/articles/') !== -1) {
-    history.replaceState({}, '', _seoUrl);
-  }
   var p = new URLSearchParams(window.location.search).get('lang');
   if (p && p !== _cur) switchLang(p);
 })();
