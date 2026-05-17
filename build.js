@@ -253,7 +253,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
 <link href="${FONTS_URL}" rel="stylesheet">
 <link rel="stylesheet" href="/css/global.css?v=${CSS_VER}">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":${JSON.stringify(title)},"description":${JSON.stringify(excerpt)},"author":{"@type":"Person","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}"},"publisher":{"@type":"Organization","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}","logo":{"@type":"ImageObject","url":"${SITE_URL}/logo.png"}}${date?`,"datePublished":"${date}"` :''},"url":"${url}"}
+{"@context":"https://schema.org","@type":"BlogPosting","@id":"${shareUrl}#article","headline":${JSON.stringify(title)},"description":${JSON.stringify(excerpt)},"image":"${resolveArticleImage(article)}","datePublished":"${isoDate(article.createdAt)}","dateModified":"${isoDate(article.createdAt)}","author":{"@type":"Person","@id":"${SITE_URL}/#person","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}"},"publisher":{"@type":"Person","@id":"${SITE_URL}/#person","name":"Rabbiner Elishai Zizov","url":"${SITE_URL}"},"url":"${shareUrl}","mainEntityOfPage":{"@type":"WebPage","@id":"${shareUrl}"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"${SITE_URL}"},{"@type":"ListItem","position":2,"name":"Beiträge","item":"${SITE_URL}/articles.html"},{"@type":"ListItem","position":3,"name":${JSON.stringify(title)},"item":"${shareUrl}"}]}}
 </script>
 </head>
 <body>

@@ -262,19 +262,27 @@ function articleHtmlForLang(a, lang) {
     return '  <link rel="alternate" hreflang="' + l + '" href="' + escHtml(u) + '">';
   }).join('\n') + '\n  <link rel="alternate" hreflang="x-default" href="' + escHtml(deUrl) + '">';
 
+  const isoDate = a.date ? (function(d){ const p=d.split('.'); return p.length===3?p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'):d; })(a.date) : '';
   const jsonld = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
+    "@id": pageUrl + '#article',
     "headline": title,
     "description": stripHtml(text).substring(0, 220),
-    "datePublished": a.date || '',
-    "author": { "@type":"Person","name":siteName,"url":SITE_URL },
-    "publisher": { "@type":"Person","name":siteName,"url":SITE_URL },
+    "image": resolvedImg,
+    "datePublished": isoDate,
+    "dateModified": isoDate,
+    "author": { "@type":"Person","@id":SITE_URL+'/#person',"name":siteName,"url":SITE_URL },
+    "publisher": { "@type":"Person","@id":SITE_URL+'/#person',"name":siteName,"url":SITE_URL },
     "url": pageUrl,
     "mainEntityOfPage": { "@type":"WebPage","@id":pageUrl },
-    "inLanguage": lang
+    "inLanguage": lang,
+    "breadcrumb": { "@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Home","item":SITE_URL},
+      {"@type":"ListItem","position":2,"name":"Beiträge","item":SITE_URL+"/articles.html"},
+      {"@type":"ListItem","position":3,"name":title,"item":pageUrl}
+    ]}
   };
-  jsonld.image = resolvedImg;
   if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
   // Full article text for Google to index (preserve HTML but sanitise)
@@ -341,21 +349,23 @@ function buildSitemap(articles) {
   const urls = [
     '  <url><loc>' + SITE_URL + '/</loc><lastmod>' + today + '</lastmod><priority>1.0</priority></url>'
   ];
+  const usedSlugs = {};
   for (const a of articles) {
-    const slug = articleSlug(a);
+    let slug = articleSlug(a);
     if (!slug) continue;
-    const loc = SITE_URL + '/' + slug;
+    // Deduplicate same logic as main()
+    const base = slug;
+    if (usedSlugs[base] === undefined) { usedSlugs[base] = 1; }
+    else { usedSlugs[base]++; slug = base + '-' + usedSlugs[base]; }
     // Date from "DD.MM.YYYY" → "YYYY-MM-DD"
     let lastmod = today;
     if (a.date) {
       const parts = a.date.split('.');
       if (parts.length === 3) lastmod = parts[2] + '-' + parts[1].padStart(2,'0') + '-' + parts[0].padStart(2,'0');
     }
-    urls.push('  <url><loc>' + loc + '</loc><lastmod>' + lastmod + '</lastmod><priority>0.8</priority></url>');
-    // Language-specific pages (/{slug}-{lang}/)
+    urls.push('  <url><loc>' + SITE_URL + '/' + slug + '/</loc><lastmod>' + lastmod + '</lastmod><priority>0.8</priority></url>');
     for (const l of LANGS.filter(function(l) { return l !== 'de'; })) {
-      const langLoc = SITE_URL + '/' + slug + '-' + l;
-      urls.push('  <url><loc>' + langLoc + '</loc><lastmod>' + lastmod + '</lastmod><priority>0.7</priority></url>');
+      urls.push('  <url><loc>' + SITE_URL + '/' + slug + '-' + l + '/</loc><lastmod>' + lastmod + '</lastmod><priority>0.7</priority></url>');
     }
   }
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls.join('\n') + '\n</urlset>\n';
