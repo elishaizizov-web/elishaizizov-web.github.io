@@ -126,6 +126,27 @@ function escHtml(s) {
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+function resolveImage(a, slug) {
+  const img = a.image;
+  if (!img) return SITE_URL + '/logo.png';
+  if (img.startsWith('http://') || img.startsWith('https://')) return img;
+  if (img.startsWith('data:')) {
+    const match = img.match(/^data:image\/(\w+);base64,(.+)$/s);
+    if (!match) return SITE_URL + '/logo.png';
+    const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
+    const filename = slug + '.' + ext;
+    const imgDir = path.join(ROOT, 'articles', 'images');
+    const imgPath = path.join(imgDir, filename);
+    if (!fs.existsSync(imgPath)) {
+      fs.mkdirSync(imgDir, { recursive: true });
+      fs.writeFileSync(imgPath, Buffer.from(match[2], 'base64'));
+      console.log('  [image] saved ' + filename);
+    }
+    return SITE_URL + '/articles/images/' + filename;
+  }
+  return img;
+}
+
 // ─── FIRESTORE REST API ───────────────────────────────────────────────────────
 function httpsGet(url) {
   return new Promise((resolve, reject) => {
@@ -211,7 +232,8 @@ function articleHtmlForLang(a, lang) {
   const seoTitle   = escHtml(title);
   const seoTopic   = escHtml(topic);
   const seoExcerpt = escHtml(stripHtml(text).substring(0, 220));
-  const seoImg     = a.image ? escHtml(a.image) : (SITE_URL + '/logo.png');
+  const resolvedImg = resolveImage(a, slug);
+  const seoImg      = escHtml(resolvedImg);
   const htmlDir    = lang === 'he' ? 'rtl' : 'ltr';
   const isRTL      = lang === 'he';
   const siteName   = lang === 'he' ? '\u05d4\u05e8\u05d1 \u05d0\u05dc\u05d9\u05e9\u05d9 \u05d6\u05d9\u05d6\u05d5\u05d1' : 'Rabbiner Elishai Zizov';
@@ -236,7 +258,7 @@ function articleHtmlForLang(a, lang) {
     "mainEntityOfPage": { "@type":"WebPage","@id":pageUrl },
     "inLanguage": lang
   };
-  if (a.image) jsonld.image = a.image;
+  jsonld.image = resolvedImg;
   if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
   // Full article text for Google to index (preserve HTML but sanitise)
