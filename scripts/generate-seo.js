@@ -106,9 +106,24 @@ function topicNameForLang(a, lang) {
   return '';
 }
 
+const COMBINED_PARASHOT = {
+  'Tazria':'Tazria Metzora','Metzora':'Tazria Metzora',
+  'Acharei Mot':'Acharei Mot Kedoshim','Kedoshim':'Acharei Mot Kedoshim',
+  'Behar':'Behar Bechukotai','Bechukotai':'Behar Bechukotai',
+  'Vayakhel':'Vayakhel Pekudei','Pekudei':'Vayakhel Pekudei',
+  'Matot':'Matot Masei','Masei':'Matot Masei',
+  'Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'
+};
+
 function articleSlug(a) {
-  const year    = a.date ? a.date.split('.').pop().trim() : '';
-  const rawName = a.parasha ? parashaDisplayName(a.parasha) : (a.hag || '');
+  const year = a.date ? a.date.split('.').pop().trim() : '';
+  let rawName;
+  if (a.parasha) {
+    const combined = COMBINED_PARASHOT[a.parasha];
+    rawName = combined ? combined.split(' ').map(parashaDisplayName).join(' ') : parashaDisplayName(a.parasha);
+  } else {
+    rawName = a.hag || '';
+  }
   if (!rawName || !year) return a.id;
   const name = rawName.toLowerCase()
     .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
@@ -130,6 +145,7 @@ function resolveImage(a, slug) {
   const img = a.image;
   if (!img) return SITE_URL + '/logo.png';
   if (img.startsWith('http://') || img.startsWith('https://')) return img;
+  if (img.startsWith('/')) return SITE_URL + img;
   if (img.startsWith('data:')) {
     const match = img.match(/^data:image\/(\w+);base64,(.+)$/s);
     if (!match) return SITE_URL + '/logo.png';
@@ -368,6 +384,21 @@ function removeOldDirs(prevSlugs, currentSlugs) {
   }
 }
 
+function loadDataJsonArticles() {
+  const dataPath = path.join(ROOT, 'articles', 'data.json');
+  if (!fs.existsSync(dataPath)) return [];
+  return JSON.parse(fs.readFileSync(dataPath, 'utf8')).map(a => {
+    const norm = { ...a };
+    if (a.translations) {
+      for (const [lang, tr] of Object.entries(a.translations)) {
+        if (tr.title) norm['title_' + lang] = tr.title;
+        if (tr.text)  norm['text_'  + lang] = tr.text;
+      }
+    }
+    return norm;
+  });
+}
+
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('Fetching articles from Firestore…');
@@ -378,7 +409,14 @@ async function main() {
     console.error('Failed to fetch articles:', e.message);
     process.exit(1);
   }
-  console.log(`  ${articles.length} article(s) found`);
+  console.log(`  ${articles.length} article(s) from Firestore`);
+
+  // Merge data.json articles (local-only, e.g. moved out of Firestore)
+  const fsIds = new Set(articles.map(a => a.id));
+  const localArticles = loadDataJsonArticles().filter(a => !fsIds.has(a.id));
+  if (localArticles.length) console.log(`  ${localArticles.length} article(s) from data.json`);
+  articles = articles.concat(localArticles);
+  console.log(`  ${articles.length} article(s) total`);
 
   const prevSlugs    = readGeneratedSlugs();
   const currentSlugs = [];

@@ -69,7 +69,13 @@ const PARASHA_DISPLAY = {
 
 function articleSeoSlug(a) {
   const year = a.date ? a.date.split('.').pop().trim() : '';
-  const rawName = a.parasha ? (PARASHA_DISPLAY[a.parasha] || a.parasha) : (a.hag || '');
+  let rawName;
+  if (a.parasha) {
+    const combined = COMBINED_PARASHOT[a.parasha];
+    rawName = combined ? combined.split(' ').map(p => PARASHA_DISPLAY[p] || p).join(' ') : (PARASHA_DISPLAY[a.parasha] || a.parasha);
+  } else {
+    rawName = a.hag || '';
+  }
   if (!rawName || !year) return null;
   const name = rawName.toLowerCase()
     .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
