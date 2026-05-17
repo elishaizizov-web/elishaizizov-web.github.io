@@ -50,6 +50,33 @@ const SITE_URL   = 'https://elishaizizov.com';
 const CSS_VER    = '40';
 const FONTS_URL  = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap';
 
+// Parasha key → German display name (matches generate-seo.js TORAH.de_display)
+const PARASHA_DISPLAY = {
+  Bereshit:'Bereschit',Noach:'Noach','Lech Lecha':'Lech Lecha',Vayera:'Wajera',
+  'Chayei Sara':'Chajje Sara',Toldot:'Toldot',Vayetzei:'Wajeze',Vayishlach:'Wajischlach',
+  Vayeshev:'Wajeschew',Miketz:'Mikez',Vayigash:'Wajiggasch',Vayechi:'Wajchi',
+  Shemot:'Schemot',Vaera:'Waera',Bo:'Bo',Beshalach:'Beschallach',Yitro:'Jitro',
+  Mishpatim:'Mischpatim',Teruma:'Teruma',Tetzaveh:'Tezawwe','Ki Tisa':'Ki Tissa',
+  Vayakhel:'Wajakhel',Pekudei:'Pekude',
+  Vayikra:'Wajikra',Tzav:'Zaw',Shemini:'Schemini',Tazria:'Tazria',Metzora:'Mezora',
+  'Acharei Mot':'Achare Mot',Kedoshim:'Kedoschim',Emor:'Emor',Behar:'Behar',Bechukotai:'Bechukotai',
+  Bamidbar:'Bamidbar',Nasso:'Nasso',"Beha'alotcha":'Beaalotcha',Shelach:'Schelach',
+  Korach:'Korach',Chukat:'Chukkat',Balak:'Balak',Pinchas:'Pinchas',Matot:'Mattot',Masei:'Masse',
+  Devarim:'Dewarim',Vaetchanan:'Waetchanan',Eikev:'Ekew',"Re'eh":'Ree',Shoftim:'Schoftim',
+  'Ki Teitzei':'Ki Teze','Ki Tavo':'Ki Tawo',Nitzavim:'Nizawim',Vayeilech:'Wajelech',
+  "Ha'azinu":'Haasinu','Vezot Habracha':'Wesot Habracha'
+};
+
+function articleSeoSlug(a) {
+  const year = a.date ? a.date.split('.').pop().trim() : '';
+  const rawName = a.parasha ? (PARASHA_DISPLAY[a.parasha] || a.parasha) : (a.hag || '');
+  if (!rawName || !year) return null;
+  const name = rawName.toLowerCase()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
+    .replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  return `${name}-${year}`;
+}
+
 function stripHtml(html) {
   return html ? html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '';
 }
@@ -177,12 +204,15 @@ function buildPage(article) {
   const wordCount = stripHtml(tr[def].text || '').split(/\s+/).filter(Boolean).length;
   const readMins  = Math.max(1, Math.ceil(wordCount / 200));
 
-  // Share URLs (computed at build time)
+  // Share URLs (computed at build time) — use clean SEO slug URL when available
+  const seoSlug   = articleSeoSlug(article);
+  const shareUrl  = seoSlug ? `${SITE_URL}/${seoSlug}/` : url;
+  const safeShareUrl = shareUrl.replace(/'/g, "\\'");
   const safeUrl = url.replace(/'/g, "\\'");
-  const waUrl  = 'https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + url);
-  const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
-  const thrUrl = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(title + '\n\n' + url);
-  const xUrl   = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(title);
+  const waUrl  = 'https://wa.me/?text=' + encodeURIComponent(title + '\n\n' + shareUrl);
+  const fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+  const thrUrl = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(title + '\n\n' + shareUrl);
+  const xUrl   = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(title);
 
   // SVG icons
   const icWA  = '<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378L.057 22l1.649-6.079a9.925 9.925 0 0 1-1.334-4.93c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>';
@@ -203,11 +233,11 @@ function buildPage(article) {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(excerpt)}">
 <meta property="og:type" content="article">
-<meta property="og:url" content="${url}">
+<meta property="og:url" content="${shareUrl}">
 <meta property="og:image" content="${resolveArticleImage(article)}">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1a2b4a">
-<link rel="canonical" href="${url}">
+<link rel="canonical" href="${shareUrl}">
 ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?lang='+l:''}">` ).join('\n')}
 <link rel="alternate" hreflang="x-default" href="${url}">
 <link rel="icon" type="image/png" href="/logo.png">
@@ -257,7 +287,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
         <a class="share-icon-btn" href="${fbUrl}" target="_blank" rel="noopener" title="Facebook">${icFB}</a>
         <a class="share-icon-btn" href="${thrUrl}" target="_blank" rel="noopener" title="Threads">${icThr}</a>
         <a class="share-icon-btn" href="${xUrl}" target="_blank" rel="noopener" title="X">${icX}</a>
-        <button class="share-icon-btn" id="copy-link-btn" title="Link kopieren" onclick="copyShareLink('${safeUrl}')">${icLnk}</button>
+        <button class="share-icon-btn" id="copy-link-btn" title="Link kopieren" onclick="copyShareLink('${safeShareUrl}')">${icLnk}</button>
         <button class="share-icon-btn" onclick="window.print()" title="Drucken">${icPrt}</button>
         <button class="share-icon-btn" onclick="window.print()" title="PDF">${icPdf}</button>
       </div>
@@ -400,6 +430,11 @@ function switchLang(lang) {
 }
 
 (function() {
+  // Update address bar to show clean SEO URL without breaking back-button
+  var _seoUrl = '${safeShareUrl}';
+  if (_seoUrl && window.location.href.indexOf('/articles/') !== -1) {
+    history.replaceState({}, '', _seoUrl);
+  }
   var p = new URLSearchParams(window.location.search).get('lang');
   if (p && p !== _cur) switchLang(p);
 })();
