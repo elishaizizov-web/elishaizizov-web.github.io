@@ -86,11 +86,6 @@ function articleSeoSlug(a) {
 function stripHtml(html) {
   return html ? html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '';
 }
-function sanitizeContent(html) {
-  if (!html) return '';
-  // Strip all inline style attributes from article content — styling comes from CSS only
-  return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
-}
 function esc(str) {
   return str ? String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
 }
@@ -187,7 +182,7 @@ function buildPage(article) {
 
   const textBlocks = langs.map(l => {
     const rtl = l === 'he';
-    return `<div id="ap-text" class="${rtl?'ap-rtl':''}" data-lang="${l}" style="display:${l===def?'block':'none'};direction:${rtl?'rtl':'ltr'}">${sanitizeContent(tr[l].text)||''}</div>`;
+    return `<div id="ap-text" class="${rtl?'ap-rtl':''}" data-lang="${l}" style="display:${l===def?'block':'none'};direction:${rtl?'rtl':'ltr'}">${tr[l].text||''}</div>`;
   }).join('\n    ');
 
   const langBtns = langs.map(l => {
