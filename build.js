@@ -56,6 +56,26 @@ function stripHtml(html) {
 function esc(str) {
   return str ? String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
 }
+function resolveArticleImage(article) {
+  const img = article.image;
+  if (!img) return SITE_URL + '/logo.png';
+  if (img.startsWith('http://') || img.startsWith('https://')) return img;
+  if (img.startsWith('/')) return SITE_URL + img;
+  if (img.startsWith('data:')) {
+    const match = img.match(/^data:image\/(\w+);base64,(.+)$/s);
+    if (!match) return SITE_URL + '/logo.png';
+    const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
+    const filename = article.id + '.' + ext;
+    const imgDir = path.join(__dirname, 'articles', 'images');
+    const imgPath = path.join(imgDir, filename);
+    if (!fs.existsSync(imgPath)) {
+      fs.mkdirSync(imgDir, { recursive: true });
+      fs.writeFileSync(imgPath, Buffer.from(match[2], 'base64'));
+    }
+    return SITE_URL + '/articles/images/' + filename;
+  }
+  return SITE_URL + '/logo.png';
+}
 function isoDate(createdAt) {
   if (!createdAt) return '';
   const s = createdAt.seconds || createdAt._seconds;
@@ -184,7 +204,7 @@ function buildPage(article) {
 <meta property="og:description" content="${esc(excerpt)}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${SITE_URL}/logo.png">
+<meta property="og:image" content="${resolveArticleImage(article)}">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1a2b4a">
 <link rel="canonical" href="${url}">
