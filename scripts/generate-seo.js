@@ -131,6 +131,11 @@ function articleSlug(a) {
   return `${name}-${year}`;
 }
 
+function sanitizeContent(html) {
+  if (!html) return '';
+  return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
+}
+
 function stripHtml(html) {
   return (html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -286,7 +291,7 @@ function articleHtmlForLang(a, lang) {
   if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
   // Full article text for Google to index (preserve HTML but sanitise)
-  const bodyText = text ? text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'') : '';
+  const bodyText = sanitizeContent(text ? text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'') : '');
   const articleAlign = isRTL ? 'right' : 'left';
 
   return '<!DOCTYPE html>\n' +

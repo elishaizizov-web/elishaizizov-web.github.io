@@ -163,6 +163,11 @@ const COMBINED_PARASHOT = {
   'Nitzavim':'Nitzavim Vayeilech','Vayeilech':'Nitzavim Vayeilech'
 };
 
+function sanitizeContent(html) {
+  if (!html) return '';
+  return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
+}
+
 function buildPage(article) {
   const tr   = article.translations || {};
   const langs = ['de','en','he'].filter(l => tr[l] && tr[l].title);
@@ -182,7 +187,7 @@ function buildPage(article) {
 
   const textBlocks = langs.map(l => {
     const rtl = l === 'he';
-    return `<div id="ap-text" class="${rtl?'ap-rtl':''}" data-lang="${l}" style="display:${l===def?'block':'none'};direction:${rtl?'rtl':'ltr'}">${tr[l].text||''}</div>`;
+    return `<div id="ap-text" class="${rtl?'ap-rtl':''}" data-lang="${l}" style="display:${l===def?'block':'none'};direction:${rtl?'rtl':'ltr'}">${sanitizeContent(tr[l].text)||''}</div>`;
   }).join('\n    ');
 
   const langBtns = langs.map(l => {
