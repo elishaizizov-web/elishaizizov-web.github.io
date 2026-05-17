@@ -135,6 +135,11 @@ function stripHtml(html) {
   return (html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function sanitizeContent(html) {
+  if (!html) return '';
+  return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
+}
+
 function escHtml(s) {
   return (s || '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -286,7 +291,7 @@ function articleHtmlForLang(a, lang) {
   if (topic) jsonld.about = { "@type":"Thing","name":topic };
 
   // Full article text for Google to index (preserve HTML but sanitise)
-  const bodyText = text ? text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'') : '';
+  const bodyText = sanitizeContent(text ? text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'') : '');
   const articleAlign = isRTL ? 'right' : 'left';
 
   return '<!DOCTYPE html>\n' +
