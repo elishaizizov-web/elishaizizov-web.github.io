@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" translate="no" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
 <title>Die Pessach-Haggada: Die Schrift der Ewigkeit, verfasst von einem ganzen Volk — Rabbiner Elishai Zizov</title>
 <meta name="description" content="Es gibt ein Buch, das fast jeder Jude kennt und schätzt, selbst wenn er das ganze Jahr über keine Bücher öffnet: die Pessach-Haggada. Und doch handelt es sich ü">
 <meta property="og:title" content="Die Pessach-Haggada: Die Schrift der Ewigkeit, verfasst von einem ganzen Volk">
@@ -99,7 +100,7 @@
       </div>
     </div>
     <div style="margin-top:48px;padding-top:24px;border-top:1px solid #e0ddd6;">
-      <a href="/articles.html" style="font-family:Raleway,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8952a;text-decoration:none;">← Alle Beiträge</a>
+      <a id="ap-back-link" href="/articles.html" style="font-family:Raleway,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8952a;text-decoration:none;">← Alle Beiträge</a>
     </div>
 </div>
 
@@ -213,6 +214,7 @@ function switchLang(lang) {
     btn.classList.toggle('active', map[btn.textContent.trim()] === lang);
   });
   var isHe = lang === 'he';
+  document.documentElement.dir = isHe ? 'rtl' : 'ltr';
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
     if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent.trim();
@@ -222,6 +224,17 @@ function switchLang(lang) {
   }
   var meta = document.querySelector('.ap-topbar-meta');
   if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
+  var dateEl = document.getElementById('ap-date');
+  if (dateEl) {
+    dateEl.style.textAlign = isHe ? 'right' : 'left';
+    dateEl.style.alignSelf = isHe ? 'flex-end' : 'flex-start';
+  }
+  var backLink = document.getElementById('ap-back-link');
+  if (backLink) {
+    var backLabels = {de:'← Alle Beiträge', en:'← All Articles', he:'כל הכתבות →'};
+    backLink.textContent = backLabels[lang] || backLabels.de;
+    backLink.style.direction = isHe ? 'rtl' : 'ltr';
+  }
   var hyEl = document.querySelector('.ap-hebrew-year');
   if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
   var shareLabel = document.querySelector('.ap-share-label');
