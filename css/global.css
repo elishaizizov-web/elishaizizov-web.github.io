@@ -2518,6 +2518,7 @@ body.menu-open { overflow: hidden; }
   display: flex;
   align-items: center;
   gap: 16px;
+  direction: ltr;
 }
 .mh-logo {
   display: flex;
@@ -2589,12 +2590,7 @@ body.menu-open { overflow: hidden; }
 .mh-back-btn:hover { color: #fff; background: rgba(0,0,0,0.06); }
 .mh-back-btn svg { display: block; }
 html[lang="he"] .mh-logo { margin-right: 8px; margin-left: 8px; }
-html[lang="he"] .mh-langs { margin-right: auto; }
 html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; }
-
-@media (max-width: 1024px) {
-  html[lang="he"] .mh-langs { margin-right: 0; margin-left: auto; }
-}
 
 @media (max-width: 1024px) {
   .mh-nav { display: none; }
