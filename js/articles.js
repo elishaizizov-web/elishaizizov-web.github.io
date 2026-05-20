@@ -467,10 +467,7 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
   const cleanedText = (tr.text || '')
     .replace(/[​‌‍‎‏­﻿⁠⁦⁧⁨⁩]/g, '')
-    .replace(/font-family:[^;"']*/gi, '')
-    .replace(/font-size:\s*\d+(\.\d+)?(px|pt|em|rem)[^;"']*/gi, '')
-    .replace(/font-weight:\s*(?:normal|bold|bolder|lighter|\d+)[^;"']*/gi, '')
-    .replace(/line-height:\s*[\d.]+[^;"']*/gi, '')
+    .replace(/ style=(?:"[^"]*"|'[^']*')/gi, '')
     .replace(/(<p><br\s*\/?><\/p>\s*){2,}/gi, '<p><br></p>')
     .replace(/<p><br\s*\/?><\/p>/gi, '<div class="art-spacer"></div>');
   const apTextEl = document.getElementById('ap-text');
