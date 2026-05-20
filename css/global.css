@@ -2593,6 +2593,10 @@ html[lang="he"] .mh-langs { margin-right: auto; }
 html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; }
 
 @media (max-width: 1024px) {
+  html[lang="he"] .mh-langs { margin-right: 0; margin-left: auto; }
+}
+
+@media (max-width: 1024px) {
   .mh-nav { display: none; }
   .mh-langs {
     background: transparent;
