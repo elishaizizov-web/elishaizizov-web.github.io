@@ -136,6 +136,12 @@ function sanitizeContent(html) {
   return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
 }
 
+function cleanTitle(s) {
+  if (!s) return '';
+  // Strip zero-width spaces, joiners, non-breaking spaces, and other invisible Unicode
+  return s.replace(/[​‌‍‎‏­﻿⁠]/g, '').trim();
+}
+
 function stripHtml(html) {
   return (html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -246,7 +252,7 @@ function articleHtmlForLang(a, lang) {
   const pageUrl  = SITE_URL + '/' + langSlug;
   const deUrl    = SITE_URL + '/' + slug;
 
-  const title = (lang !== 'de' && a['title_' + lang]) ? a['title_' + lang] : (a.title || '');
+  const title = cleanTitle((lang !== 'de' && a['title_' + lang]) ? a['title_' + lang] : (a.title || ''));
   const text  = (lang !== 'de' && a['text_'  + lang]) ? a['text_'  + lang] : (a.text  || '');
   const topic = topicNameForLang(a, lang);
 
@@ -284,7 +290,7 @@ function articleHtmlForLang(a, lang) {
     "inLanguage": lang,
     "breadcrumb": { "@type":"BreadcrumbList","itemListElement":[
       {"@type":"ListItem","position":1,"name":"Home","item":SITE_URL},
-      {"@type":"ListItem","position":2,"name":"Beiträge","item":SITE_URL+"/articles.html"},
+      {"@type":"ListItem","position":2,"name":lang==='he'?'מאמרים':lang==='en'?'Articles':'Beiträge',"item":SITE_URL+"/articles.html"},
       {"@type":"ListItem","position":3,"name":title,"item":pageUrl}
     ]}
   };
@@ -352,7 +358,9 @@ function articleHtmlForLang(a, lang) {
 function buildSitemap(articles) {
   const today = new Date().toISOString().split('T')[0];
   const urls = [
-    '  <url><loc>' + SITE_URL + '/</loc><lastmod>' + today + '</lastmod><priority>1.0</priority></url>'
+    '  <url><loc>' + SITE_URL + '/</loc><lastmod>' + today + '</lastmod><priority>1.0</priority></url>',
+    '  <url><loc>' + SITE_URL + '/articles.html</loc><lastmod>' + today + '</lastmod><priority>0.9</priority></url>',
+    '  <url><loc>' + SITE_URL + '/contact.html</loc><lastmod>' + today + '</lastmod><priority>0.6</priority></url>'
   ];
   const usedSlugs = {};
   for (const a of articles) {
