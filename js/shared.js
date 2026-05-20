@@ -31,7 +31,7 @@ const T = {
     'nav-bio': 'Biografie', 'nav-search': 'Suche', 'nav-art': 'Beiträge', 'nav-form': 'Anfragen', 'search-ph': 'Suche...', 'form-err': 'Fehler beim Senden. Bitte versuchen Sie es erneut.', 'art-label': 'Beiträge', 'art-empty': 'Beiträge werden in Kürze veröffentlicht.', 'latest-label': 'Alle Beiträge',
     'form-label': 'Anfragen', 'form-title': 'Vortrag oder Unterricht anfragen', 'form-sub': 'Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.', 'label-name': 'Name', 'label-phone': 'Telefon', 'label-email': 'E-Mail', 'label-msg': 'Nachricht', 'ph-name': 'Ihr Name', 'ph-phone': 'Ihre Telefonnummer', 'ph-email': 'Ihre E-Mail-Adresse', 'ph-msg': 'Ihre Nachricht...', 'form-btn': 'Anfrage senden', 'form-ok': 'Vielen Dank. Ihre Anfrage wurde gesendet.', 'form-subject': 'Neue Anfrage über elishaizizov.com',
     'cta': 'Beiträge lesen', 'footer-nav': 'Navigation', 'footer-social': 'Folgen',
-    'footer-nl-title': 'Newsletter', 'footer-nl-sub': 'Erhalte Updates direkt in dein Postfach.', 'footer-nl-ph': 'E-Mail-Adresse', 'footer-nl-btn': 'Anmelden', 'footer-nl-ok': 'Danke! Du bist angemeldet.', 'footer-copy': 'Frankfurt am Main · © 2026 · Alle Rechte vorbehalten',
+    'footer-nl-title': 'Newsletter', 'footer-nl-sub': 'Erhalte Updates direkt in dein Postfach.', 'footer-nl-ph': 'E-Mail-Adresse', 'footer-nl-btn': 'Anmelden', 'footer-nl-ok': 'Danke! Du bist angemeldet.', 'footer-nl-err': 'Fehler – bitte versuche es erneut.', 'footer-copy': 'Frankfurt am Main · © 2026 · Alle Rechte vorbehalten',
     'hero-q1': 'Wir sind, was wir täglich tun. Exzellenz ist keine Handlung, sondern eine Gewohnheit.',
     'hero-c1': 'Rabbiner Elishai Zizov',
     'hero-q2': 'Das Studium der Tora ist mehr wert als alle anderen Gebote zusammen.',
@@ -62,7 +62,7 @@ const T = {
     'nav-bio': 'Biography', 'nav-search': 'Search', 'nav-art': 'Articles', 'nav-form': 'Contact', 'search-ph': 'Search...', 'form-err': 'Failed to send. Please try again.', 'art-label': 'Articles', 'art-empty': 'Articles coming soon.', 'latest-label': 'All Articles',
     'form-label': 'Enquiries', 'form-title': 'Book a Lecture or Class', 'form-sub': 'To book a lecture, class or for any other enquiry, please fill in the form below.', 'label-name': 'Name', 'label-phone': 'Phone', 'label-email': 'Email', 'label-msg': 'Message', 'ph-name': 'Your name', 'ph-phone': 'Your phone number', 'ph-email': 'Your email address', 'ph-msg': 'Your message...', 'form-btn': 'Send enquiry', 'form-ok': 'Thank you. Your enquiry has been sent.', 'form-subject': 'New enquiry via elishaizizov.com',
     'cta': 'Read Articles', 'footer-nav': 'Navigation', 'footer-social': 'Follow',
-    'footer-nl-title': 'Newsletter', 'footer-nl-sub': 'Receive updates directly to your inbox.', 'footer-nl-ph': 'Email address', 'footer-nl-btn': 'Subscribe', 'footer-nl-ok': 'Thank you! You are subscribed.', 'footer-copy': 'Frankfurt am Main · © 2026 · All rights reserved',
+    'footer-nl-title': 'Newsletter', 'footer-nl-sub': 'Receive updates directly to your inbox.', 'footer-nl-ph': 'Email address', 'footer-nl-btn': 'Subscribe', 'footer-nl-ok': 'Thank you! You are subscribed.', 'footer-nl-err': 'Error – please try again.', 'footer-copy': 'Frankfurt am Main · © 2026 · All rights reserved',
     'hero-q1': 'We are what we repeatedly do. Excellence, then, is not an act, but a habit.',
     'hero-c1': 'Rabbi Elishai Zizov',
     'hero-q2': 'The study of Torah is equal in worth to all other commandments combined.',
@@ -110,7 +110,7 @@ const T = {
     'nav-search': 'חפש', 'search-ph': 'חיפוש...', 'form-err': 'שגיאה בשליחה. אנא נסה שוב.', 'nav-bio': 'ביוגרפיה', 'nav-art': 'כתבות', 'nav-form': 'פניות', 'art-label': 'כתבות', 'art-empty': 'כתבות יפורסמו בקרוב.', 'latest-label': 'כל הכתבות',
     'form-label': 'פניות', 'form-title': 'הזמנה להרצאה או שיעור', 'form-sub': 'להזמנת הרצאה, שיעור או לכל פנייה אחרת, אנא מלאו את הטופס.', 'label-name': 'שם', 'label-phone': 'טלפון', 'label-email': 'אימייל', 'label-msg': 'הודעה', 'ph-name': 'שמך המלא', 'ph-phone': 'מספר הטלפון שלך', 'ph-email': 'כתובת האימייל שלך', 'ph-msg': 'ההודעה שלך...', 'form-btn': 'שלח פנייה', 'form-ok': 'תודה רבה. פנייתך נשלחה.', 'form-subject': 'פנייה חדשה דרך elishaizizov.com',
     'cta': 'קרא כתבות', 'footer-nav': 'ניווט', 'footer-social': 'עקבו',
-    'footer-nl-title': 'ניוזלטר', 'footer-nl-sub': 'קבל עדכונים ישירות לתיבת הדואר שלך.', 'footer-nl-ph': 'כתובת אימייל', 'footer-nl-btn': 'הירשם', 'footer-nl-ok': 'תודה! נרשמת בהצלחה.', 'footer-copy': 'פרנקפורט אם מיין · © 2026 · כל הזכויות שמורות',
+    'footer-nl-title': 'ניוזלטר', 'footer-nl-sub': 'קבל עדכונים ישירות לתיבת הדואר שלך.', 'footer-nl-ph': 'כתובת אימייל', 'footer-nl-btn': 'הירשם', 'footer-nl-ok': 'תודה! נרשמת בהצלחה.', 'footer-nl-err': 'שגיאה – אנא נסה שוב.', 'footer-copy': 'פרנקפורט אם מיין · © 2026 · כל הזכויות שמורות',
     'hero-q1': 'אנו מה שאנו עושים שוב ושוב. מצוינות איננה מעשה, אלא הרגל.',
     'hero-c1': 'הרב אלישי זיזוב',
     'hero-q2': 'תלמוד תורה כנגד כולם.',
@@ -550,7 +550,7 @@ function nlSubscribe(e) {
     }).then(function() {
       _show(t['footer-nl-ok'] || 'Danke!');
     }).catch(function() {
-      _show(t['footer-nl-ok'] || 'Danke!');
+      _show(t['footer-nl-err'] || 'Fehler – bitte versuche es erneut.');
     });
   } else {
     _show(t['footer-nl-ok'] || 'Danke!');

@@ -3,7 +3,7 @@ const PRECACHE = [
   '/',
   '/articles.html',
   '/contact.html',
-  '/css/global.css?v=34',
+  '/css/global.css?v=44',
   '/js/shared.js?v=29',
   '/js/articles.js?v=37',
   '/logo.png'
