@@ -5,7 +5,7 @@ const PRECACHE = [
   '/contact.html',
   '/css/global.css?v=44',
   '/js/shared.js?v=30',
-  '/js/articles.js?v=37',
+  '/js/articles.js?v=38',
   '/logo.png'
 ];
 

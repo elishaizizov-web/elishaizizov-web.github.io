@@ -466,6 +466,7 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
   const cleanedText = (tr.text || '')
+    .replace(/[​‌‍‎‏­﻿⁠⁦⁧⁨⁩]/g, '')
     .replace(/font-family:[^;"']*/gi, '')
     .replace(/font-size:\s*\d+(\.\d+)?(px|pt|em|rem)[^;"']*/gi, '')
     .replace(/font-weight:\s*(?:normal|bold|bolder|lighter|\d+)[^;"']*/gi, '')
