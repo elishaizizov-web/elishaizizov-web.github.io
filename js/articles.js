@@ -442,15 +442,22 @@ function _renderArticlePage(a, l) {
   const dir   = isRTL ? 'rtl' : 'ltr';
   // content
   const _heYear = toHebrewYear(a.date);
-  document.getElementById('ap-date').textContent = (a.date || '') + (_heYear ? ' · ' + _heYear : '');
+  const apDateEl = document.getElementById('ap-date');
+  apDateEl.textContent = (a.date || '') + (_heYear ? ' · ' + _heYear : '');
+  apDateEl.style.textAlign = isRTL ? 'right' : 'left';
   const parashaEl = document.getElementById('ap-parasha');
   const parashaDisplay = a.parasha ? articleParashaName(a, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
   parashaEl.textContent = parashaDisplay;
   parashaEl.style.display = parashaDisplay ? 'block' : 'none';
+  parashaEl.style.direction = dir;
+  parashaEl.style.textAlign = isRTL ? 'right' : 'left';
   a._parashaDisplay = parashaDisplay;
   // reading time
   const rtEl = document.getElementById('ap-reading-time');
-  if (rtEl) rtEl.textContent = readingTime(tr.text || a.text || '', l);
+  if (rtEl) {
+    rtEl.textContent = readingTime(tr.text || a.text || '', l);
+    rtEl.style.direction = dir;
+  }
   // breadcrumb
   const bcEl = document.getElementById('ap-breadcrumb');
   if (bcEl) {

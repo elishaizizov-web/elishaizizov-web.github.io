@@ -429,6 +429,11 @@ function switchLang(lang) {
   }
   var meta = document.querySelector('.ap-topbar-meta');
   if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
+  var dateEl = document.getElementById('ap-date');
+  if (dateEl) {
+    dateEl.style.textAlign = isHe ? 'right' : 'left';
+    dateEl.style.alignSelf = isHe ? 'flex-end' : 'flex-start';
+  }
   var hyEl = document.querySelector('.ap-hebrew-year');
   if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
   var shareLabel = document.querySelector('.ap-share-label');
