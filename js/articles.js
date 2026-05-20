@@ -475,31 +475,19 @@ function _renderArticlePage(a, l) {
   apTextEl.style.direction = dir;
   apTextEl.style.textAlign = isRTL ? 'right' : 'left';
   apTextEl.classList.toggle('ap-rtl', isRTL);
-  // Drop cap: find first non-empty <p> and wrap first letter in span
-  {
+  // Drop cap: LTR only — RTL (Hebrew) skipped to avoid orphaned tags that corrupt Safari bidi
+  if (!isRTL) {
     const firstP = Array.from(apTextEl.querySelectorAll('p')).find(p => p.textContent.trim().length > 1);
     if (firstP) {
       const html = firstP.innerHTML;
       let firstCharIdx = -1, inTag = false;
-      if (isRTL) {
-        // Hebrew: first character in logical order = beginning of HTML string
-        for (let i = 0; i < html.length; i++) {
-          if (html[i] === '<') { inTag = true; continue; }
-          if (html[i] === '>') { inTag = false; continue; }
-          if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
-        }
-        if (firstCharIdx >= 0) {
-          firstP.innerHTML = '<span class="drop-cap drop-cap-rtl">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
-        }
-      } else {
-        for (let i = 0; i < html.length; i++) {
-          if (html[i] === '<') { inTag = true; continue; }
-          if (html[i] === '>') { inTag = false; continue; }
-          if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
-        }
-        if (firstCharIdx >= 0) {
-          firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
-        }
+      for (let i = 0; i < html.length; i++) {
+        if (html[i] === '<') { inTag = true; continue; }
+        if (html[i] === '>') { inTag = false; continue; }
+        if (!inTag && html[i].trim()) { firstCharIdx = i; break; }
+      }
+      if (firstCharIdx >= 0) {
+        firstP.innerHTML = '<span class="drop-cap">' + html[firstCharIdx] + '</span>' + html.slice(firstCharIdx + 1);
       }
     }
   }
