@@ -306,7 +306,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
       </div>
     </div>
     <div style="margin-top:48px;padding-top:24px;border-top:1px solid #e0ddd6;">
-      <a href="/articles.html" style="font-family:Raleway,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8952a;text-decoration:none;">← Alle Beiträge</a>
+      <a id="ap-back-link" href="/articles.html" style="font-family:Raleway,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8952a;text-decoration:none;">← Alle Beiträge</a>
     </div>
 </div>
 
@@ -433,6 +433,12 @@ function switchLang(lang) {
   if (dateEl) {
     dateEl.style.textAlign = isHe ? 'right' : 'left';
     dateEl.style.alignSelf = isHe ? 'flex-end' : 'flex-start';
+  }
+  var backLink = document.getElementById('ap-back-link');
+  if (backLink) {
+    var backLabels = {de:'← Alle Beiträge', en:'← All Articles', he:'כל הכתבות →'};
+    backLink.textContent = backLabels[lang] || backLabels.de;
+    backLink.style.direction = isHe ? 'rtl' : 'ltr';
   }
   var hyEl = document.querySelector('.ap-hebrew-year');
   if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
