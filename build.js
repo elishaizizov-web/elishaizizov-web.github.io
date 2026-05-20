@@ -165,7 +165,9 @@ const COMBINED_PARASHOT = {
 
 function sanitizeContent(html) {
   if (!html) return '';
-  return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
+  return html
+    .replace(/ style=(?:"[^"]*"|'[^']*')/gi, '')
+    .replace(/[​‌‍‎‏­﻿⁠⁦⁧⁨⁩]/g, '');
 }
 
 function buildPage(article) {

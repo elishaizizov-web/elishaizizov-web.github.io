@@ -133,7 +133,9 @@ function articleSlug(a) {
 
 function sanitizeContent(html) {
   if (!html) return '';
-  return html.replace(/ style=(?:"[^"]*"|'[^']*')/gi, '');
+  return html
+    .replace(/ style=(?:"[^"]*"|'[^']*')/gi, '')
+    .replace(/[​‌‍‎‏­﻿⁠⁦⁧⁨⁩]/g, '');
 }
 
 function cleanTitle(s) {
