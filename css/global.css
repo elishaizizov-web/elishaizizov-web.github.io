@@ -2591,9 +2591,9 @@ body.menu-open { overflow: hidden; }
 .mh-back-btn svg { display: block; }
 html[lang="he"] .mh-logo { margin-right: 8px; margin-left: 8px; }
 html[lang="he"] .mh-back-btn { margin-inline-start: auto; margin-inline-end: 0; }
-html[lang="he"] .mh-langs  { order: 1; margin-left: 0; }
-html[lang="he"] .mh-logo   { order: 2; }
-html[lang="he"] .hamburger-btn { order: 3; margin-left: auto; }
+html[lang="he"] .mh-langs      { order: 1; margin-left: 0; }
+html[lang="he"] .mh-logo       { order: 2; margin-left: auto; }
+html[lang="he"] .hamburger-btn { order: 3; margin-left: 0; }
 
 @media (max-width: 1024px) {
   .mh-nav { display: none; }
