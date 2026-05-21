@@ -246,6 +246,36 @@ function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 // Convert Gregorian date string "DD.MM.YYYY" to Hebrew year string (e.g. "תשפ״ו")
+function _heLetters(n) {
+  const H=['','ק','ר','ש','ת','תק','תר','תש','תת','תתק'];
+  const T=['','י','כ','ל','מ','נ','ס','ע','פ','צ'];
+  const O=['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
+  const h=Math.floor(n/100),t=Math.floor((n%100)/10),o=n%10;
+  let r=H[h]||'';
+  if(t===1&&o===5)r+='ט״ו'; else if(t===1&&o===6)r+='ט״ז'; else r+=(T[t]||'')+(O[o]||'');
+  if(r.length>1)r=r.slice(0,-1)+'״'+r.slice(-1); else if(r.length===1)r+='׳';
+  return r;
+}
+
+function toHebrewFullDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('.');
+  if (parts.length < 3) return dateStr;
+  const d = parseInt(parts[0], 10), m = parseInt(parts[1], 10), y = parseInt(parts[2], 10);
+  if (!d || !m || !y || y < 100) return dateStr;
+  try {
+    const hp = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {day:'numeric',month:'long',year:'numeric'}).formatToParts(new Date(y, m-1, d));
+    const dayNum   = parseInt((hp.find(p=>p.type==='day')||{}).value||'0', 10);
+    const monthRaw = (hp.find(p=>p.type==='month')||{}).value||'';
+    const yearNum  = parseInt((hp.find(p=>p.type==='year')||{}).value||'0', 10);
+    if (!dayNum||!monthRaw||!yearNum) return dateStr;
+    const month = monthRaw.startsWith('ב') ? monthRaw.slice(1) : monthRaw;
+    const mil = Math.floor(yearNum/1000);
+    const yearHe = ('אבגדהוזחט'[mil-1]||'')+'׳'+_heLetters(yearNum%1000);
+    return _heLetters(dayNum)+' '+month+' '+yearHe;
+  } catch(e) { return dateStr; }
+}
+
 function toHebrewYear(dateStr) {
   if (!dateStr) return '';
   const parts = dateStr.split('.');
@@ -441,9 +471,11 @@ function _renderArticlePage(a, l) {
   const isRTL = (l === 'he');
   const dir   = isRTL ? 'rtl' : 'ltr';
   // content
-  const _heYear = toHebrewYear(a.date);
   const apDateEl = document.getElementById('ap-date');
-  apDateEl.textContent = (a.date || '') + (_heYear ? ' · ' + _heYear : '');
+  apDateEl.textContent = isRTL
+    ? toHebrewFullDate(a.date)
+    : ((a.date || '') + (toHebrewYear(a.date) ? ' · ' + toHebrewYear(a.date) : ''));
+  apDateEl.style.direction = dir;
   apDateEl.style.textAlign = isRTL ? 'right' : 'left';
   const parashaEl = document.getElementById('ap-parasha');
   const parashaDisplay = a.parasha ? articleParashaName(a, l) : (a.hag ? hagNameForLang(a.hag, l) : '');
@@ -472,7 +504,6 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-title').textContent = tr.title || '';
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
-  document.getElementById('ap-title').style.fontStyle  = isRTL ? 'normal' : 'italic';
   const cleanedText = (tr.text || '')
     .replace(/[​‌‍‎‏­﻿⁠⁦⁧⁨⁩]/g, '')
     .replace(/ style=(?:"[^"]*"|'[^']*')/gi, '')
@@ -580,6 +611,14 @@ function _renderArticlePage(a, l) {
     } else {
       relEl.innerHTML = '';
     }
+  }
+  const backEl = document.getElementById('ap-back-link');
+  if (backEl) {
+    const backLabels = { de: '← Alle Beiträge', en: '← All Articles', he: 'כל הכתבות →' };
+    backEl.textContent = backLabels[l] || backLabels.de;
+    backEl.style.direction = isRTL ? 'rtl' : 'ltr';
+    backEl.style.textAlign = isRTL ? 'right' : 'left';
+    backEl.style.display = 'block';
   }
 }
 

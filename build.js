@@ -47,7 +47,7 @@ function parseFirestoreDoc(doc) {
 }
 
 const SITE_URL   = 'https://elishaizizov.com';
-const CSS_VER    = '50';
+const CSS_VER    = '51';
 const FONTS_URL  = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap';
 
 // Parasha key → German display name (matches generate-seo.js TORAH.de_display)
@@ -135,6 +135,24 @@ function _remToHebrew(n) {
   else if (r.length === 1) r += '׳';
   return r;
 }
+function hebrewFullDate(createdAt) {
+  if (!createdAt) return '';
+  const s = createdAt.seconds || createdAt._seconds;
+  if (!s) return '';
+  const d = new Date(s * 1000);
+  try {
+    const hp = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {day:'numeric',month:'long',year:'numeric'}).formatToParts(d);
+    const dayNum  = parseInt((hp.find(p=>p.type==='day')||{}).value||'0',10);
+    const monthRaw = (hp.find(p=>p.type==='month')||{}).value||'';
+    const yearNum  = parseInt((hp.find(p=>p.type==='year')||{}).value||'0',10);
+    if (!dayNum||!monthRaw||!yearNum) return '';
+    const month = monthRaw.startsWith('ב') ? monthRaw.slice(1) : monthRaw;
+    const mil = Math.floor(yearNum/1000);
+    const yearHe = ('אבגדהוזחט'[mil-1]||'') + '׳' + _remToHebrew(yearNum%1000);
+    return _remToHebrew(dayNum) + ' ' + month + ' ' + yearHe;
+  } catch(e) { return ''; }
+}
+
 function hebrewYear(createdAt) {
   if (!createdAt) return '';
   const s = createdAt.seconds || createdAt._seconds;
@@ -181,10 +199,11 @@ function buildPage(article) {
   const slug    = article.id;
   const url     = `${SITE_URL}/articles/${slug}`;
   const date    = displayDate(article.createdAt) || isoDate(article.createdAt);
+  const heDate  = hebrewFullDate(article.createdAt);
   const cat     = (article.parasha ? (COMBINED_PARASHOT[article.parasha] || article.parasha) : '') || article.hag || '';
 
   const titleBlocks = langs.map(l =>
-    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;font-style:normal;':'text-align:left;font-style:italic;'}">${esc(tr[l].title)}</h1>`
+    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':'text-align:left;'}">${esc(tr[l].title)}</h1>`
   ).join('\n    ');
 
   const textBlocks = langs.map(l => {
@@ -287,7 +306,7 @@ ${langs.map(l=>`<link rel="alternate" hreflang="${l}" href="${url}${l!=='de'?'?l
     <div class="ap-topbar">
       <div class="ap-topbar-meta" style="display:flex;flex-direction:column;align-items:${isRtl?'flex-end':'flex-start'};gap:3px;width:100%;">
         ${(hyStr||hyNum)?`<span class="ap-hebrew-year" data-letters="${esc(hyStr)}" data-numeric="${hyNum}" style="font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:700;color:#b8952a;letter-spacing:.05em;">${isRtl?hyStr:hyNum}</span>`:''}
-        ${date?`<span id="ap-date" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">${date}</span>`:''}
+        ${date?`<span id="ap-date" data-greg="${esc(date)}" data-he="${esc(heDate)}" style="font-family:Raleway,sans-serif;font-size:11px;font-weight:600;color:#b8952a;letter-spacing:.05em;">${date}</span>`:''}
         <span class="ap-reading-time" data-mins="${readMins}" style="font-family:Raleway,sans-serif;font-size:10px;color:#888;letter-spacing:.04em;">~ ${readMins} Min. Lesezeit</span>
       </div>
     </div>
@@ -432,6 +451,8 @@ function switchLang(lang) {
   if (meta) meta.style.alignItems = isHe ? 'flex-end' : 'flex-start';
   var dateEl = document.getElementById('ap-date');
   if (dateEl) {
+    dateEl.textContent = isHe ? (dateEl.dataset.he || '') : (dateEl.dataset.greg || '');
+    dateEl.style.direction = isHe ? 'rtl' : 'ltr';
     dateEl.style.textAlign = isHe ? 'right' : 'left';
     dateEl.style.alignSelf = isHe ? 'flex-end' : 'flex-start';
   }
@@ -440,9 +461,13 @@ function switchLang(lang) {
     var backLabels = {de:'← Alle Beiträge', en:'← All Articles', he:'כל הכתבות →'};
     backLink.textContent = backLabels[lang] || backLabels.de;
     backLink.style.direction = isHe ? 'rtl' : 'ltr';
+    backLink.style.textAlign = isHe ? 'right' : 'left';
   }
   var hyEl = document.querySelector('.ap-hebrew-year');
-  if (hyEl) hyEl.textContent = isHe ? (hyEl.dataset.letters || '') : (hyEl.dataset.numeric || '');
+  if (hyEl) {
+    hyEl.style.display = isHe ? 'none' : '';
+    if (!isHe) hyEl.textContent = hyEl.dataset.numeric || '';
+  }
   var shareLabel = document.querySelector('.ap-share-label');
   if (shareLabel) shareLabel.textContent = _shareLabels[lang] || 'Teilen';
   var rtEl = document.querySelector('.ap-reading-time');

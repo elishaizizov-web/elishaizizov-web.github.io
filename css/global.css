@@ -1247,8 +1247,7 @@ body.menu-open { overflow: hidden; }
     #ap-parasha { font-family:'Raleway',sans-serif; font-size:12px; font-weight:700;
       letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; margin-top:18px; }
     #ap-title { font-family: 'Playfair Display',serif; font-size: clamp(30px,4.5vw,52px);
-      font-weight: 400; font-style: italic; color: var(--text); margin-bottom: 24px; line-height: 1.2; text-align: left; }
-    #ap-title[data-lang="he"] { font-style: normal; }
+      font-weight: 400; color: var(--text); margin-bottom: 24px; line-height: 1.2; text-align: left; }
     .ap-img-wrap { position: relative; margin-bottom: 32px; }
     #ap-date { font-family: 'Raleway',sans-serif; font-size: 9px; font-weight: 600;
       letter-spacing: .18em; text-transform: uppercase; color: var(--text-soft);
