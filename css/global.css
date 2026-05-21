@@ -1,3 +1,32 @@
+/*
+  PostScript font-name overrides for Hebrew unicode range.
+  Quill editor saves bold text as font-family:TimesNewRomanPS-BoldMT.
+  That PostScript name has no Hebrew glyphs on iOS/Android.
+  These @font-face rules redirect the Hebrew block to Arial Hebrew
+  (pre-installed on all iOS + macOS) so glyphs never go missing,
+  even if the inline style is not stripped by JS.
+*/
+@font-face {
+  font-family: 'TimesNewRomanPS-BoldMT';
+  src: local('Arial Hebrew Bold'), local('Arial Hebrew'), local('David Bold'), local('David');
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'TimesNewRomanPSMT';
+  src: local('Arial Hebrew'), local('David');
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'TimesNewRomanPS-BoldItalicMT';
+  src: local('Arial Hebrew Bold'), local('Arial Hebrew'), local('David Bold'), local('David');
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'TimesNewRomanPS-ItalicMT';
+  src: local('Arial Hebrew'), local('David');
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
@@ -1264,9 +1293,9 @@ body.menu-open { overflow: hidden; }
     /* Lead paragraph — same weight as rest, only slightly larger */
     #ap-text > p:first-child { font-size:1.02em !important; color:var(--text-soft) !important; font-weight:300 !important; }
     /* Hebrew text — heavier weight, different spacing; explicit Hebrew font to fix iOS font-fallback failure */
-    #ap-text.ap-rtl { font-family:'Frank Ruhl Libre','Times New Roman',Times,serif !important; }
-    #ap-text.ap-rtl p { font-size:18px !important; font-weight:400 !important; line-height:1.95 !important; font-family:'Frank Ruhl Libre','Times New Roman',Times,serif !important; }
-    #ap-text.ap-rtl span:not(.drop-cap):not(.drop-cap-rtl) { font-family:'Frank Ruhl Libre','Times New Roman',Times,serif !important; }
+    #ap-text.ap-rtl { font-family:'Frank Ruhl Libre','Arial Hebrew','David','Times New Roman',serif !important; }
+    #ap-text.ap-rtl p { font-size:18px !important; font-weight:400 !important; line-height:1.95 !important; font-family:'Frank Ruhl Libre','Arial Hebrew','David','Times New Roman',serif !important; }
+    #ap-text.ap-rtl span:not(.drop-cap):not(.drop-cap-rtl) { font-family:'Frank Ruhl Libre','Arial Hebrew','David','Times New Roman',serif !important; }
     /* Gold ornamental divider */
     .ap-divider { display:flex; align-items:center; gap:14px; margin:28px 0 34px; }
     .ap-divider::before,.ap-divider::after { content:''; flex:1; height:1px; background:var(--gold); opacity:0.3; }
