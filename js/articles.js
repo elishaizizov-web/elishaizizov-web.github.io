@@ -479,6 +479,8 @@ function _renderArticlePage(a, l) {
     .replace(/<p><br\s*\/?><\/p>/gi, '<div class="art-spacer"></div>');
   const apTextEl = document.getElementById('ap-text');
   apTextEl.innerHTML = cleanedText + '<hr class="ap-end-rule">';
+  // DOM walk: remove ALL remaining inline styles so no editor font (e.g. TimesNewRomanPS-BoldMT) can override CSS
+  apTextEl.querySelectorAll('[style]').forEach(el => el.removeAttribute('style'));
   apTextEl.style.direction = dir;
   apTextEl.style.textAlign = isRTL ? 'right' : 'left';
   apTextEl.classList.toggle('ap-rtl', isRTL);
