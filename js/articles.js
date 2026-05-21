@@ -472,6 +472,7 @@ function _renderArticlePage(a, l) {
   document.getElementById('ap-title').textContent = tr.title || '';
   document.getElementById('ap-title').style.direction  = dir;
   document.getElementById('ap-title').style.textAlign  = isRTL ? 'right' : 'left';
+  document.getElementById('ap-title').style.fontStyle  = isRTL ? 'normal' : 'italic';
   const cleanedText = (tr.text || '')
     .replace(/[​‌‍‎‏­﻿⁠⁦⁧⁨⁩]/g, '')
     .replace(/ style=(?:"[^"]*"|'[^']*')/gi, '')
