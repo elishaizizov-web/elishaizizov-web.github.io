@@ -47,7 +47,7 @@ function parseFirestoreDoc(doc) {
 }
 
 const SITE_URL   = 'https://elishaizizov.com';
-const CSS_VER    = '48';
+const CSS_VER    = '49';
 const FONTS_URL  = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap';
 
 // Parasha key → German display name (matches generate-seo.js TORAH.de_display)
@@ -184,7 +184,7 @@ function buildPage(article) {
   const cat     = (article.parasha ? (COMBINED_PARASHOT[article.parasha] || article.parasha) : '') || article.hag || '';
 
   const titleBlocks = langs.map(l =>
-    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':''}">${esc(tr[l].title)}</h1>`
+    `<h1 id="ap-title" data-lang="${l}" style="display:${l===def?'block':'none'};${l==='he'?'direction:rtl;text-align:right;':'text-align:left;'}">${esc(tr[l].title)}</h1>`
   ).join('\n    ');
 
   const textBlocks = langs.map(l => {
@@ -421,7 +421,6 @@ function switchLang(lang) {
     btn.classList.toggle('active', map[btn.textContent.trim()] === lang);
   });
   var isHe = lang === 'he';
-  document.documentElement.dir = isHe ? 'rtl' : 'ltr';
   var parashaEl = document.getElementById('ap-parasha');
   if (parashaEl) {
     if (!parashaEl._orig) parashaEl._orig = parashaEl.textContent.trim();
