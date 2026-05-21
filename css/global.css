@@ -2821,8 +2821,8 @@ html[lang="he"] .hero-quote cite { text-align: center; letter-spacing: 0.08em; }
 }
 .primary-btn { background: var(--gold); color: var(--navy) !important; border-color: var(--gold); }
 .primary-btn:hover { background: var(--gold-light); border-color: var(--gold-light); color: var(--navy) !important; }
-.secondary-btn { background: transparent; color: var(--navy) !important; border-color: var(--navy); }
-.secondary-btn:hover { background: var(--navy); color: #fff !important; }
+.secondary-btn { background: transparent; color: var(--gold) !important; border-color: var(--gold); }
+.secondary-btn:hover { background: var(--gold); color: var(--navy) !important; }
 .gold-btn { background: var(--gold-new); color: #1a1200 !important; border-color: var(--gold-new); }
 .gold-btn:hover { background: #c8a230; border-color: #c8a230; }
 
