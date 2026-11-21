@@ -1,0 +1,246 @@
+/*
+  HOME LANDING (friendly redesign)
+  Loaded after global.css, only on index.html.
+  Warm cream surfaces, rounded cards, soft shadows, pill buttons.
+  Uses logical layout (flex / grid) so Hebrew RTL works without extra rules.
+*/
+
+:root {
+  --cream: #fbf8f1;
+  --cream-line: #ece4d2;
+  --gold-soft: #f3ead0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── HERO: one static welcome instead of a rotating quote carousel ── */
+.hero-section {
+  height: auto;
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+}
+.hero-carousel {
+  position: relative;
+  inset: auto;
+  width: 100%;
+}
+.hero-slide {
+  position: relative;
+  opacity: 1;
+  min-height: 540px;
+  padding: 88px 0 128px;
+}
+.hero-section .carousel-control,
+.hero-section .carousel-dots { display: none; }
+.hero-content.hero-welcome { max-width: 760px; padding: 0 24px; }
+
+.hero-eyebrow {
+  display: inline-block;
+  font: 600 13px/1 'DM Sans', sans-serif;
+  letter-spacing: 0.04em;
+  color: #f1d98a;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 170, 64, 0.45);
+  padding: 9px 16px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+}
+.hero-h1 {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  font-size: clamp(32px, 6vw, 56px);
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 18px;
+}
+.hero-sub {
+  font: 400 clamp(16px, 2.2vw, 19px)/1.65 'DM Sans', sans-serif;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-trust {
+  margin-top: 28px;
+  font: 400 14px/1.5 'DM Sans', sans-serif;
+  color: rgba(255, 255, 255, 0.65);
+}
+@media (max-width: 640px) {
+  .hero-section, .hero-slide { min-height: 500px; }
+  .hero-slide { padding: 72px 0 112px; }
+}
+
+/* ── BUTTONS ── */
+.f-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 13px 26px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font: 600 15px/1.2 'DM Sans', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
+}
+.f-btn:hover { transform: translateY(-1px); }
+.f-btn-gold {
+  background: var(--gold-light);
+  color: var(--navy) !important;
+  box-shadow: 0 6px 18px rgba(184, 149, 42, 0.28);
+}
+.f-btn-gold:hover { background: #e0b84d; }
+.f-btn-ghost {
+  background: transparent;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.f-btn-ghost:hover { background: rgba(255, 255, 255, 0.12); }
+.f-btn[disabled] { opacity: 0.6; cursor: default; transform: none; }
+.f-btn[hidden] { display: none; }
+
+/* ── SECTIONS ── */
+.f-section { padding: 72px 24px; }
+.f-inner { max-width: 1100px; margin: 0 auto; }
+.f-head { text-align: center; max-width: 640px; margin: 0 auto 40px; }
+.f-pill {
+  display: inline-block;
+  font: 600 13px/1 'DM Sans', sans-serif;
+  letter-spacing: 0.03em;
+  color: #7a5f12;
+  background: var(--gold-soft);
+  padding: 8px 15px;
+  border-radius: 999px;
+}
+.f-title {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  font-size: clamp(24px, 3.6vw, 34px);
+  line-height: 1.25;
+  color: var(--navy);
+  margin: 14px 0 12px;
+}
+.f-sub {
+  font: 400 17px/1.65 'DM Sans', sans-serif;
+  color: var(--text-soft);
+}
+
+.guides-section { background: var(--cream); scroll-margin-top: 70px; }
+.connect-section { background: #fff; }
+
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 22px;
+}
+.connect-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── CARDS ── */
+.f-card {
+  background: #fff;
+  border: 1px solid var(--cream-line);
+  border-radius: 22px;
+  padding: 28px 26px;
+  box-shadow: 0 8px 28px rgba(27, 42, 59, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.connect-grid .f-card { background: var(--cream); box-shadow: none; }
+.f-card-top { display: flex; align-items: center; justify-content: space-between; }
+.f-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--gold-soft);
+  color: var(--gold);
+  display: grid;
+  place-items: center;
+}
+.f-icon svg { width: 26px; height: 26px; }
+.f-chip {
+  font: 600 12px/1 'DM Sans', sans-serif;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: #7a5f12;
+}
+.f-chip[hidden] { display: none; }
+.f-card h3 {
+  font-family: 'Merriweather', serif;
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--navy);
+  margin: 0;
+}
+.f-card .f-desc {
+  font: 400 15.5px/1.6 'DM Sans', sans-serif;
+  color: var(--text-soft);
+  margin: 0;
+  flex: 1;
+}
+
+/* ── SIGN-UP FORM ── */
+.lead-form { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.lead-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1.5px solid #d9d2c0;
+  border-radius: 14px;
+  font: 400 15px 'DM Sans', sans-serif;
+  background: #fff;
+  color: var(--text);
+}
+.lead-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184, 149, 42, 0.2);
+}
+.lead-form .f-btn { width: 100%; }
+.lead-consent {
+  font: 400 12px/1.5 'DM Sans', sans-serif;
+  color: #7b746b;
+  margin: 0;
+}
+.lead-msg {
+  display: none;
+  font: 500 14px/1.5 'DM Sans', sans-serif;
+  color: #2f6b3a;
+  margin: 0;
+}
+.lead-msg.show { display: block; }
+.lead-msg.err { color: var(--accent); }
+.lead-msg a { color: var(--navy); font-weight: 700; }
+
+/* ── ABOUT INTRO (above the existing bio) ── */
+.about-intro { text-align: center; max-width: 620px; margin: 0 auto; padding: 64px 24px 32px; }
+.about-intro .f-title { margin-bottom: 8px; }
+
+@media (max-width: 640px) {
+  .f-section { padding: 56px 20px; }
+  .f-card { padding: 24px 20px; }
+}
+
+.lead-form[hidden] { display: none; }

@@ -162,6 +162,37 @@ const T = {
 };
 
 
+// ════════════════════════════════════════════════════════
+// HOME LANDING TEXTS (hero, guides, community, podcast)
+// German only. Other languages keep the German text from the HTML.
+// ════════════════════════════════════════════════════════
+Object.assign(T.de, {
+  'hero-eyebrow': 'Jüdisches Wissen einfach erklärt',
+  'hero-h1': 'Hallo, ich bin Rabbiner Elishai.',
+  'hero-sub': 'Ich erkläre jüdische Themen so, dass du sie im Alltag wirklich nutzen kannst. Ohne Fachchinesisch, mit Herz.',
+  'hero-btn1': 'Gratis-Guide holen', 'hero-btn2': 'Beiträge lesen',
+  'hero-trust': 'Rabbiner von Bait Sfaradi Frankfurt · Lehrer · Vortragsredner',
+  'nav-guides': 'Guides',
+  'g-label': 'Gratis für dich', 'g-title': 'Meine kostenlosen Guides',
+  'g-sub': 'Kurz, praktisch und direkt zum Mitnehmen. Trag deine E-Mail ein und der Guide gehört dir.',
+  'g-chip-free': 'Gratis', 'g-chip-soon': 'Bald',
+  'g1-t': 'Zeitmanagement-Tricks', 'g1-d': 'Mehr Ruhe und mehr Zeit im Alltag: einfache Gewohnheiten, die wirklich funktionieren.',
+  'g2-t': 'Koscher einkaufen', 'g2-d': 'Dein Begleiter im Supermarkt: Worauf du bei Zeichen und Zutaten achten kannst.',
+  'g3-t': 'Insekten-Check für Obst und Gemüse', 'g3-d': 'Welche Sorten du genau prüfen solltest und wie du dabei vorgehst.',
+  'lead-label': 'E-Mail-Adresse', 'lead-ph': 'Deine E-Mail-Adresse',
+  'lead-btn-guide': 'Guide sichern', 'lead-btn-notify': 'Benachrichtige mich',
+  'lead-consent': 'Mit der Anmeldung erhältst du den Guide und gelegentlich Neuigkeiten per E-Mail. Du kannst dich jederzeit abmelden.',
+  'lead-ok': 'Danke! Ich melde mich, sobald es so weit ist.', 'lead-ok-file': 'Danke! Dein Guide ist bereit:',
+  'lead-err': 'Das hat leider nicht geklappt. Bitte versuche es noch einmal.', 'lead-dl': 'Jetzt herunterladen',
+  'c-label': 'Bleib in Verbindung', 'c-title': 'Community und Podcast',
+  'c-sub': 'Weitere Orte, an denen du gutes jüdisches Wissen findest, in deinem Tempo.',
+  'wa-t': 'Die WhatsApp-Community', 'wa-d': 'Hier bekommst du neue Guides und Inhalte zuerst, noch vor Instagram.',
+  'wa-chip': 'Startet bald', 'wa-btn': 'Der Community beitreten',
+  'pod-t': 'Der Podcast', 'pod-d': 'Jüdisches Wissen zum Hören, geplant alle zwei Wochen. Trag dich ein, dann erfährst du als Erstes von der ersten Folge.',
+  'pod-chip': 'In Planung',
+  'about-label': 'Über mich', 'about-sub': 'Ein paar Worte dazu, wer hinter dem Wissen steckt.'
+});
+
 let currentLang = 'de';
 function getArticles() { return window._articles || []; }
 function getLang() { return currentLang; }

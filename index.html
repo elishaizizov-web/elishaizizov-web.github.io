@@ -39,6 +39,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/global.css?v=54">
+<link rel="stylesheet" href="/css/home.css?v=2">
 </head>
 <body>
 <script>if(!sessionStorage.getItem('loaded')){document.documentElement.classList.add('first-visit');}</script>
@@ -49,6 +50,7 @@
     <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu"><span></span><span></span><span></span></button>
     <a class="mh-logo" href="/"><img src="/logo.png" alt="Rabbiner Elishai Zizov" loading="lazy"></a>
     <nav class="mh-nav" aria-label="Main navigation">
+      <a class="mh-nav-link" href="#guides" data-t="nav-guides">Guides</a>
       <a class="mh-nav-link active" href="/" data-t="nav-bio">Biografie</a>
       <a class="mh-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
       <a class="mh-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
@@ -66,48 +68,125 @@
     <div class="hero-slide active">
       <div class="hero-slide-bg"></div>
       <div class="hero-slide-overlay"></div>
-      <div class="hero-content">
-        <div class="hero-decor"><span class="hero-decor-star">✦ ✦ ✦</span></div>
-        <blockquote class="hero-quote">
-          <p data-t="hero-q1"></p>
-          <cite data-t="hero-c1"></cite>
-        </blockquote>
-        <a href="/articles.html" class="btn primary-btn" data-t="cta">Beiträge lesen</a>
-      </div>
-    </div>
-    <div class="hero-slide">
-      <div class="hero-slide-bg"></div>
-      <div class="hero-slide-overlay"></div>
-      <div class="hero-content">
-        <div class="hero-decor"><span class="hero-decor-star">✦ ✦ ✦</span></div>
-        <blockquote class="hero-quote">
-          <p data-t="hero-q2"></p>
-          <cite data-t="hero-c2"></cite>
-        </blockquote>
-        <a href="/contact.html" class="btn secondary-btn" data-t="nav-form">Anfragen</a>
-      </div>
-    </div>
-    <div class="hero-slide">
-      <div class="hero-slide-bg"></div>
-      <div class="hero-slide-overlay"></div>
-      <div class="hero-content">
-        <div class="hero-decor"><span class="hero-decor-star">✦ ✦ ✦</span></div>
-        <blockquote class="hero-quote">
-          <p data-t="hero-q3"></p>
-          <cite data-t="hero-c3"></cite>
-        </blockquote>
-        <a href="/articles.html" class="btn gold-btn" data-t="cta">Beiträge lesen</a>
+      <div class="hero-content hero-welcome">
+        <span class="hero-eyebrow" data-t="hero-eyebrow">J&uuml;disches Wissen einfach erkl&auml;rt</span>
+        <h1 class="hero-h1" data-t="hero-h1">Hallo, ich bin Rabbiner Elishai.</h1>
+        <p class="hero-sub" data-t="hero-sub">Ich erkl&auml;re j&uuml;dische Themen so, dass du sie im Alltag wirklich nutzen kannst. Ohne Fachchinesisch, mit Herz.</p>
+        <div class="hero-actions">
+          <a href="#guides" class="f-btn f-btn-gold" data-t="hero-btn1">Gratis-Guide holen</a>
+          <a href="/articles.html" class="f-btn f-btn-ghost" data-t="hero-btn2">Beitr&auml;ge lesen</a>
+        </div>
+        <p class="hero-trust" data-t="hero-trust">Rabbiner von Bait Sfaradi Frankfurt &middot; Lehrer &middot; Vortragsredner</p>
       </div>
     </div>
   </div>
-  <button class="carousel-control prev" onclick="heroCarousel(-1)" aria-label="Zurück">&#10094;</button>
-  <button class="carousel-control next" onclick="heroCarousel(1)" aria-label="Weiter">&#10095;</button>
-  <div class="carousel-dots" id="carousel-dots"></div>
 </section>
 
 <div class="home-lift">
 
+<section class="f-section guides-section" id="guides">
+  <div class="f-inner">
+    <div class="f-head">
+      <span class="f-pill" data-t="g-label">Gratis f&uuml;r dich</span>
+      <h2 class="f-title" data-t="g-title">Meine kostenlosen Guides</h2>
+      <p class="f-sub" data-t="g-sub">Kurz, praktisch und direkt zum Mitnehmen. Trag deine E-Mail ein und der Guide geh&ouml;rt dir.</p>
+    </div>
+    <div class="guides-grid">
+      <article class="f-card" data-guide-card="zeit">
+        <div class="f-card-top"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></span><span class="f-chip" data-t="g-chip-soon">Bald</span></div>
+        <h3 data-t="g1-t">Zeitmanagement-Tricks</h3>
+        <p class="f-desc" data-t="g1-d">Mehr Ruhe und mehr Zeit im Alltag: einfache Gewohnheiten, die wirklich funktionieren.</p>
+          <form class="lead-form" onsubmit="leadSubscribe(event)" data-source="guide-zeit" data-guide="zeit">
+            <label class="sr-only" for="lead-zeit" data-t="lead-label">E-Mail-Adresse</label>
+            <input id="lead-zeit" type="email" class="lead-input" placeholder="Deine E-Mail-Adresse" data-t-ph="lead-ph" required autocomplete="email">
+            <button type="submit" class="f-btn f-btn-gold" data-t="lead-btn-notify">Benachrichtige mich</button>
+            <p class="lead-consent" data-t="lead-consent">Mit der Anmeldung erh&auml;ltst du den Guide und gelegentlich Neuigkeiten per E-Mail. Du kannst dich jederzeit abmelden.</p>
+            <p class="lead-msg" role="status" aria-live="polite"></p>
+          </form>
+      </article>
+      <article class="f-card" data-guide-card="koscher">
+        <div class="f-card-top"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-2 11H5L3 9z"/><path d="M8 9l3-5M16 9l-3-5"/></svg></span><span class="f-chip" data-t="g-chip-soon">Bald</span></div>
+        <h3 data-t="g2-t">Koscher einkaufen</h3>
+        <p class="f-desc" data-t="g2-d">Dein Begleiter im Supermarkt: Worauf du bei Zeichen und Zutaten achten kannst.</p>
+          <form class="lead-form" onsubmit="leadSubscribe(event)" data-source="guide-koscher" data-guide="koscher">
+            <label class="sr-only" for="lead-koscher" data-t="lead-label">E-Mail-Adresse</label>
+            <input id="lead-koscher" type="email" class="lead-input" placeholder="Deine E-Mail-Adresse" data-t-ph="lead-ph" required autocomplete="email">
+            <button type="submit" class="f-btn f-btn-gold" data-t="lead-btn-notify">Benachrichtige mich</button>
+            <p class="lead-consent" data-t="lead-consent">Mit der Anmeldung erh&auml;ltst du den Guide und gelegentlich Neuigkeiten per E-Mail. Du kannst dich jederzeit abmelden.</p>
+            <p class="lead-msg" role="status" aria-live="polite"></p>
+          </form>
+      </article>
+      <article class="f-card" data-guide-card="insekten">
+        <div class="f-card-top"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><line x1="16" y1="16" x2="21" y2="21"/></svg></span><span class="f-chip" data-t="g-chip-soon">Bald</span></div>
+        <h3 data-t="g3-t">Insekten-Check f&uuml;r Obst und Gem&uuml;se</h3>
+        <p class="f-desc" data-t="g3-d">Welche Sorten du genau pr&uuml;fen solltest und wie du dabei vorgehst.</p>
+          <form class="lead-form" onsubmit="leadSubscribe(event)" data-source="guide-insekten" data-guide="insekten">
+            <label class="sr-only" for="lead-insekten" data-t="lead-label">E-Mail-Adresse</label>
+            <input id="lead-insekten" type="email" class="lead-input" placeholder="Deine E-Mail-Adresse" data-t-ph="lead-ph" required autocomplete="email">
+            <button type="submit" class="f-btn f-btn-gold" data-t="lead-btn-notify">Benachrichtige mich</button>
+            <p class="lead-consent" data-t="lead-consent">Mit der Anmeldung erh&auml;ltst du den Guide und gelegentlich Neuigkeiten per E-Mail. Du kannst dich jederzeit abmelden.</p>
+            <p class="lead-msg" role="status" aria-live="polite"></p>
+          </form>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="f-section connect-section" id="community">
+  <div class="f-inner">
+    <div class="f-head">
+      <span class="f-pill" data-t="c-label">Bleib in Verbindung</span>
+      <h2 class="f-title" data-t="c-title">Community und Podcast</h2>
+      <p class="f-sub" data-t="c-sub">Weitere Orte, an denen du gutes j&uuml;disches Wissen findest, in deinem Tempo.</p>
+    </div>
+    <div class="connect-grid">
+      <article class="f-card" id="wa-card">
+        <div class="f-card-top"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg></span><span class="f-chip" data-t="wa-chip">Startet bald</span></div>
+        <h3 data-t="wa-t">Die WhatsApp-Community</h3>
+        <p class="f-desc" data-t="wa-d">Hier bekommst du neue Guides und Inhalte zuerst, noch vor Instagram.</p>
+        <a class="f-btn f-btn-gold wa-join" href="#" target="_blank" rel="noopener" hidden data-t="wa-btn">Der Community beitreten</a>
+          <form class="lead-form" onsubmit="leadSubscribe(event)" data-source="whatsapp-waitlist">
+            <label class="sr-only" for="lead-wa" data-t="lead-label">E-Mail-Adresse</label>
+            <input id="lead-wa" type="email" class="lead-input" placeholder="Deine E-Mail-Adresse" data-t-ph="lead-ph" required autocomplete="email">
+            <button type="submit" class="f-btn f-btn-gold" data-t="lead-btn-notify">Benachrichtige mich</button>
+            <p class="lead-consent" data-t="lead-consent">Mit der Anmeldung erh&auml;ltst du den Guide und gelegentlich Neuigkeiten per E-Mail. Du kannst dich jederzeit abmelden.</p>
+            <p class="lead-msg" role="status" aria-live="polite"></p>
+          </form>
+      </article>
+      <article class="f-card">
+        <div class="f-card-top"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><span class="f-chip" data-t="pod-chip">In Planung</span></div>
+        <h3 data-t="pod-t">Der Podcast</h3>
+        <p class="f-desc" data-t="pod-d">J&uuml;disches Wissen zum H&ouml;ren, geplant alle zwei Wochen. Trag dich ein, dann erf&auml;hrst du als Erstes von der ersten Folge.</p>
+          <form class="lead-form" onsubmit="leadSubscribe(event)" data-source="podcast-waitlist">
+            <label class="sr-only" for="lead-pod" data-t="lead-label">E-Mail-Adresse</label>
+            <input id="lead-pod" type="email" class="lead-input" placeholder="Deine E-Mail-Adresse" data-t-ph="lead-ph" required autocomplete="email">
+            <button type="submit" class="f-btn f-btn-gold" data-t="lead-btn-notify">Benachrichtige mich</button>
+            <p class="lead-consent" data-t="lead-consent">Mit der Anmeldung erh&auml;ltst du den Guide und gelegentlich Neuigkeiten per E-Mail. Du kannst dich jederzeit abmelden.</p>
+            <p class="lead-msg" role="status" aria-live="polite"></p>
+          </form>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="home-articles fade-in-on-scroll" id="recent-articles">
+  <div class="home-articles-inner">
+    <span class="section-label" data-t="home-art-label">Beiträge</span>
+    <h2 class="home-articles-title" data-t="home-art-title">Aktuelle Beiträge</h2>
+    <div class="articles-grid" id="home-articles-grid"></div>
+    <div class="home-articles-cta">
+      <a href="/articles.html" class="btn secondary-btn" data-t="home-art-cta">Alle Beiträge ansehen</a>
+    </div>
+  </div>
+</section>
+
+
 <main class="page-body">
+
+  <div class="about-intro fade-in-on-scroll">
+    <span class="f-pill" data-t="about-label">&Uuml;ber mich</span>
+    <h2 class="f-title" data-t="about-sub">Ein paar Worte dazu, wer hinter dem Wissen steckt.</h2>
+  </div>
 
   <div class="bio-split">
   <div class="bio-split-text" id="bio">
@@ -150,16 +229,6 @@
 
 </main>
 
-<section class="home-articles fade-in-on-scroll" id="recent-articles">
-  <div class="home-articles-inner">
-    <span class="section-label" data-t="home-art-label">Beiträge</span>
-    <h2 class="home-articles-title" data-t="home-art-title">Aktuelle Beiträge</h2>
-    <div class="articles-grid" id="home-articles-grid"></div>
-    <div class="home-articles-cta">
-      <a href="/articles.html" class="btn secondary-btn" data-t="home-art-cta">Alle Beiträge ansehen</a>
-    </div>
-  </div>
-</section>
 
 
 <section class="quote-strip fade-in-on-scroll">
@@ -213,6 +282,7 @@
     <div class="mf-col fade-in-on-scroll">
       <span class="mf-col-title" data-t="footer-nav">Navigation</span>
       <nav>
+        <a class="mf-nav-link" href="#guides" data-t="nav-guides">Guides</a>
         <a class="mf-nav-link" href="/" data-t="nav-bio">Biografie</a>
         <a class="mf-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
         <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
@@ -249,6 +319,7 @@
   <button class="hmenu-close" onclick="closeMenu()">×</button>
 
   <div class="hmenu-section">
+    <a class="hmenu-item" href="#guides" onclick="closeMenu()" style="display:block;text-decoration:none;" data-t="nav-guides">Guides</a>
     <a class="hmenu-item" href="/" style="display:block;text-decoration:none;" data-t="nav-bio">Biografie</a>
     <a class="hmenu-item" href="/articles.html" style="display:block;text-decoration:none;" data-t="nav-art">Beiträge</a>
     <a class="hmenu-item" href="/contact.html" style="display:block;text-decoration:none;" data-t="nav-form">Anfragen</a>
@@ -261,10 +332,6 @@
     <button class="hmenu-lang" id="hm-en" onclick="setLang('en'); updateHmenuLangs('en')">EN</button>
     <button class="hmenu-lang" id="hm-he" onclick="setLang('he'); updateHmenuLangs('he')">עב</button>
   </div>
-
-  <div class="hmenu-divider"></div>
-
-  <a class="hmenu-admin-btn" href="/articles.html?admin=1" style="text-decoration:none;">&#9881; Admin</a>
 
   <div class="hmenu-divider"></div>
 
@@ -286,6 +353,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-<script src="/js/shared.js?v=30"></script>
+<script src="/js/shared.js?v=31"></script>
+<script src="/js/home-landing.js?v=1"></script>
 </body>
 </html>
