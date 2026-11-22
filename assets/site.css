@@ -504,6 +504,8 @@ dd{margin:0}
 .hero-copy .hero-emphasis {
   position: relative;
   display: inline-block;
+  color: #e9faff;
+  text-shadow: 0 0 .24em rgb(111 213 255 / 65%), 0 0 .48em rgb(76 183 255 / 38%);
 }
 .hero-emphasis::after {
   content: "";
@@ -513,6 +515,7 @@ dd{margin:0}
   background: currentColor;
   border-radius: 999px;
   transform-origin: left center;
+  box-shadow: 0 0 8px rgb(111 213 255 / 65%);
   pointer-events: none;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -539,7 +542,7 @@ dd{margin:0}
 }
 .hero-portrait img {
   width: 100%;
-  height: 116%;
+  height: 109%;
   object-fit: contain;
   object-position: center top;
 }
