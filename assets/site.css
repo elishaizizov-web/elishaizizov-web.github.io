@@ -938,3 +938,14 @@ dd{margin:0}
     gap: .25rem;
   }
 }
+
+.produce-visual {
+  margin: .9rem 0 1.15rem;
+  aspect-ratio: 2 / 1;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+@media (max-width: 520px) {
+  .produce-visual { aspect-ratio: 3 / 2; }
+}
