@@ -547,6 +547,9 @@ dd{margin:0}
   object-position: center top;
 }
 .hero-action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   background: #f7f9fb;
   padding: 12px 20px;
 }
@@ -557,6 +560,11 @@ dd{margin:0}
   border-radius: 999px;
   text-align: center;
   text-decoration: none;
+}
+.hero-action .hero-contact {
+  color: #fff;
+  background: #082556;
+  border-color: #a0c6e9;
 }
 @media (min-width: 850px) {
   .home-theme .hero-band .hero { grid-template-columns: 1.1fr 1fr; }
@@ -837,7 +845,11 @@ dd{margin:0}
     padding-block: 10px;
     background: #082556;
   }
-  .hero-action .button { border-color: transparent; }
+  .hero-action .button {
+    min-height: 44px;
+    padding-inline: 12px;
+  }
+  .hero-action .button-light { flex: 1; }
 }
 
 @media (max-width: 599px) and (max-height: 610px) and (orientation: portrait) {
