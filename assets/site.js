@@ -1,13 +1,16 @@
 const localPreview = !['elishaizizov.com', 'www.elishaizizov.com', 'elishaizizov-web.github.io'].includes(location.hostname);
-const fixedMotion = localPreview && new URLSearchParams(location.search).get('bewegung') === 'aus';
-document.documentElement.classList.toggle('preview', localPreview);
+const options = new URLSearchParams(location.search);
+const development = localPreview && options.get('entwicklung') === '1';
+const fixedMotion = localPreview && options.get('bewegung') === 'aus';
+document.documentElement.classList.toggle('preview', development);
 document.documentElement.classList.toggle('static-motion', fixedMotion);
 
 const communityInvite = '';
 if (communityInvite) {
   for (const placeholder of document.querySelectorAll('.pending')) {
     const invite = document.createElement('a');
-    invite.className = 'button';
+    const inMenu = placeholder.classList.contains('nav-community');
+    invite.className = inMenu ? 'nav-community' : 'button button-gold';
     invite.href = communityInvite;
     invite.textContent = placeholder.firstChild.textContent;
     placeholder.replaceWith(invite);
@@ -73,7 +76,10 @@ if (narrative) {
       thread.style.removeProperty('stroke-dasharray');
     } else {
       const position = -narrative.getBoundingClientRect().top;
-      const lead = start + 54 + position * 1.06;
+      const narrativeTop = scrollY - position;
+      const availableScroll = Math.max(1, document.documentElement.scrollHeight - innerHeight - narrativeTop - 2);
+      const scrollRate = Math.max(1.06, (verticalLength + bridgeScrollSpan - 54) / availableScroll);
+      const lead = start + 54 + position * scrollRate;
       const beforeBridge = Math.max(16, Math.min(verticalLength, lead - start));
       const afterBridge = Math.max(0, lead - start - verticalLength);
       const shown = beforeBridge + (length - verticalLength) * Math.min(1, afterBridge / bridgeScrollSpan);
@@ -98,38 +104,51 @@ if (narrative) {
 const guideSearch = document.querySelector('#guide-search');
 if (guideSearch) {
   const input = guideSearch.querySelector('input');
-  const cards = [...document.querySelectorAll('.categories details')];
+  const cards = [...document.querySelectorAll('.category-card')];
+  const answers = cards.map(card => document.getElementById(card.hash.slice(1)));
   const status = document.querySelector('#search-result');
+  const example = document.querySelector('#category-example');
   const normalize = value => value.toLocaleLowerCase('de').normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/ß/g, 'ss').trim();
 
-  function filter() {
+  function showAnswer(index, isExample = false) {
+    for (const [position, card] of cards.entries()) {
+      answers[position].hidden = position !== index;
+      if (position === index) card.setAttribute('aria-current', 'true');
+      else card.removeAttribute('aria-current');
+    }
+    example.hidden = !isExample;
+  }
+
+  function filter(preferred = -1) {
     const words = normalize(input.value).split(/\s+/);
     let visible = 0;
-    for (const card of cards) {
-      const haystack = normalize(card.textContent + ' ' + card.dataset.search);
+    let first = -1;
+    for (const [index, card] of cards.entries()) {
+      const haystack = normalize(answers[index].textContent + ' ' + card.dataset.search);
       card.hidden = !words.every(word => haystack.includes(word));
-      if (!card.hidden) visible++;
+      if (!card.hidden) {
+        if (first === -1) first = index;
+        visible++;
+      }
     }
     status.textContent = visible ? `${visible} passende ${visible === 1 ? 'Kategorie' : 'Kategorien'} gefunden.` : 'Keine passende Kategorie gefunden.';
     status.hidden = !input.value.trim();
+    const selectPreferred = preferred !== -1 && !cards[preferred].hidden;
+    showAnswer(selectPreferred ? preferred : first, !input.value.trim() && !selectPreferred);
   }
 
-  function openTopic() {
-    const card = cards.find(item => '#' + item.id === location.hash);
-    if (card) {
-      if (card.hidden) {
-        input.value = '';
-        filter();
-      }
-      card.open = true;
+  function applyLocation() {
+    input.value = new URLSearchParams(location.search).get('suche') || '';
+    const index = cards.findIndex(card => card.hash === location.hash);
+    filter(index);
+    if (index !== -1 && cards[index].hidden) {
+      input.value = '';
+      filter(index);
     }
   }
 
-  input.value = new URLSearchParams(location.search).get('suche') || '';
-  filter();
-  openTopic();
-  window.addEventListener('hashchange', openTopic);
-  input.addEventListener('search', filter);
+  applyLocation();
+  window.addEventListener('hashchange', applyLocation);
   guideSearch.addEventListener('submit', event => {
     event.preventDefault();
     filter();
@@ -138,6 +157,36 @@ if (guideSearch) {
     if (input.value.trim()) url.searchParams.set('suche', input.value.trim());
     url.hash = 'einkaufskorb';
     if (location.protocol !== 'file:') history.replaceState(null, '', url);
+  });
+  input.addEventListener('search', () => {
+    if (!input.value) guideSearch.requestSubmit();
+  });
+
+  for (const [index, card] of cards.entries()) {
+    card.addEventListener('click', event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      showAnswer(index);
+      answers[index].focus({preventScroll: true});
+    });
+  }
+
+  const copyButton = document.querySelector('#copy-guide');
+  const shareStatus = document.querySelector('#share-status');
+  const shareAddress = document.querySelector('#share-address');
+  shareAddress.value = document.querySelector('link[rel="canonical"]').href;
+  copyButton.hidden = false;
+  copyButton.addEventListener('click', async () => {
+    shareStatus.hidden = false;
+    try {
+      await navigator.clipboard.writeText(shareAddress.value);
+      shareAddress.hidden = true;
+      shareStatus.textContent = 'Adresse kopiert.';
+    } catch {
+      shareAddress.hidden = false;
+      shareAddress.focus();
+      shareAddress.select();
+      shareStatus.textContent = 'Du kannst die markierte Adresse kopieren.';
+    }
   });
 
   const mobileToc = document.querySelector('.toc-mobile');
