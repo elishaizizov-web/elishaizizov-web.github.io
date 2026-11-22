@@ -28,10 +28,46 @@
 </header>
 <div class="guide-layout"><aside><nav class="toc" aria-label="Inhalt"><h2>Inhalt</h2><ul><li><a href="#einkaufskorb">Im Einkaufsregal</a></li><li><a href="#herstellung">Zutaten und Herstellung</a></li><li><a href="#vorgehen">Beim nächsten Einkauf</a></li><li><a href="#quellen">Quellen</a></li></ul></nav></aside>
 <div class="reading">
-<section id="einkaufskorb"><h2>Was liegt in deinem Einkaufskorb?</h2>
-<p class="guide-notice">Die Hinweise gelten für Lebensmittelgruppen. Prüfe einzelne Produkte anhand aktueller Angaben. Für Pessach gelten zusätzliche Regeln.</p>
-<form id="guide-search" method="get" action="#einkaufskorb" role="search"><label for="suche">Lebensmittel suchen</label><div class="search-row"><input type="search" name="suche" id="suche" placeholder="z. B. Käse"><button class="button">Suchen</button></div></form>
-<p id="search-result" role="status" hidden>Keine passende Kategorie gefunden.</p>
+<section id="einkaufskorb" aria-label="Im Einkaufsregal">
+<form id="guide-search" method="get" action="#einkaufskorb" role="search">
+  <label for="suche">Lebensmittel suchen</label>
+  <div class="search-row">
+    <input type="search" name="suche" id="suche" placeholder="z. B. Käse oder Lachs" enterkeyhint="search">
+    <button class="button">Suchen</button>
+  </div>
+  <button class="search-reset" type="reset" hidden>Suche löschen</button>
+</form>
+<p id="search-result" role="status" hidden></p>
+<div id="guide-no-results" class="guide-notice" hidden>
+  <p>Versuche eine Lebensmittelgruppe oder suche den genauen Artikel in der <a href="https://ordonline.de/koscherliste/">aktuellen Koscherliste der ORD</a>.</p>
+</div>
+<h2 class="category-heading">Lebensmittelgruppen</h2>
+<div class="categories" aria-label="Lebensmittelgruppen">
+<a class="category-card" href="#obst" data-search="Apfel Äpfel Birne Salat Kräuter Erdbeeren Gemüse Kartoffel Gurke Tomate Banane">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-3-3-8-1-8 4 0 3 2 8 5 8 1 0 2-1 3-1s2 1 3 1c3 0 5-5 5-8 0-5-5-7-8-4Zm0 0c0-3 2-5 5-5-1 3-3 4-5 4"/></svg>
+<span>Obst und Gemüse</span></a>
+<a class="category-card" href="#brot" data-search="Brötchen Kuchen Kekse Gebäck Toast Brezel">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c-2-2-2-6 1-9l3-3c4-4 9-3 12 0s3 7-1 11l-2 2c-3 3-9 2-13-1Zm3-6 4 4m0-8 4 4m0-8 4 4"/></svg>
+<span>Brot und Gebäck</span></a>
+<a class="category-card" href="#milch" data-search="Joghurt Jogurt Quark Eis Chalaw Butter Sahne Mozzarella Gouda Feta">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 16 5l5 7v7H3zm0 0h18"/><circle cx="9" cy="15.5" r=".8"/><circle cx="16" cy="16.5" r=".8"/></svg>
+<span>Milch und Käse</span></a>
+<a class="category-card" href="#fisch" data-search="Lachs Filet Thunfisch Kabeljau Forelle Hering Sardinen">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c5-6 10-6 14 0l4-4v8l-4-4c-4 6-9 6-14 0Z"/><circle cx="8" cy="11.5" r=".6"/></svg>
+<span>Fisch</span></a>
+<a class="category-card" href="#fleisch" data-search="Huhn Hähnchen Rind Halal Pute Hackfleisch">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15c-3-3-2-7 1-10s7-3 10 0 2 7-1 10-6 4-9 2l-3 3c-1 1-2 1-3 0s-1-2 0-3c-1-1-1-2 0-3s2-1 3 0l2 1Z"/></svg>
+<span>Fleisch und Geflügel</span></a>
+<a class="category-card" href="#snacks" data-search="Gummibärchen Schokolade Chips Bonbons Süßigkeiten">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-5-3v7l5 1m8-2 5 1v7l-5-3"/><rect x="8" y="7" width="8" height="10" rx="3" transform="rotate(-32 12 12)"/></svg>
+<span>Süßes und Snacks</span></a>
+<a class="category-card" href="#wein" data-search="Trauben Weinessig Traubensaft">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10l1 6a6 6 0 0 1-12 0Zm-1 5h12m-6 7v4m-4 0h8"/></svg>
+<span>Wein und Traubensaft</span></a>
+<a class="category-card" href="#konserven" data-search="Saft Dose Apfelsaft Konserve Dosen Tomatenmark">
+<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6v12c0 2 14 2 14 0V6"/><ellipse cx="12" cy="6" rx="7" ry="2"/><path d="M5 11c0 2 14 2 14 0m-14 4c0 2 14 2 14 0"/></svg>
+<span>Säfte und Konserven</span></a>
+</div>
 <div class="category-results" aria-live="polite"><p class="eyebrow" id="category-example" hidden>Beispiel</p>
 <article class="category-answer" id="obst" tabindex="-1"><h3>Obst und Gemüse</h3><p>Frische, unverarbeitete Ware braucht in der Regel kein Koscherzeichen. Je nach Sorte musst du auf Insekten achten. Für Erzeugnisse aus Israel gelten zusätzliche Regeln.</p></article>
 <article class="category-answer" id="brot" tabindex="-1"><h3>Brot und Gebäck</h3><p>Beim Backen können Fette, Zusätze und Backhilfsmittel verwendet werden. Nutze eine verlässliche Bäckerei oder eine aktuelle Koscherliste. Bei Pat Israel spielt auch die Mitwirkung eines Juden beim Backen eine Rolle.</p></article>
@@ -42,32 +78,7 @@
 <article class="category-answer" id="wein" tabindex="-1"><h3>Wein und Traubensaft</h3><p>Bei Wein und Traubensaft gelten besondere Kaschrutregeln. Prüfe eine verlässliche Kennzeichnung. Auch Weinbestandteile in Saucen oder Essig können eine Rolle spielen.</p></article>
 <article class="category-answer" id="konserven" tabindex="-1"><h3>Säfte und Konserven</h3><p>Bei verarbeiteter Ware spielen Zusätze und der Herstellungsprozess eine Rolle. Gleiche den genauen Artikel mit aktuellen Angaben ab.</p></article>
 </div>
-<div class="categories" aria-label="Lebensmittelgruppen">
-<a class="category-card" href="#obst" data-search="Apfel Salat Kräuter Erdbeeren">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-3-3-8-1-8 4 0 3 2 8 5 8 1 0 2-1 3-1s2 1 3 1c3 0 5-5 5-8 0-5-5-7-8-4Zm0 0c0-3 2-5 5-5-1 3-3 4-5 4"/></svg>
-<span>Obst und Gemüse</span></a>
-<a class="category-card" href="#brot" data-search="Brötchen Kuchen Kekse">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c-2-2-2-6 1-9l3-3c4-4 9-3 12 0s3 7-1 11l-2 2c-3 3-9 2-13-1Zm3-6 4 4m0-8 4 4m0-8 4 4"/></svg>
-<span>Brot und Gebäck</span></a>
-<a class="category-card" href="#milch" data-search="Joghurt Quark Eis Chalaw">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 16 5l5 7v7H3zm0 0h18"/><circle cx="9" cy="15.5" r=".8"/><circle cx="16" cy="16.5" r=".8"/></svg>
-<span>Milch und Käse</span></a>
-<a class="category-card" href="#fisch" data-search="Lachs Filet Thunfisch">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c5-6 10-6 14 0l4-4v8l-4-4c-4 6-9 6-14 0Z"/><circle cx="8" cy="11.5" r=".6"/></svg>
-<span>Fisch</span></a>
-<a class="category-card" href="#fleisch" data-search="Huhn Rind Halal">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15c-3-3-2-7 1-10s7-3 10 0 2 7-1 10-6 4-9 2l-3 3c-1 1-2 1-3 0s-1-2 0-3c-1-1-1-2 0-3s2-1 3 0l2 1Z"/></svg>
-<span>Fleisch und Geflügel</span></a>
-<a class="category-card" href="#snacks" data-search="Gummibärchen Schokolade Chips">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-5-3v7l5 1m8-2 5 1v7l-5-3"/><rect x="8" y="7" width="8" height="10" rx="3" transform="rotate(-32 12 12)"/></svg>
-<span>Süßes und Snacks</span></a>
-<a class="category-card" href="#wein" data-search="Trauben Weinessig">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10l1 6a6 6 0 0 1-12 0Zm-1 5h12m-6 7v4m-4 0h8"/></svg>
-<span>Wein und Traubensaft</span></a>
-<a class="category-card" href="#konserven" data-search="Saft Dose Apfelsaft">
-<svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6v12c0 2 14 2 14 0V6"/><ellipse cx="12" cy="6" rx="7" ry="2"/><path d="M5 11c0 2 14 2 14 0m-14 4c0 2 14 2 14 0"/></svg>
-<span>Säfte und Konserven</span></a>
-</div>
+<p class="guide-notice">Die Hinweise gelten für Lebensmittelgruppen. Prüfe einzelne Produkte anhand aktueller Angaben. Für Pessach gelten zusätzliche Regeln.</p>
 </section>
 <details class="toc-mobile"><summary>Inhalt</summary><ul><li><a href="#einkaufskorb">Im Einkaufsregal</a></li><li><a href="#herstellung">Zutaten und Herstellung</a></li><li><a href="#vorgehen">Beim nächsten Einkauf</a></li><li><a href="#quellen">Quellen</a></li></ul></details>
 <section id="herstellung"><h2>Zutaten und Herstellung</h2>

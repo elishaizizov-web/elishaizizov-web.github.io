@@ -557,3 +557,70 @@ dd{margin:0}
   font-style: normal;
   margin-bottom: 1rem;
 }
+
+.guide-theme .guide-intro {
+  padding-block: clamp(24px, 4vw, 54px);
+}
+.guide-theme .guide-intro h1 {
+  font-size: clamp(2.35rem, 5.5vw, 5.2rem);
+  line-height: 1.02;
+}
+.guide-theme .guide-layout {
+  margin-top: 12px;
+}
+.guide-theme .reading #einkaufskorb {
+  padding-top: 12px;
+  border-top: 0;
+}
+.guide-theme #guide-search label,
+.guide-theme .category-heading {
+  font-size: 1.14rem;
+  font-weight: 700;
+}
+.guide-theme .search-row input {
+  min-width: 0;
+  font-size: 1rem;
+}
+.guide-theme .search-row .button {
+  min-height: 44px;
+  padding-inline: 1rem;
+}
+.guide-theme .search-reset {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--guide-link);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.guide-theme .category-heading {
+  margin-top: 18px;
+}
+.guide-theme .categories {
+  margin-top: 10px;
+  gap: 8px;
+}
+.guide-theme .category-card {
+  min-height: 57px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  text-decoration: none;
+}
+.guide-theme .category-card svg {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+}
+.guide-theme #einkaufskorb > .guide-notice {
+  margin-top: 12px;
+}
+.guide-theme #guide-no-results {
+  margin-top: 8px;
+}
+.guide-theme .category-answer {
+  scroll-margin-block: 1rem;
+}

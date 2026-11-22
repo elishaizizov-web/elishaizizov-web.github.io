@@ -25,58 +25,87 @@ if (guideSearch) {
   const answers = cards.map(card => document.getElementById(card.hash.slice(1)));
   const status = document.querySelector('#search-result');
   const example = document.querySelector('#category-example');
-  const normalize = value => value.toLocaleLowerCase('de').normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/ß/g, 'ss').trim();
+  const noResults = document.querySelector('#guide-no-results');
+  const reset = guideSearch.querySelector('[type="reset"]');
+  const normalize = (value) => value.toLocaleLowerCase('de')
+    .replace(/ae/g, 'ä').replace(/oe/g, 'ö').replace(/ue/g, 'ü')
+    .normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/ß/g, 'ss')
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+  const searchTerms = cards.map((card, index) => ({
+    names: normalize(card.textContent + ' ' + card.dataset.search),
+    details: normalize(answers[index].textContent),
+  }));
 
   function showAnswer(index, isExample = false) {
     for (const [position, card] of cards.entries()) {
-      if (position === index && answers[position].hidden) {
-        answers[position].classList.add('answer-enter');
-      }
-      answers[position].hidden = position !== index;
-      if (position === index) card.setAttribute('aria-current', 'true');
+      const selected = position === index;
+      answers[position].classList.toggle('answer-enter', selected && answers[position].hidden);
+      answers[position].hidden = !selected;
+      if (selected && !isExample) card.setAttribute('aria-current', 'true');
       else card.removeAttribute('aria-current');
     }
     example.hidden = !isExample;
   }
 
   function filter(preferred = -1) {
-    const words = normalize(input.value).split(/\s+/);
-    let visible = 0;
-    let first = -1;
+    const term = input.value.trim();
+    const words = normalize(term).split(' ').filter(Boolean);
+    const matches = searchTerms.map(({names, details}, index) => {
+      if (term && !words.length) return null;
+      if (!words.every(word => names.includes(word) || details.includes(word))) return null;
+      return {index, score: words.filter(word => names.includes(word)).length};
+    }).filter(Boolean).sort((left, right) => right.score - left.score);
+    const matchingIndices = new Set(matches.map(match => match.index));
     for (const [index, card] of cards.entries()) {
-      const haystack = normalize(answers[index].textContent + ' ' + card.dataset.search);
-      card.hidden = !words.every(word => haystack.includes(word));
-      if (!card.hidden) {
-        if (first === -1) first = index;
-        visible++;
-      }
+      card.hidden = matches.length > 0 && !matchingIndices.has(index);
     }
-    status.textContent = visible ? `${visible} passende ${visible === 1 ? 'Kategorie' : 'Kategorien'} gefunden.` : 'Keine passende Kategorie gefunden.';
-    status.hidden = !input.value.trim();
-    const selectPreferred = preferred !== -1 && !cards[preferred].hidden;
-    showAnswer(selectPreferred ? preferred : first, !input.value.trim() && !selectPreferred);
+    reset.hidden = !term;
+    status.hidden = !term;
+    noResults.hidden = !term || matches.length > 0;
+    status.textContent = matches.length
+      ? `${matches.length} passende ${matches.length === 1 ? 'Kategorie' : 'Kategorien'} gefunden.`
+      : 'Keine passende Kategorie gefunden.';
+    const selected = matchingIndices.has(preferred) ? preferred : matches[0]?.index ?? -1;
+    showAnswer(selected, !term && preferred === -1);
   }
 
-  function applyLocation() {
-    input.value = new URLSearchParams(location.search).get('suche') || '';
+  function applyLocation(initial = false) {
+    const term = new URLSearchParams(location.search).get('suche');
+    if (term !== null || !initial) input.value = term ?? '';
     const index = cards.findIndex(card => card.hash === location.hash);
     filter(index);
-    if (index !== -1 && cards[index].hidden) {
+    if (index !== -1 && (cards[index].hidden || !noResults.hidden)) {
       input.value = '';
       filter(index);
     }
   }
 
-  applyLocation();
-  window.addEventListener('hashchange', applyLocation);
-  guideSearch.addEventListener('submit', event => {
-    event.preventDefault();
-    filter();
+  function saveLocation(hash) {
+    if (location.protocol === 'file:') return;
     const url = new URL(location.href);
     url.searchParams.delete('suche');
     if (input.value.trim()) url.searchParams.set('suche', input.value.trim());
-    url.hash = 'einkaufskorb';
-    if (location.protocol !== 'file:') history.replaceState(null, '', url);
+    url.hash = hash;
+    history.replaceState(null, '', url);
+  }
+
+  applyLocation(true);
+  window.addEventListener('hashchange', () => applyLocation());
+  guideSearch.addEventListener('submit', event => {
+    event.preventDefault();
+    filter();
+    saveLocation('einkaufskorb');
+    if (input.value.trim()) {
+      const result = answers.find(answer => !answer.hidden) || status;
+      result.scrollIntoView({block: 'nearest'});
+    }
+  });
+  guideSearch.addEventListener('reset', event => {
+    event.preventDefault();
+    input.value = '';
+    filter();
+    saveLocation('einkaufskorb');
+    input.focus();
   });
   input.addEventListener('search', () => {
     if (!input.value) guideSearch.requestSubmit();
@@ -85,8 +114,15 @@ if (guideSearch) {
   for (const [index, card] of cards.entries()) {
     card.addEventListener('click', event => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      showAnswer(index);
+      event.preventDefault();
+      if (noResults.hidden) showAnswer(index);
+      else {
+        input.value = '';
+        filter(index);
+      }
+      saveLocation(card.hash);
       answers[index].focus({preventScroll: true});
+      answers[index].scrollIntoView({block: 'nearest'});
     });
   }
 
