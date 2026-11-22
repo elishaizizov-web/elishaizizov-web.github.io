@@ -27,6 +27,17 @@ if (guideSearch) {
   const example = document.querySelector('#category-example');
   const noResults = document.querySelector('#guide-no-results');
   const reset = guideSearch.querySelector('[type="reset"]');
+  const filters = document.querySelector('.guide-filters');
+  const groupButtons = [...filters.querySelectorAll('button[data-group]')];
+  let group = 'all';
+  filters.hidden = false;
+
+  function selectGroup(value) {
+    group = value;
+    for (const button of groupButtons) {
+      button.setAttribute('aria-pressed', String(button.dataset.group === group));
+    }
+  }
   const normalize = (value) => value.toLocaleLowerCase('de')
     .replace(/ae/g, 'ä').replace(/oe/g, 'ö').replace(/ue/g, 'ü')
     .normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/ß/g, 'ss')
@@ -51,13 +62,16 @@ if (guideSearch) {
     const term = input.value.trim();
     const words = normalize(term).split(' ').filter(Boolean);
     const matches = searchTerms.map(({names, details}, index) => {
+      if (group !== 'all' && cards[index].dataset.group !== group) return null;
       if (term && !words.length) return null;
       if (!words.every(word => names.includes(word) || details.includes(word))) return null;
       return {index, score: words.filter(word => names.includes(word)).length};
     }).filter(Boolean).sort((left, right) => right.score - left.score);
     const matchingIndices = new Set(matches.map(match => match.index));
     for (const [index, card] of cards.entries()) {
-      card.hidden = matches.length > 0 && !matchingIndices.has(index);
+      card.hidden = matches.length
+        ? !matchingIndices.has(index)
+        : group !== 'all' && card.dataset.group !== group;
     }
     reset.hidden = !term;
     status.hidden = !term;
@@ -66,7 +80,7 @@ if (guideSearch) {
       ? `${matches.length} passende ${matches.length === 1 ? 'Kategorie' : 'Kategorien'} gefunden.`
       : 'Keine passende Kategorie gefunden.';
     const selected = matchingIndices.has(preferred) ? preferred : matches[0]?.index ?? -1;
-    showAnswer(selected, !term && preferred === -1);
+    showAnswer(selected, !term && preferred === -1 && group === 'all');
   }
 
   function applyLocation(initial = false) {
@@ -76,6 +90,7 @@ if (guideSearch) {
     filter(index);
     if (index !== -1 && (cards[index].hidden || !noResults.hidden)) {
       input.value = '';
+      selectGroup('all');
       filter(index);
     }
   }
@@ -91,18 +106,33 @@ if (guideSearch) {
 
   applyLocation(true);
   window.addEventListener('hashchange', () => applyLocation());
+  guideSearch.addEventListener('input', () => {
+    selectGroup('all');
+    filter();
+    saveLocation('einkaufskorb');
+  });
+  for (const button of groupButtons) {
+    button.addEventListener('click', () => {
+      input.value = '';
+      selectGroup(button.dataset.group);
+      filter();
+      saveLocation('einkaufskorb');
+    });
+  }
   guideSearch.addEventListener('submit', event => {
     event.preventDefault();
     filter();
     saveLocation('einkaufskorb');
     if (input.value.trim()) {
       const result = answers.find(answer => !answer.hidden) || status;
-      result.scrollIntoView({block: 'nearest'});
+      input.blur();
+      result.scrollIntoView({block: 'start'});
     }
   });
   guideSearch.addEventListener('reset', event => {
     event.preventDefault();
     input.value = '';
+    selectGroup('all');
     filter();
     saveLocation('einkaufskorb');
     input.focus();
@@ -122,7 +152,7 @@ if (guideSearch) {
       }
       saveLocation(card.hash);
       answers[index].focus({preventScroll: true});
-      answers[index].scrollIntoView({block: 'nearest'});
+      answers[index].scrollIntoView({block: 'start'});
     });
   }
 

@@ -26,7 +26,7 @@
 <p class="promise">Ein Apfel, ein Stück Käse, eine Packung Kekse. Was solltest du im Regal prüfen?</p></div>
 <div class="photo-slot guide-photo dev-only"><span>Platz für ein freigegebenes Foto</span></div>
 </header>
-<div class="guide-layout"><aside><nav class="toc" aria-label="Inhalt"><h2>Inhalt</h2><ul><li><a href="#einkaufskorb">Im Einkaufsregal</a></li><li><a href="#herstellung">Zutaten und Herstellung</a></li><li><a href="#vorgehen">Beim nächsten Einkauf</a></li><li><a href="#quellen">Quellen</a></li></ul></nav></aside>
+<div class="guide-layout"><aside><nav class="toc" aria-label="Inhalt"><h2>Inhalt</h2><ul><li><a href="#einkaufskorb">Im Einkaufsregal</a></li><li><a href="#herstellung">Zutaten und Herstellung</a></li><li><a href="#vorgehen">Beim nächsten Einkauf</a></li><li><a href="#fragen">Häufige Fragen</a></li><li><a href="#quellen">Quellen</a></li></ul></nav></aside>
 <div class="reading">
 <section id="einkaufskorb" aria-label="Im Einkaufsregal">
 <form id="guide-search" method="get" action="#einkaufskorb" role="search">
@@ -42,57 +42,152 @@
   <p>Versuche eine Lebensmittelgruppe oder suche den genauen Artikel in der <a href="https://ordonline.de/koscherliste/">aktuellen Koscherliste der ORD</a>.</p>
 </div>
 <h2 class="category-heading">Lebensmittelgruppen</h2>
+<fieldset class="guide-filters" hidden>
+<legend>Lebensmittelgruppen filtern</legend>
+<div class="filter-options">
+<button type="button" data-group="all" aria-pressed="true">Alle</button>
+<button type="button" data-group="frisch" aria-pressed="false">Frisch</button>
+<button type="button" data-group="verarbeitet" aria-pressed="false">Verarbeitet</button>
+<button type="button" data-group="tierisch" aria-pressed="false">Tierisch</button>
+</div>
+</fieldset>
 <div class="categories" aria-label="Lebensmittelgruppen">
-<a class="category-card" href="#obst" data-search="Apfel Äpfel Birne Salat Kräuter Erdbeeren Gemüse Kartoffel Gurke Tomate Banane">
+<a class="category-card" href="#obst" data-group="frisch" data-search="Apfel Äpfel Birne Salat Kräuter Erdbeeren Gemüse Kartoffel Gurke Tomate Banane Beeren">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-3-3-8-1-8 4 0 3 2 8 5 8 1 0 2-1 3-1s2 1 3 1c3 0 5-5 5-8 0-5-5-7-8-4Zm0 0c0-3 2-5 5-5-1 3-3 4-5 4"/></svg>
 <span>Obst und Gemüse</span></a>
-<a class="category-card" href="#brot" data-search="Brötchen Kuchen Kekse Gebäck Toast Brezel">
+<a class="category-card" href="#brot" data-group="verarbeitet" data-search="Brötchen Kuchen Kekse Gebäck Toast Brezel">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c-2-2-2-6 1-9l3-3c4-4 9-3 12 0s3 7-1 11l-2 2c-3 3-9 2-13-1Zm3-6 4 4m0-8 4 4m0-8 4 4"/></svg>
 <span>Brot und Gebäck</span></a>
-<a class="category-card" href="#milch" data-search="Joghurt Jogurt Quark Eis Chalaw Butter Sahne Mozzarella Gouda Feta">
+<a class="category-card" href="#milch" data-group="tierisch" data-search="Joghurt Jogurt Quark Eis Chalaw Butter Sahne Mozzarella Gouda Feta">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 16 5l5 7v7H3zm0 0h18"/><circle cx="9" cy="15.5" r=".8"/><circle cx="16" cy="16.5" r=".8"/></svg>
 <span>Milch und Käse</span></a>
-<a class="category-card" href="#fisch" data-search="Lachs Filet Thunfisch Kabeljau Forelle Hering Sardinen">
+<a class="category-card" href="#fisch" data-group="tierisch" data-search="Lachs Filet Thunfisch Kabeljau Forelle Hering Sardinen Garnelen Muscheln">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c5-6 10-6 14 0l4-4v8l-4-4c-4 6-9 6-14 0Z"/><circle cx="8" cy="11.5" r=".6"/></svg>
 <span>Fisch</span></a>
-<a class="category-card" href="#fleisch" data-search="Huhn Hähnchen Rind Halal Pute Hackfleisch">
+<a class="category-card" href="#fleisch" data-group="tierisch" data-search="Huhn Hähnchen Rind Halal Pute Hackfleisch">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15c-3-3-2-7 1-10s7-3 10 0 2 7-1 10-6 4-9 2l-3 3c-1 1-2 1-3 0s-1-2 0-3c-1-1-1-2 0-3s2-1 3 0l2 1Z"/></svg>
 <span>Fleisch und Geflügel</span></a>
-<a class="category-card" href="#snacks" data-search="Gummibärchen Schokolade Chips Bonbons Süßigkeiten">
+<a class="category-card" href="#snacks" data-group="verarbeitet" data-search="Gummibärchen Schokolade Chips Bonbons Süßigkeiten Gelatine">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-5-3v7l5 1m8-2 5 1v7l-5-3"/><rect x="8" y="7" width="8" height="10" rx="3" transform="rotate(-32 12 12)"/></svg>
 <span>Süßes und Snacks</span></a>
-<a class="category-card" href="#wein" data-search="Trauben Weinessig Traubensaft">
+<a class="category-card" href="#wein" data-group="verarbeitet" data-search="Trauben Weinessig Traubensaft Sekt">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10l1 6a6 6 0 0 1-12 0Zm-1 5h12m-6 7v4m-4 0h8"/></svg>
 <span>Wein und Traubensaft</span></a>
-<a class="category-card" href="#konserven" data-search="Saft Dose Apfelsaft Konserve Dosen Tomatenmark">
+<a class="category-card" href="#konserven" data-group="verarbeitet" data-search="Saft Dose Apfelsaft Konserve Dosen Tomatenmark Marmelade Aufstrich">
 <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6v12c0 2 14 2 14 0V6"/><ellipse cx="12" cy="6" rx="7" ry="2"/><path d="M5 11c0 2 14 2 14 0m-14 4c0 2 14 2 14 0"/></svg>
 <span>Säfte und Konserven</span></a>
 </div>
-<div class="category-results" aria-live="polite"><p class="eyebrow" id="category-example" hidden>Beispiel</p>
-<article class="category-answer" id="obst" tabindex="-1"><h3>Obst und Gemüse</h3><p>Frische, unverarbeitete Ware braucht in der Regel kein Koscherzeichen. Je nach Sorte musst du auf Insekten achten. Für Erzeugnisse aus Israel gelten zusätzliche Regeln.</p></article>
-<article class="category-answer" id="brot" tabindex="-1"><h3>Brot und Gebäck</h3><p>Beim Backen können Fette, Zusätze und Backhilfsmittel verwendet werden. Nutze eine verlässliche Bäckerei oder eine aktuelle Koscherliste. Bei Pat Israel spielt auch die Mitwirkung eines Juden beim Backen eine Rolle.</p></article>
-<article class="category-answer" id="milch" tabindex="-1"><h3>Milch und Käse</h3><p>Prüfe bei Käse die Aufsicht und bei anderen Milchprodukten das genaue Produkt. Berücksichtige den Milchstandard deiner Gemeinde.</p></article>
-<article class="category-answer" id="fisch" tabindex="-1"><h3>Fisch</h3><p>Koschere Fische haben Flossen und geeignete Schuppen. Bei Filets helfen erkennbare Hautstücke oder eine verlässliche Aufsicht. Prüfe bei geräuchertem oder verarbeitetem Fisch auch die Herstellung.</p></article>
-<article class="category-answer" id="fleisch" tabindex="-1"><h3>Fleisch und Geflügel</h3><p>Tierart, Schlachtung und Verarbeitung spielen eine Rolle. Kaufe Fleisch und Geflügel mit verlässlicher Koscheraufsicht.</p></article>
-<article class="category-answer" id="snacks" tabindex="-1"><h3>Süßes und Snacks</h3><p>Prüfe bei Süßigkeiten und Snacks das genaue Produkt. Bei Gelatine und Aromen kommt es unter anderem auf Herkunft und Herstellung an.</p></article>
-<article class="category-answer" id="wein" tabindex="-1"><h3>Wein und Traubensaft</h3><p>Bei Wein und Traubensaft gelten besondere Kaschrutregeln. Prüfe eine verlässliche Kennzeichnung. Auch Weinbestandteile in Saucen oder Essig können eine Rolle spielen.</p></article>
-<article class="category-answer" id="konserven" tabindex="-1"><h3>Säfte und Konserven</h3><p>Bei verarbeiteter Ware spielen Zusätze und der Herstellungsprozess eine Rolle. Gleiche den genauen Artikel mit aktuellen Angaben ab.</p></article>
-</div>
 <p class="guide-notice">Die Hinweise gelten für Lebensmittelgruppen. Prüfe einzelne Produkte anhand aktueller Angaben. Für Pessach gelten zusätzliche Regeln.</p>
+<div class="category-results" aria-live="polite"><p class="eyebrow" id="category-example" hidden>Beispiel</p>
+<article class="category-answer" id="obst" tabindex="-1"><h3>Obst und Gemüse</h3>
+<p class="category-intro">Ein frischer Apfel und ein fertiges Apfelprodukt sind zwei verschiedene Fälle.</p>
+<div class="category-guidance">
+<div><h4>In der Regel ohne Siegel</h4><p>Frische, unverarbeitete Ware braucht grundsätzlich kein Koscher-Zeichen.</p></div>
+<div><h4>Genauer hinschauen</h4><p>Je nach Sorte sind Insektenkontrolle und Reinigung nötig. Für Erzeugnisse aus Israel gelten zusätzliche Gebote.</p></div>
+</div>
+<details class="category-why"><summary>Warum reicht Waschen nicht immer?</summary><p>Insekten können sich an schwer zugänglichen Stellen verstecken. Die Methode richtet sich nach der Sorte. Bei komplizierten Kontrollen hilft eine praktische Anleitung durch jemanden mit Erfahrung.</p></details>
+<p class="category-source"><a href="https://consumer.crckosher.org/consumer/fruitsvegetables/">cRc · Obst und Gemüse</a></p>
+</article>
+<article class="category-answer" id="brot" tabindex="-1"><h3>Brot und Gebäck</h3>
+<p class="category-intro">Mehl, Wasser, Hefe. Nur bleibt es in der Backstube nicht immer dabei.</p>
+<div class="category-guidance">
+<div><h4>So orientierst du dich</h4><p>Wähle geprüftes Brot aus einer verlässlichen Bäckerei oder einer aktuellen Koscherliste.</p></div>
+<div><h4>Was problematisch sein kann</h4><p>Zusätze, Fette und Backhilfsmittel müssen berücksichtigt werden.</p></div>
+</div>
+<details class="category-why"><summary>Was heißt Pat Israel?</summary><p>Pat Israel bezeichnet Brot, bei dessen Backen ein Jude mitgewirkt hat. Welche Praxis du einhältst, richtet sich auch nach deiner Gemeindetradition.</p></details>
+<p class="category-source"><a href="https://www.ordonline.de/informationen-zu-kaschrut/">ORD · Brot und Backwaren</a></p>
+</article>
+<article class="category-answer" id="milch" tabindex="-1"><h3>Milch und Käse</h3>
+<p class="category-intro">Kuhmilch und ein Stück Käse werden halachisch unterschiedlich beurteilt.</p>
+<div class="category-guidance">
+<div><h4>Bei Milch unterscheiden</h4><p>Chalaw Israel wird unter jüdischer Aufsicht gemolken. Viele verlassen sich bei gewöhnlicher Milch auf andere halachische Erlaubnisse.</p></div>
+<div><h4>Bei Käse reicht vegetarisch nicht</h4><p>Mikrobielles Lab allein löst die Frage der vorgeschriebenen jüdischen Mitwirkung bei Labkäse nicht.</p></div>
+</div>
+<details class="category-why"><summary>Und Joghurt, Quark oder Eis?</summary><p>Hier spielen das konkrete Produkt und Zusätze eine Rolle. Prüfe den genauen Eintrag in einer verlässlichen Liste und beachte den Milchstandard deiner Gemeinde.</p></details>
+<p class="category-source"><a href="https://www.ordonline.de/informationen-zu-kaschrut/">ORD · Milch und Milchprodukte</a></p>
+</article>
+<article class="category-answer" id="fisch" tabindex="-1"><h3>Fisch</h3>
+<p class="category-intro">Die Fischart ist der Anfang. Beim Filet kommt die sichere Identifikation dazu.</p>
+<div class="category-guidance">
+<div><h4>Was grundsätzlich passt</h4><p>Koschere Fische haben Flossen und halachisch geeignete Schuppen.</p></div>
+<div><h4>Was nicht geht</h4><p>Garnelen und Muscheln sind nicht koscher. Ein namenloses Filet ist keine sichere Grundlage.</p></div>
+</div>
+<details class="category-why"><summary>Was ist beim Kauf wichtig?</summary><p>Schuppen müssen sicher zugeordnet werden können; bei Filets helfen entsprechende Hautstücke oder verlässliche Aufsicht. Auch Messer und Arbeitsflächen sind relevant. Geräucherte und verarbeitete Produkte gesondert prüfen.</p></details>
+<p class="category-source"><a href="https://oukosher.org/the-kosher-primer/">OU Kosher · Fisch</a></p>
+</article>
+<article class="category-answer" id="fleisch" tabindex="-1"><h3>Fleisch und Geflügel</h3>
+<p class="category-intro">Rind ist eine erlaubte Tierart. Eine beliebige Packung Rindfleisch ist deshalb noch nicht koscher.</p>
+<div class="category-guidance">
+<div><h4>So kaufst du ein</h4><p>Nur aus verlässlicher koscherer Aufsicht und Herkunft.</p></div>
+<div><h4>Warum die Tierart nicht reicht</h4><p>Schächtung, Untersuchung und weitere Vorbereitung gehören dazu. Gewöhnliches Supermarktfleisch erfüllt das nicht.</p></div>
+</div>
+<details class="category-why"><summary>Ist halal dasselbe wie koscher?</summary><p>Eine Halal-Kennzeichnung ersetzt keine Koscheraufsicht. Für koscheres Fleisch müssen die jüdischen Anforderungen erfüllt sein.</p></details>
+<p class="category-source"><a href="https://oukosher.org/the-kosher-primer/">OU Kosher · Fleisch</a></p>
+</article>
+<article class="category-answer" id="snacks" tabindex="-1"><h3>Süßes und Snacks</h3>
+<p class="category-intro">Bei Gummibärchen und Schokolade lohnt sich der Blick hinter die bunte Verpackung.</p>
+<div class="category-guidance">
+<div><h4>So findest du passende Produkte</h4><p>Verlässliche Zertifizierung oder einen passenden Eintrag in der Koscherliste nutzen.</p></div>
+<div><h4>Mögliche Fragen</h4><p>Gelatine, Aromen, Fette und die Produktion können entscheidend sein.</p></div>
+</div>
+<details class="category-why"><summary>Ist Gelatine immer gleich?</summary><p>Nein. Herkunft und Herstellung unterscheiden sich. Ein allgemeiner Zutatenname beantwortet die Kaschrutfrage nicht. Auch ein veganer Snack ist damit noch nicht automatisch koscher.</p></details>
+<p class="category-source"><a href="https://oukosher.org/the-kosher-primer/">OU Kosher · Zusätze</a></p>
+</article>
+<article class="category-answer" id="wein" tabindex="-1"><h3>Wein und Traubensaft</h3>
+<p class="category-intro">Bei Traubenprodukten gelten besondere Regeln. Es geht nicht nur um die Zutaten.</p>
+<div class="category-guidance">
+<div><h4>Worauf du achten solltest</h4><p>Wein und Traubensaft mit verlässlicher Koscheraufsicht kaufen.</p></div>
+<div><h4>Was nicht ausreicht</h4><p>Bio, vegan oder eine Herkunft aus Israel ersetzen keine Koscher-Zertifizierung.</p></div>
+</div>
+<details class="category-why"><summary>Und Wein in anderen Produkten?</summary><p>Auch Weinbestandteile oder Weinessig können relevant sein. Bei Saucen und anderen Mischprodukten deshalb das konkrete Produkt prüfen.</p></details>
+<p class="category-source"><a href="https://oukosher.org/the-kosher-primer/">OU Kosher · Traubenprodukte</a></p>
+</article>
+<article class="category-answer" id="konserven" tabindex="-1"><h3>Säfte und Konserven</h3>
+<p class="category-intro">Verarbeitet heißt nicht automatisch verboten. Es heißt: Wir schauen genauer hin.</p>
+<div class="category-guidance">
+<div><h4>Eine praktische Anlaufstelle</h4><p>Die ORD-Koscherliste enthält auch Säfte, Aufstriche und Konserven.</p></div>
+<div><h4>Genau vergleichen</h4><p>Sorte, Hersteller und Bedingungen des Eintrags beachten. Eine Freigabe nicht auf ähnliche Produkte übertragen.</p></div>
+</div>
+<details class="category-why"><summary>Warum kann sich die Antwort ändern?</summary><p>Rezepturen und Produktion können sich ändern. Nutze aktuelle Angaben und prüfe beim nächsten Kauf erneut, ob dein Produkt noch zum Eintrag passt.</p></details>
+<p class="category-source"><a href="https://www.ordonline.de/koscherliste/">ORD · Koscherliste</a></p>
+</article>
+</div>
+
 </section>
-<details class="toc-mobile"><summary>Inhalt</summary><ul><li><a href="#einkaufskorb">Im Einkaufsregal</a></li><li><a href="#herstellung">Zutaten und Herstellung</a></li><li><a href="#vorgehen">Beim nächsten Einkauf</a></li><li><a href="#quellen">Quellen</a></li></ul></details>
-<section id="herstellung"><h2>Zutaten und Herstellung</h2>
-<details><summary>Welche Zutaten stecken drin?</summary><div class="answer"><p>Bei Zusätzen wie Aromen ist die Herkunft entscheidend. Der Name auf der Verpackung sagt oft wenig darüber aus.</p></div></details>
-<details><summary>Was wird auf derselben Anlage hergestellt?</summary><div class="answer"><p>Eine Anlage kann für verschiedene Produkte genutzt werden. Darum kommt es auch auf die Produktionsbedingungen an.</p></div></details>
-<details><summary>Wo finde ich eine verlässliche Auskunft?</summary><div class="answer"><p>Suche den genauen Artikel in einer aktuellen Koscherliste oder prüfe die Aufsicht. Bei offenen Fragen hilft deine Kaschrutstelle.</p></div></details>
+<details class="toc-mobile"><summary>Inhalt</summary><ul><li><a href="#einkaufskorb">Im Einkaufsregal</a></li><li><a href="#herstellung">Zutaten und Herstellung</a></li><li><a href="#vorgehen">Beim nächsten Einkauf</a></li><li><a href="#fragen">Häufige Fragen</a></li><li><a href="#quellen">Quellen</a></li></ul></details>
+<section id="herstellung">
+<h2>Zutaten und Herstellung</h2>
+<p>Nur pflanzlich. Also koscher? Auch die Herstellung zählt. Schau dir die drei Schritte an.</p>
+<details name="herstellung"><summary>1. Zutaten</summary><div class="answer"><h3>Was steckt drin?</h3><p>Bei einem Zusatz kann die Herkunft entscheidend sein. Ein Name wie „Aroma“ erklärt noch nicht sämtliche Bestandteile.</p></div></details>
+<details name="herstellung"><summary>2. Anlage</summary><div class="answer"><h3>Was lief vorher darüber?</h3><p>Wird auf derselben Anlage heiß produziert, können frühere nichtkoschere Produkte relevant sein. Das lässt sich an der Zutatenliste nicht ablesen.</p></div></details>
+<details name="herstellung"><summary>3. Prüfung</summary><div class="answer"><h3>Wer hat das geprüft?</h3><p>Eine verlässliche Koscherprüfung berücksichtigt Zutaten und Produktion. Deshalb ist sie mehr als ein Blick auf die Rückseite.</p></div></details>
+<p><a href="https://oukosher.org/the-kosher-primer/">Nachlesen bei OU Kosher</a></p>
 </section>
-<section id="vorgehen"><h2>Beim nächsten Einkauf</h2><ol class="purchase-steps"><li>Suche nach Hersteller und genauer Sorte.</li><li>Lies die Bedingungen im Eintrag. Achte auf den Milchstatus und gegebenenfalls auf die Freigabe für Pessach.</li><li>Frage bei deiner Kaschrutstelle oder deinem Rabbinat nach, wenn du keine verlässliche Auskunft findest.</li></ol><a href="https://ordonline.de/koscherliste/">Aktuelle Koscherliste der ORD</a></section>
+<section id="vorgehen">
+<h2>Beim nächsten Einkauf</h2>
+<p>Für konkrete Produkte helfen dir geprüfte Angaben.</p>
+<ol class="purchase-steps">
+<li><strong>Das genaue Produkt suchen</strong><p>Hersteller und Sorte müssen zum Eintrag passen. Ein ähnlicher Name reicht nicht.</p></li>
+<li><strong>Die Hinweise mitlesen</strong><p>Achte auf Bedingungen, Milchstatus und gegebenenfalls den Hinweis auf Pessach.</p></li>
+<li><strong>Offene Fragen klären</strong><p>Ein fehlender Eintrag ist noch kein Verbot. Wenn du keine verlässliche Auskunft findest, frage bei einer Kaschrutstelle oder deinem Rabbinat nach.</p></li>
+</ol>
+<p><a href="https://ordonline.de/koscherliste/">Aktuelle Koscherliste der ORD</a></p>
+</section>
+<section id="fragen"><h2>Das wird oft verwechselt.</h2><details><summary>Heißt vegan automatisch koscher?</summary><div class="answer"><p>Nein. Vegan sagt etwas über tierische Bestandteile aus. Kaschrut berücksichtigt auch die Herstellung und weitere halachische Fragen. Eine vegane Kennzeichnung ersetzt deshalb keine Koscherprüfung. <a href="https://oukosher.org/what-is-kosher/" target="_blank" rel="noopener">Quelle: OU Kosher</a></p></div></details><details><summary>Was bedeutet eigentlich parwe?</summary><div class="answer"><p>Parwe bedeutet im Zusammenhang mit Kaschrut neutral, also weder fleischig noch milchig. Es ist kein anderes Wort für vegan: Eier und koscherer Fisch gehören ebenfalls dazu. Beim gemeinsamen Essen gelten weitere Regeln, etwa für Fisch und Fleisch. <a href="https://www.ordonline.de/informationen-zu-kaschrut/" target="_blank" rel="noopener">Quelle: ORD</a></p></div></details><details><summary>Warum gibt es unterschiedliche Standards?</summary><div class="answer"><p>Bei manchen Fragen gibt es unterschiedliche halachische Auffassungen und Gemeindetraditionen, etwa bei Chalaw Israel oder Pat Israel. Halte dich an die Praxis deiner Gemeinde und kläre Unsicherheiten mit deinem Rabbinat. <a href="https://www.ordonline.de/informationen-zu-kaschrut/" target="_blank" rel="noopener">Quelle: ORD</a></p></div></details><details><summary>Gilt das auch für Pessach?</summary><div class="answer"><p>Für Pessach brauchst du eigene Angaben. Die normale Koschereignung eines Produkts ist dafür nicht ausreichend. Achte auf die jeweilige Freigabe für Pessach. <a href="https://www.ordonline.de/koscherliste/" target="_blank" rel="noopener">Zur ORD-Koscherliste</a></p></div></details></section>
 <section id="quellen"><h2>Quellen zum Vertiefen</h2><ul>
 <li><a href="https://ordonline.de/informationen-zu-kaschrut/">ORD zur Kaschrut</a></li>
 <li><a href="https://consumer.crckosher.org/consumer/fruitsvegetables/">cRc zu Obst und Gemüse</a></li>
 <li><a href="https://oukosher.org/the-kosher-primer/">Grundlagen bei OU Kosher</a></li>
 <li><a href="https://koscher-einkaufen-elishai.jocundcrest.chatgpt.site/#guide">Ursprünglicher Einkaufsbegleiter</a></li>
-</ul></section>
+</ul>
+<p>Stand des ursprünglichen Einkaufsbegleiters <time datetime="2026-11-16">16. November 2026</time>.</p>
+<p>Ein Einstieg für den Alltag. Produktangaben und Freigaben können sich ändern.</p>
+</section>
+<section id="weiterlernen">
+<h2>Weiterlernen mit Elishai</h2>
+<p>Auf Instagram erkläre ich jüdische Tradition und jüdisches Leben anhand von Fragen, die uns im Alltag begegnen.</p>
+<p><a href="https://www.instagram.com/elishaizizov/">@elishaizizov</a></p>
+</section>
 <div class="guide-actions">
 <button type="button" class="button" id="copy-guide" hidden>Adresse kopieren</button>
 <button class="button button-light pending dev-only" type="button" disabled>Community auf WhatsApp beitreten<small>Einladungslink ausstehend</small></button>

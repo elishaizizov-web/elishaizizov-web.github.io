@@ -642,3 +642,72 @@ dd{margin:0}
 .guide-theme .category-answer {
   scroll-margin-block: 1rem;
 }
+
+.guide-filters {
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+}
+.guide-filters legend {
+  padding: 0;
+  font-size: .85rem;
+}
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.filter-options button {
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid #617997;
+  border-radius: 999px;
+  font: 600 .85rem var(--sans);
+  color: var(--guide-night);
+  background: #fff;
+  cursor: pointer;
+}
+.filter-options button[aria-pressed="true"] {
+  border-color: var(--guide-night);
+  color: #fff;
+  background: var(--guide-night);
+}
+.category-intro {
+  color: #d8ebfd;
+}
+.category-guidance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 10px;
+  margin-block: 14px;
+}
+.category-guidance > div {
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--guide-night);
+  background: #edf6fd;
+}
+.category-guidance h4 {
+  margin: 0 0 .3em;
+}
+.category-results .category-why {
+  margin-block: .85rem;
+  padding: .65rem .75rem;
+  border: 1px solid #829fbf;
+  border-radius: 10px;
+}
+.category-results .category-why summary {
+  color: #fff;
+}
+.category-results .category-why summary::after {
+  background: linear-gradient(#fff, #fff) center/100% 1px no-repeat,
+              linear-gradient(#fff, #fff) center/1px 100% no-repeat;
+}
+.category-results .category-why[open] summary::after {
+  background: linear-gradient(#fff, #fff) center/100% 1px no-repeat;
+}
+.category-why p { margin-top: .6rem; }
+.category-source { font-size: .9rem; }
+.guide-theme #herstellung > p,
+.guide-theme #vorgehen > p { margin-block: .65rem; }
