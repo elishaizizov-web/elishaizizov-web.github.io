@@ -24,6 +24,7 @@ if (narrative) {
   let start = 0;
   let verticalLength = 0;
   let length = 0;
+  let bridgeScrollSpan = 1;
   let frame = 0;
   let layoutPending = true;
 
@@ -58,6 +59,9 @@ if (narrative) {
       thread.setAttribute('d', `M ${gutter} ${start} V ${y - bend} Q ${gutter} ${y} ${gutter + bend} ${y} H ${x} ${arches}`);
     }
     length = thread.getTotalLength();
+    bridgeScrollSpan = narrow.matches
+      ? length - verticalLength
+      : Math.max(1, Math.min(innerHeight * .44, (end.bottom - top - bridgeStart) * .8));
   }
 
   function draw() {
@@ -72,8 +76,7 @@ if (narrative) {
       const lead = start + 54 + position * 1.06;
       const beforeBridge = Math.max(16, Math.min(verticalLength, lead - start));
       const afterBridge = Math.max(0, lead - start - verticalLength);
-      const span = narrow.matches ? Math.max(1, length - verticalLength) : Math.max(1, innerHeight * .55);
-      const shown = beforeBridge + (length - verticalLength) * Math.min(1, afterBridge / span);
+      const shown = beforeBridge + (length - verticalLength) * Math.min(1, afterBridge / bridgeScrollSpan);
       thread.style.strokeDasharray = `${shown} ${length + 1}`;
     }
     frame = 0;
