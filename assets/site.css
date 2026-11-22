@@ -714,3 +714,46 @@ dd{margin:0}
 .category-source { font-size: .9rem; }
 .guide-theme #herstellung > p,
 .guide-theme #vorgehen > p { margin-block: .65rem; }
+
+@media (max-width: 849px) {
+  .home-theme .hero-band .hero {
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+    align-items: end;
+    background: radial-gradient(ellipse at 97% 84%, #36bdf2 0%, #0874ad 25%, #082556 65%);
+  }
+  .home-theme .hero-copy { display: contents; }
+  .home-theme .hero-copy h1 {
+    grid-column: 1 / -1;
+    padding: 22px 20px 10px;
+    font-size: clamp(30px, 10.1vw, 51px);
+  }
+  .home-theme .hero-intro {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+    padding: 6px 0 14px 20px;
+    z-index: 1;
+  }
+  .home-theme .hero-copy .promise {
+    margin-block: 0 10px;
+    font-size: clamp(.92rem, 3.7vw, 1.2rem);
+    line-height: 1.5;
+  }
+  .home-theme .hero-copy .byline {
+    margin: 0;
+    font-size: clamp(.79rem, 3.25vw, 1rem);
+  }
+  .hero-portrait {
+    grid-column: 2;
+    grid-row: 2;
+    height: auto;
+    align-self: end;
+    background: none;
+  }
+  .hero-portrait img {
+    width: 100%;
+    height: auto;
+    object-fit: initial;
+  }
+  .hero-action { grid-column: 1 / -1; }
+}
