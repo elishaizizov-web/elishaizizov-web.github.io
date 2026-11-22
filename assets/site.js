@@ -18,89 +18,6 @@ if (communityInvite) {
   document.querySelector('.community')?.classList.add('community-connected');
 }
 
-const narrative = document.querySelector('.narrative');
-if (narrative) {
-  const thread = narrative.querySelector('.thread-line');
-  const narrow = matchMedia('(max-width: 720px)');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let bridgeStart = 0;
-  let start = 0;
-  let verticalLength = 0;
-  let length = 0;
-  let bridgeScrollSpan = 1;
-  let frame = 0;
-  let layoutPending = true;
-
-  function layout() {
-    const top = narrative.getBoundingClientRect().top;
-    const hero = narrative.querySelector('.hero').getBoundingClientRect();
-    const title = narrative.querySelector('h1').getBoundingClientRect();
-    const drawing = narrative.querySelector('.bridge-drawing').getBoundingClientRect();
-    const end = narrative.querySelector('.bridge-steps').getBoundingClientRect();
-    const gutter = hero.left - (narrow.matches ? 16 : 27);
-    start = title.top - top + 7;
-    bridgeStart = drawing.top - top + (narrow.matches ? 0 : 80);
-    const stem = `M ${gutter} ${start} V ${bridgeStart}`;
-    verticalLength = bridgeStart - start;
-
-    if (narrow.matches) {
-      const bottom = end.bottom - top;
-      const curve = Math.min(20, (bottom - bridgeStart) / 18);
-      const segments = [...narrative.querySelectorAll('.bridge-steps li')].map(step => step.getBoundingClientRect().top - top);
-      const arches = segments.map(y => `V ${y} q -10 ${curve} 0 ${2 * curve}`).join(' ');
-      thread.setAttribute('d', `${stem} ${arches} V ${bottom}`);
-    } else {
-      const x = drawing.left;
-      const y = bridgeStart;
-      const span = drawing.width / 3;
-      const arches = Array.from({length: 3}, (_, i) => {
-        const a = x + i * span;
-        return `C ${a + span * .16} ${y}, ${a + span * .22} ${y - 48}, ${a + span * .5} ${y - 48} S ${a + span * .84} ${y}, ${a + span} ${y}`;
-      }).join(' ');
-      const bend = 21;
-      verticalLength -= bend;
-      thread.setAttribute('d', `M ${gutter} ${start} V ${y - bend} Q ${gutter} ${y} ${gutter + bend} ${y} H ${x} ${arches}`);
-    }
-    length = thread.getTotalLength();
-    bridgeScrollSpan = narrow.matches
-      ? length - verticalLength
-      : Math.max(1, Math.min(innerHeight * .44, (end.bottom - top - bridgeStart) * .8));
-  }
-
-  function draw() {
-    if (layoutPending) {
-      layout();
-      layoutPending = false;
-    }
-    if (reduced.matches || fixedMotion) {
-      thread.style.removeProperty('stroke-dasharray');
-    } else {
-      const position = -narrative.getBoundingClientRect().top;
-      const narrativeTop = scrollY - position;
-      const availableScroll = Math.max(1, document.documentElement.scrollHeight - innerHeight - narrativeTop - 2);
-      const scrollRate = Math.max(1.06, (verticalLength + bridgeScrollSpan - 54) / availableScroll);
-      const lead = start + 54 + position * scrollRate;
-      const beforeBridge = Math.max(16, Math.min(verticalLength, lead - start));
-      const afterBridge = Math.max(0, lead - start - verticalLength);
-      const shown = beforeBridge + (length - verticalLength) * Math.min(1, afterBridge / bridgeScrollSpan);
-      thread.style.strokeDasharray = `${shown} ${length + 1}`;
-    }
-    frame = 0;
-  }
-
-  function schedule(needsLayout = false) {
-    layoutPending ||= needsLayout;
-    if (!frame) frame = requestAnimationFrame(draw);
-  }
-
-  draw();
-  window.addEventListener('scroll', () => schedule(), {passive: true});
-  window.addEventListener('resize', () => schedule(true));
-  reduced.addEventListener('change', () => schedule());
-  new ResizeObserver(() => schedule(true)).observe(narrative);
-  document.fonts.ready.then(() => schedule(true));
-}
-
 const guideSearch = document.querySelector('#guide-search');
 if (guideSearch) {
   const input = guideSearch.querySelector('input');
@@ -112,6 +29,9 @@ if (guideSearch) {
 
   function showAnswer(index, isExample = false) {
     for (const [position, card] of cards.entries()) {
+      if (position === index && answers[position].hidden) {
+        answers[position].classList.add('answer-enter');
+      }
       answers[position].hidden = position !== index;
       if (position === index) card.setAttribute('aria-current', 'true');
       else card.removeAttribute('aria-current');
