@@ -1,0 +1,102 @@
+.guide-theme.produce-guide {
+  color: var(--guide-night);
+}
+
+.guide-theme .produce-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+.produce-intro h1 span { display: block; }
+.produce-intro .eyebrow { color: #bce7ff; }
+
+.produce-credit {
+  margin-top: .65rem;
+  font-size: .875rem;
+}
+
+.produce-hero-art {
+  width: min(100%, 320px);
+  justify-self: center;
+}
+
+.produce-guide .reading .produce-index {
+  border-top: 0;
+  padding: 12px 0 1rem;
+}
+
+.produce-guide .produce-tiles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 0;
+  list-style: none;
+}
+
+.produce-guide .produce-tiles li { margin: 0; }
+.produce-tiles a { height: 100%; }
+
+.produce-index-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.35rem;
+  font-size: .9rem;
+}
+
+.produce-index-more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.produce-guide .reading .eyebrow { color: var(--guide-link); }
+.produce-guide .reading h2 { font-weight: 700; }
+
+.produce-guide .reading h3 {
+  margin: 1.35rem 0 .45rem;
+  font: 700 1.12rem/1.35 var(--sans);
+  letter-spacing: normal;
+}
+
+.produce-summary { font-size: 1.06rem; }
+.produce-guide .guide-notice { margin-top: 1rem; border-radius: 0 10px 10px 0; }
+
+.produce-table {
+  display: grid;
+  gap: .4rem;
+  margin-block: 1.25rem;
+}
+
+.produce-table > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr);
+  gap: .7rem;
+  padding: .85rem 1rem;
+  border-radius: 9px;
+  background: var(--guide-wash);
+}
+
+.produce-table dt { font-weight: 700; }
+.produce-table dd { margin: 0; }
+.produce-signature { font-size: .9rem; }
+.produce-visual {
+  margin: 1rem 0 1.15rem;
+  aspect-ratio: 2 / 1;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+@media (max-width: 720px) {
+  .produce-layout > aside { display: none; }
+}
+
+@media (max-width: 580px) {
+  .guide-theme .produce-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .55rem;
+    padding-bottom: 12px;
+  }
+
+  .produce-hero-art { width: min(65%, 185px); }
+  .produce-table > div { grid-template-columns: minmax(0, 1fr); gap: .15rem; }
+}
