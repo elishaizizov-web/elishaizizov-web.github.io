@@ -1,264 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anfragen — Rabbiner Elishai Zizov</title>
-<meta name="description" content="Vortrag oder Unterricht bei Rabbiner Elishai Zizov anfragen. Kontaktformular für Gemeinden und Bildungseinrichtungen.">
-<meta property="og:title" content="Anfragen — Rabbiner Elishai Zizov">
-<meta property="og:type" content="website">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kontakt zu Rabbiner Elishai Zizov.">
+
+<meta property="og:title" content="Vortrag oder Unterricht anfragen">
+<meta property="og:description" content="Kontakt zu Rabbiner Elishai Zizov.">
 <meta property="og:url" content="https://elishaizizov.com/contact.html">
-<meta property="og:image" content="https://elishaizizov.com/logo.png">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#1a2b4a">
-<link rel="icon" type="image/png" href="/logo.png">
-<link rel="apple-touch-icon" href="/logo.png">
-<link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="https://elishaizizov.com/contact.html">
-<link rel="alternate" hreflang="de" href="https://elishaizizov.com/contact.html">
-<link rel="alternate" hreflang="en" href="https://elishaizizov.com/contact.html?lang=en">
-<link rel="alternate" hreflang="he" href="https://elishaizizov.com/contact.html?lang=he">
-<link rel="alternate" hreflang="x-default" href="https://elishaizizov.com/contact.html">
-<link rel="preconnect" href="https://firestore.googleapis.com">
-<link rel="preconnect" href="https://formspree.io">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/global.css?v=54">
+<title>Vortrag oder Unterricht anfragen</title>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
 </head>
 <body>
-<script>if(!sessionStorage.getItem('loaded')){document.documentElement.classList.add('first-visit');}</script>
-<div id="loading-screen"><img src="/logo.png" class="loading-logo" alt=""><div class="loading-spinner"></div></div>
+<a class="skip" href="#inhalt">Zum Inhalt</a>
+<header class="top"><div class="header-inner">
+<a class="brand" href="/" aria-label="Startseite"><svg aria-hidden="true" viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 3 35 29H5Z M20 37 5 11h30Z"/></svg><span>Rabbiner Elishai Zizov</span></a>
+<nav aria-label="Hauptnavigation"><a href="/#guides">Guides</a><a href="/contact.html">Kontakt</a><button class="button pending" type="button" disabled>Community auf WhatsApp beitreten<small>Einladungslink ausstehend</small></button></nav>
+</div></header>
 
-<header class="main-header" id="main-header">
-  <div class="mh-inner">
-    <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="hmenu"><span></span><span></span><span></span></button>
-    <a class="mh-logo" href="/"><img src="/logo.png" alt="Rabbiner Elishai Zizov" loading="lazy"></a>
-    <nav class="mh-nav" aria-label="Main navigation">
-      <a class="mh-nav-link" href="/" data-t="nav-bio">Biografie</a>
-      <a class="mh-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
-      <a class="mh-nav-link active" href="/contact.html" data-t="nav-form">Anfragen</a>
-    </nav>
-    <div class="mh-langs">
-      <button class="lang-btn active" onclick="setLang('de')" id="lb-de">DE</button>
-      <button class="lang-btn" onclick="setLang('en')" id="lb-en">EN</button>
-      <button class="lang-btn" onclick="setLang('he')" id="lb-he">עב</button>
-    </div>
-  </div>
-</header>
-
-<div class="page-band page-header">
-  <div class="page-band-inner">
-    <p class="page-band-eyebrow" data-t="form-label">Anfragen</p>
-    <h1 class="page-band-title" data-t="form-title">Vortrag oder Unterricht anfragen</h1>
-    <p class="page-band-hebrew">הזמנות ופניות</p>
-  </div>
-</div>
-<div class="page-band-gold gold-bar"></div>
-
-<main class="page-body">
-
-  <section class="contact-split" id="anfragen">
-    <!-- Left: info panel -->
-    <div class="contact-info-col">
-      <span class="section-label" data-t="form-label">Anfragen</span>
-      <h2 class="contact-info-title" data-t="form-title">Vortrag oder Unterricht anfragen</h2>
-      <p class="contact-info-sub" data-t="form-sub">Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.</p>
-
-      <ul class="contact-details">
-        <li>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span data-t="contact-loc">Frankfurt am Main, Deutschland</span>
-        </li>
-        <li>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span data-t="contact-langs">Deutsch · Englisch · Hebräisch</span>
-        </li>
-      </ul>
-
-      <div class="contact-social-links">
-        <a href="https://www.instagram.com/elishaizizov" target="_blank" rel="noopener" class="contact-social-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-          Instagram
-        </a>
-        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" target="_blank" rel="noopener" class="contact-social-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          Facebook
-        </a>
-      </div>
-    </div>
-
-    <!-- Right: form -->
-    <div class="contact-form-col">
-    <form id="inquiry-form" action="https://formspree.io/f/mpqyjezd" method="POST">
-<input type="hidden" name="_subject" data-t-attr="form-subject" value="Neue Anfrage über elishaizizov.com">
+<main id="inhalt" class="wrap simple"><h1>Vortrag oder Unterricht anfragen</h1>
+<p>Für Vorträge, Unterricht oder andere Anfragen füllen Sie bitte das Formular aus.</p>
+<p>Frankfurt am Main, Deutschland</p>
+<div class="contact-box"><form id="inquiry-form" action="https://formspree.io/f/mpqyjezd" method="POST">
+<input type="hidden" name="_subject" value="Neue Anfrage über elishaizizov.com">
 
       <div class="form-row">
         <div class="form-group">
-          <label data-t="label-name">Name</label>
-          <input type="text" name="name" required placeholder="" data-t-ph="ph-name">
+          <label for="kontakt-name">Name</label>
+          <input id="kontakt-name" type="text" name="name" required>
         </div>
         <div class="form-group">
-          <label data-t="label-phone">Telefon</label>
-          <input type="tel" name="phone" placeholder="" data-t-ph="ph-phone">
+          <label for="kontakt-phone">Telefon</label>
+          <input id="kontakt-phone" type="tel" name="phone">
         </div>
       </div>
 
       <div class="form-group">
-        <label data-t="label-email">E-Mail</label>
-        <input type="email" name="email" required placeholder="" data-t-ph="ph-email">
+        <label for="kontakt-email">E Mail</label>
+        <input id="kontakt-email" type="email" name="email" required>
       </div>
 
       <div class="form-group">
-        <label data-t="label-msg">Nachricht</label>
-        <textarea name="message" rows="5" required placeholder="" data-t-ph="ph-msg"></textarea>
+        <label for="kontakt-message">Nachricht</label>
+        <textarea id="kontakt-message" name="message" rows="5" required></textarea>
       </div>
 
-      <button type="submit" class="submit-btn">
-        <span data-t="form-btn">Anfrage senden</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="12 5 19 12 12 19"/>
-        </svg>
+      <button type="submit" class="button submit-btn">
+        <span>Anfrage senden</span>
+
       </button>
     </form>
-
-    <div id="form-success" style="display:none;" class="form-success">
-      <p data-t="form-ok">Vielen Dank. Ihre Anfrage wurde gesendet.</p>
-    </div>
-    <div id="form-error" class="form-error">
-      <p data-t="form-err">Fehler beim Senden. Bitte versuchen Sie es erneut.</p>
-    </div>
-    </div>
-  </section>
-
-</main>
-
-
-<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie-Hinweis" style="display:none">
-  <p class="cookie-text" data-t="cookie-msg">Diese Website verwendet Google Fonts. Durch die weitere Nutzung stimmen Sie der Verwendung zu.</p>
-  <div class="cookie-actions">
-    <button class="cookie-btn cookie-accept" onclick="acceptCookies()" data-t="cookie-ok">Akzeptieren</button>
-    <button class="cookie-btn cookie-dismiss" onclick="dismissCookies()" aria-label="Schließen">×</button>
-  </div>
-</div>
-<div id="offline-banner" class="offline-banner" role="alert"></div>
-
-<footer class="main-footer site-footer">
-  <div class="mf-inner">
-    <div class="mf-brand fade-in-on-scroll">
-      <img src="/logo.png" alt="Rabbiner Elishai Zizov" class="mf-brand-logo">
-      <p class="mf-brand-name">Rabbiner Elishai Zizov</p>
-      <p class="mf-brand-tagline" data-t="eyebrow">Rabbiner · Vortragsredner</p>
-      <div class="mf-brand-socials">
-        <a href="https://www.instagram.com/elishaizizov" class="mf-social-icon" target="_blank" rel="noopener" title="Instagram">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        </a>
-        <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="mf-social-icon" target="_blank" rel="noopener" title="Facebook">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-        </a>
-      </div>
-    </div>
-    <div class="mf-col fade-in-on-scroll">
-      <span class="mf-col-title" data-t="footer-nav">Navigation</span>
-      <nav>
-        <a class="mf-nav-link" href="/" data-t="nav-bio">Biografie</a>
-        <a class="mf-nav-link" href="/articles.html" data-t="nav-art">Beiträge</a>
-        <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-      </nav>
-    </div>
-    <div class="mf-col fade-in-on-scroll">
-      <span class="mf-col-title" data-t="footer-social">Folgen</span>
-      <nav>
-        <a class="mf-nav-link" href="https://www.instagram.com/elishaizizov" target="_blank" rel="noopener" data-t="ig">Instagram</a>
-        <a class="mf-nav-link" href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" target="_blank" rel="noopener" data-t="fb">Facebook</a>
-        <a class="mf-nav-link" href="/contact.html" data-t="nav-form">Anfragen</a>
-      </nav>
-    </div>
-    <div class="mf-col fade-in-on-scroll">
-      <span class="mf-col-title" data-t="footer-nl-title">Newsletter</span>
-      <p class="mf-col-text" data-t="footer-nl-sub">Erhalte Updates direkt in dein Postfach.</p>
-      <form class="mf-nl-form" id="nl-form" onsubmit="nlSubscribe(event)">
-        <input type="email" class="mf-nl-input" placeholder="E-Mail-Adresse" data-t-ph="footer-nl-ph" required>
-        <button type="submit" class="btn secondary-btn" style="font-size:9px;padding:10px 16px;" data-t="footer-nl-btn">Anmelden</button>
-      </form>
-      <p class="mf-nl-msg" id="nl-msg"></p>
-    </div>
-  </div>
-  <div class="mf-bottom">
-    <p class="mf-copy" data-t="footer-copy">Frankfurt am Main &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Alle Rechte vorbehalten</p>
-  </div>
-</footer>
-
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Nach oben">↑</button>
-
-<!-- Hamburger Menu -->
-<div class="hmenu-overlay" id="hmenu-overlay" onclick="closeMenu()"></div>
-<nav class="hmenu" id="hmenu">
-  <button class="hmenu-close" onclick="closeMenu()">×</button>
-
-  <div class="hmenu-section">
-    <a class="hmenu-item" href="/" style="display:block;text-decoration:none;" data-t="nav-bio">Biografie</a>
-    <a class="hmenu-item" href="/articles.html" style="display:block;text-decoration:none;" data-t="nav-art">Beiträge</a>
-    <a class="hmenu-item" href="/contact.html" style="display:block;text-decoration:none;" data-t="nav-form">Anfragen</a>
-  </div>
-
-  <div class="hmenu-divider"></div>
-
-  <div class="hmenu-section hmenu-langs">
-    <button class="hmenu-lang active" id="hm-de" onclick="setLang('de'); updateHmenuLangs('de')">DE</button>
-    <button class="hmenu-lang" id="hm-en" onclick="setLang('en'); updateHmenuLangs('en')">EN</button>
-    <button class="hmenu-lang" id="hm-he" onclick="setLang('he'); updateHmenuLangs('he')">עב</button>
-  </div>
-
-  <div class="hmenu-divider"></div>
-
-  <a href="https://www.instagram.com/elishaizizov" class="hmenu-ig" target="_blank" rel="noopener">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-      <rect x="2" y="2" width="20" height="20" rx="5"/>
-      <circle cx="12" cy="12" r="4"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-    </svg>
-    @elishaizizov
-  </a>
-  <a href="https://www.facebook.com/share/1AdfNooWwL/?mibextid=wwXIfr" class="hmenu-ig" target="_blank" rel="noopener" style="margin-top:10px">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-    </svg>
-    Facebook
-  </a>
-</nav>
-
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-<script src="/js/shared.js?v=30"></script>
-<script>
-// Form submit handler (contact page only)
-document.getElementById('inquiry-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const form = e.target;
-  const errEl = document.getElementById('form-error');
-  errEl.style.display = 'none';
-  const btn = form.querySelector('.submit-btn');
-  if (btn) btn.disabled = true;
-  try {
-    const res = await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      form.style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
-    } else {
-      errEl.style.display = 'block';
-      if (btn) btn.disabled = false;
-    }
-  } catch(err) {
-    errEl.style.display = 'block';
-    if (btn) btn.disabled = false;
-  }
-});
-</script>
+<p id="form-success" role="status" hidden tabindex="-1">Vielen Dank. Ihre Anfrage wurde gesendet.</p>
+<p id="form-error" role="alert" hidden>Fehler beim Senden. Bitte versuchen Sie es erneut.</p></div></main>
+<footer><div class="footer-inner"><p>Rabbiner Elishai Zizov</p><nav aria-label="Weitere Links"><a href="/contact.html">Kontakt</a><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></nav></div></footer>
 </body>
 </html>

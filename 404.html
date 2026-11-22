@@ -1,20 +1,25 @@
-<!DOCTYPE html>
-<html><head><meta charset="utf-8">
-<script>
-  // GitHub Pages SPA routing:
-  // Unknown paths (e.g. /wajikra-2026) land here.
-  // Article slugs → redirect to /articles.html
-  // Other paths → redirect to /
-  var slug = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
-  var knownPages = ['index.html', 'articles.html', 'contact.html'];
-  if (slug && knownPages.indexOf(slug) === -1) {
-    // Likely an article slug — redirect to articles page
-    sessionStorage.setItem('redirect_article', slug);
-    var lang = new URLSearchParams(window.location.search).get('lang');
-    if (lang) sessionStorage.setItem('redirect_lang', lang);
-    window.location.replace('/articles.html');
-  } else {
-    window.location.replace('/');
-  }
-</script>
-</head><body></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Zurück zur Startseite.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Seite nicht gefunden">
+<meta property="og:description" content="Zurück zur Startseite.">
+<meta property="og:url" content="https://elishaizizov.com/404.html">
+<link rel="canonical" href="https://elishaizizov.com/404.html">
+<title>Seite nicht gefunden</title>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt</a>
+<header class="top"><div class="header-inner">
+<a class="brand" href="/" aria-label="Startseite"><svg aria-hidden="true" viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 3 35 29H5Z M20 37 5 11h30Z"/></svg><span>Rabbiner Elishai Zizov</span></a>
+<nav aria-label="Hauptnavigation"><a href="/#guides">Guides</a><a href="/contact.html">Kontakt</a><button class="button pending" type="button" disabled>Community auf WhatsApp beitreten<small>Einladungslink ausstehend</small></button></nav>
+</div></header>
+<main id="inhalt" class="wrap simple"><h1>Seite nicht gefunden</h1><p><a href="/">Zur Startseite</a></p></main>
+<footer><div class="footer-inner"><p>Rabbiner Elishai Zizov</p><nav aria-label="Weitere Links"><a href="/contact.html">Kontakt</a><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></nav></div></footer>
+</body>
+</html>
