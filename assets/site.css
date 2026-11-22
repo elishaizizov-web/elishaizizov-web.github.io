@@ -1,7 +1,7 @@
 @font-face{font-family:Secular One;src:url(secular-one.woff) format("woff");font-weight:400;font-display:swap}
 @font-face{font-family:Open Sans;src:url(sans.woff) format("woff");font-display:swap}
 @font-face{font-family:Open Sans;src:url(sans-semibold.woff) format("woff");font-weight:600 800;font-display:swap}
-:root{--paper:#FFFFFF;--ink:#10141F;--deep:#05245C;--blue:#1C58A3;--pale:#BED8FF;--panel:#F3F6FB;--rule:#D5DFEB;--inset:clamp(36px,7.2vw,110px);--sans:"Open Sans",Arial,sans-serif;--display:"Secular One",var(--sans)}
+:root{--white:#FFFFFF;--paper:#FAF6EF;--ink:#10141F;--deep:#101C2D;--blue:#364354;--pale:#D8C8AF;--panel:#F1EAE0;--rule:#DDD4C8;--inset:clamp(36px,7.2vw,110px);--sans:"Open Sans",Arial,sans-serif;--display:"Secular One",var(--sans)}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:1.25rem}
 body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.65 var(--sans)}
@@ -31,7 +31,7 @@ nav a{display:inline-flex;align-items:center;min-height:44px}
 footer,.dark{background:var(--deep);color:var(--paper)}
 footer :focus-visible,.dark :focus-visible{outline-color:var(--pale)}
 footer a:hover,.dark a:not(.button):hover{color:var(--pale)}
-.button-light{background:var(--paper);color:var(--deep);border-color:var(--deep);border-radius:7px}
+.button-light{background:var(--white);color:var(--deep);border-color:var(--deep);border-radius:7px}
 .button-light:hover:not(:disabled){border-color:var(--pale)}
 .dev-only{display:none}
 .preview .pending{display:inline-flex;flex-direction:column;text-align:center}
@@ -199,7 +199,7 @@ dd{margin:0}
 /* The artwork reserves the right side of the masthead and fades under the title. */
 .hero-band{
   overflow:hidden;
-  background:radial-gradient(ellipse at 92% 15%,#124B99 0%,transparent 65%),var(--deep);
+  background:var(--deep);
 }
 .hero{min-height:clamp(500px,67vh,680px)}
 .hero h1{font-size:clamp(3.05rem,7.1vw,6.8rem);line-height:.98;letter-spacing:-.045em}
@@ -336,7 +336,6 @@ dd{margin:0}
 @media(min-width:850px){.hero,.preview .hero{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
 @media(max-width:849px){.hero,.preview .hero{grid-template-columns:1fr}.opening-bridge{width:min(100%,410px);margin-inline:auto}}
 @media(prefers-reduced-motion:reduce){.arch-ink{animation:none}}
-.hero-band.dark{background:#101c2d}
 .hero h1,.preview .hero h1{font-family:Georgia,serif;font-weight:500;letter-spacing:-.045em;line-height:1.03}
 
 .hero-band .hero{grid-template-columns:1fr;min-height:0;padding-block:clamp(2.5rem,6vw,6rem)}
