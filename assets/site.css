@@ -364,17 +364,20 @@ dd{margin:0}
 }
 
 .story-underline {
-  background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
+  color: #ecfaff;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgb(153 228 255 / 40%);
+  background: linear-gradient(#a6e6ff, #a6e6ff) left bottom / 100% 2px no-repeat;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   padding-bottom: 2px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .story-underline[data-draw="waiting"] { background-size: 0 1px; }
+  .story-underline[data-draw="waiting"] { background-size: 0 2px; }
   .story-underline[data-draw="visible"] { animation: story-underline-draw 750ms ease-out both; }
   @keyframes story-underline-draw {
-    from { background-size: 0 1px; }
-    to { background-size: 100% 1px; }
+    from { background-size: 0 2px; }
+    to { background-size: 100% 2px; }
   }
 }
 
