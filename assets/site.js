@@ -145,3 +145,20 @@ if (contact) {
 if ('serviceWorker' in navigator && !localPreview && navigator.serviceWorker.controller) {
   navigator.serviceWorker.getRegistration().then(registration => registration?.update()).catch(() => {});
 }
+
+if ('IntersectionObserver' in window) {
+  const storyUnderlines = document.querySelectorAll('.story-underline');
+  if (storyUnderlines.length) {
+    const underlineObserver = new IntersectionObserver((entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.dataset.draw = 'visible';
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.6 });
+    for (const underline of storyUnderlines) {
+      underline.dataset.draw = 'waiting';
+      underlineObserver.observe(underline);
+    }
+  }
+}
