@@ -228,3 +228,10 @@ if ('IntersectionObserver' in window) {
     }
   }
 }
+
+const homeHeader = document.querySelector('.home-theme .top');
+if (homeHeader && 'ResizeObserver' in window) {
+  new ResizeObserver(() => {
+    document.body.style.setProperty('--home-header-height', `${homeHeader.getBoundingClientRect().height}px`);
+  }).observe(homeHeader);
+}
