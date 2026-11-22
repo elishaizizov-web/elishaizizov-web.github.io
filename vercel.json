@@ -1,7 +1,11 @@
 {
-  "buildCommand": "node build.js",
   "outputDirectory": ".",
   "framework": null,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "git": {
+    "deploymentEnabled": {
+      "stage-1-brand-website": false
+    }
+  }
 }
