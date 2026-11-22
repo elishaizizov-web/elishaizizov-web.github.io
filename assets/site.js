@@ -5,7 +5,7 @@ const fixedMotion = localPreview && options.get('bewegung') === 'aus';
 document.documentElement.classList.toggle('preview', development);
 document.documentElement.classList.toggle('static-motion', fixedMotion);
 
-const communityInvite = '';
+const communityInvite = 'https://chat.whatsapp.com/FBDpMKzc82RFgZtLysJnXh?mode=gi_t';
 if (communityInvite) {
   for (const placeholder of document.querySelectorAll('.pending')) {
     const invite = document.createElement('a');
