@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>{{ label }} bearbeiten</h1>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+{% if request.args.get('saved') %}<p class="note" role="status">Entwurf privat gespeichert.</p>{% endif %}
+<form method="post" enctype="multipart/form-data" action="{{ url_for('save',kind=kind) }}">
+<input type="hidden" name="csrf" value="{{ session.csrf }}">
+<input type="hidden" name="key" value="{{ draft.get('key','') if version else '' }}">
+<input type="hidden" name="version" value="{{ version }}">
+<div class="fields">
+{% for field, name in fields %}
+<div{% if field in areas %} class="wide"{% endif %}>
+<label for="{{ field }}">{{ name }}</label>
+{% if field in areas %}
+<textarea id="{{ field }}" name="{{ field }}" maxlength="30000">{{ draft.get(field,'') }}</textarea>
+{% elif field == 'component' %}
+<select id="{{ field }}" name="{{ field }}">
+{% for option,value in components.items() %}
+<option value="{{ option }}"{% if draft.get(field)==option %} selected{% endif %}>{{ value }}</option>
+{% endfor %}
+</select>
+{% else %}
+<input id="{{ field }}" name="{{ field }}" type="{{ 'url' if field in urls else ('date' if field in ['date','updated'] else 'text') }}"
+value="{{ draft.get(field,'') }}" maxlength="{{ 70 if field=='slug' else 500 }}"{% if field in ['title','slug'] %} required{% endif %}{% if field=='slug' %} pattern="[a-z0-9]+(?:-[a-z0-9]+)*"{% if version %} readonly{% endif %}{% endif %}>
+{% endif %}
+{% if field=='slug' %}<small>{{ '/guides/' if kind=='guide' else '/podcast/' }}<em>adresse</em>/</small>{% endif %}
+</div>
+{% endfor %}
+<div class="wide">
+<label for="image">Privates Bild hochladen</label>
+<input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp">
+<small>JPG, PNG oder WebP bis 500 KB.</small>
+{% if draft.image %}<p>Ein privates Bild ist gespeichert.</p><button class="secondary" type="submit" name="remove_image" value="1">Bild aus aktuellem Entwurf entfernen</button>{% endif %}
+</div>
+</div>
+<div class="actions"><button>Entwurf speichern</button>{% if version %}
+<a class="button secondary" href="{{ url_for('preview',key=draft.key) }}">Gespeicherte Vorschau</a>{% endif %}</div>
+</form>
+{% if version %}
+<hr>
+<h2>Freigabe vorbereiten</h2>
+<p>Das Paket enthält die gespeicherte Version zur Prüfung.</p>
+<form method="post" action="{{ url_for('release_preview',key=draft.key) }}">
+<input type="hidden" name="csrf" value="{{ session.csrf }}">
+<input type="hidden" name="version" value="{{ version }}">
+<button class="secondary">Freigabepaket herunterladen</button>
+</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block main %}
+<p class="note">Private Vorschau · {{ label }}</p>
+{% include 'content.html' %}
+<p><a href="{{ url_for('edit',key=draft.key) }}">Entwurf bearbeiten</a></p>
+{% endblock %}

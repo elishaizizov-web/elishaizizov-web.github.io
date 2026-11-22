@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Anmelden</h1>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="post">
+<input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label for="password">Passwort</label>
+<input id="password" type="password" name="password" autocomplete="current-password" maxlength="256" required>
+<div class="actions"><button>Anmelden</button></div>
+</form>
+{% endblock %}

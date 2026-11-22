@@ -5,7 +5,8 @@
   "trailingSlash": false,
   "git": {
     "deploymentEnabled": {
-      "stage-1-brand-website": false
+      "stage-1-brand-website": false,
+      "stage-2-private-editor": false
     }
   }
 }

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Entwürfe</h1>
+<div class="actions">
+<a class="button" href="{{ url_for('new',kind='guide') }}">Neuer Guide</a>
+<a class="button secondary" href="{{ url_for('new',kind='episode') }}">Neue Podcastfolge</a>
+</div>
+{% if entries %}<ul class="drafts">
+{% for key in entries %}
+<li><a href="{{ url_for('edit',key=key) }}">{{ kinds[key.split('--')[0]] }} · {{ key.split('--')[1] }}</a></li>
+{% endfor %}</ul>{% else %}<p>Es sind noch keine Entwürfe gespeichert.</p>{% endif %}
+{% endblock %}

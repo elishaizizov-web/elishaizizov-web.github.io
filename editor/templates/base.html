@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Redaktion{% endblock %}</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f0f6fc;color:#11264a;font:16px/1.55 system-ui,sans-serif}
+header{background:#082556;color:white;padding:18px max(20px,calc((100% - 920px)/2));display:flex;align-items:center;justify-content:space-between;gap:14px}
+header a{color:white;font-weight:700;text-decoration:none}
+main{width:min(calc(100% - 32px),900px);margin:28px auto 48px;background:white;padding:clamp(18px,4vw,38px);border-radius:18px;overflow-wrap:anywhere}
+h1{line-height:1.12;font-size:clamp(29px,5vw,51px);margin:0 0 16px}h2{line-height:1.22}
+a{color:#164b7c;text-underline-offset:3px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-block:18px}
+.button,button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid #082556;border-radius:999px;padding:8px 17px;background:#082556;color:white;font:inherit;text-decoration:none;cursor:pointer}
+.secondary,header button{background:white;color:#082556}
+label{display:block;font-weight:650;margin-bottom:5px}input,select,textarea{width:100%;font:inherit;color:#11264a;background:white;border:1px solid #8293ac;border-radius:8px;padding:9px;min-height:44px}
+textarea{min-height:95px;resize:vertical}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.wide{grid-column:1/-1}
+.note{background:#e6f3fe;padding:10px 14px;border-radius:8px}.error{background:#ffe7df;padding:10px 14px;border-radius:8px}
+:focus-visible{outline:3px solid #1472a4;outline-offset:3px}header :focus-visible{outline-color:white}img{max-width:100%;height:auto;border-radius:10px}
+ul{padding-inline-start:22px}.drafts li{margin-block:12px}small{color:#425772}hr{border:0;border-top:1px solid #cbdaf0;margin:28px 0}
+@media(max-width:610px){.fields{grid-template-columns:1fr}header{padding:12px 16px}main{margin-top:16px}}
+</style>
+</head>
+<body>
+<header><a href="{{ url_for('index') }}">Redaktion{% if session.authenticated %} · Elishai Zizov{% endif %}</a>
+{% if session.authenticated %}<form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button>Abmelden</button></form>{% endif %}</header>
+<main>{% block main %}{% endblock %}</main>
+</body></html>

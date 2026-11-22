@@ -1,0 +1,21 @@
+<article lang="de">
+<h1>{{ draft.title }}</h1>
+{% if draft.topic %}<p>{{ draft.topic }}</p>{% endif %}
+{% if draft.updated or draft.date %}<p><time datetime="{{ draft.updated or draft.date }}">{{ draft.updated or draft.date }}</time></p>{% endif %}
+{% if draft.summary %}<p>{{ draft.summary }}</p>{% endif %}
+{% if image_url %}<img src="{{ image_url }}" alt="">{% elif draft.image_url %}<p><a href="{{ draft.image_url }}">Bild öffnen</a></p>{% endif %}
+{% if draft.component=='shopping' %}<p><a href="https://elishaizizov.com/guides/koscher-einkaufen/">Koscher einkaufen</a></p>{% endif %}
+{% if draft.body %}
+{% if draft.component == 'checklist' %}
+<ul>{% for line in draft.body.splitlines() if line.strip() %}<li>{{ line }}</li>{% endfor %}</ul>
+{% else %}
+{% for line in draft.body.splitlines() if line.strip() %}<p>{{ line }}</p>{% endfor %}
+{% endif %}
+{% endif %}
+{% if draft.audio %}<p><a href="{{ draft.audio }}">Audio öffnen</a>{% if draft.duration %} · {{ draft.duration }}{% endif %}</p>{% endif %}
+{% if draft.transcript %}<details><summary>Transkript</summary>{% for line in draft.transcript.splitlines() if line.strip() %}<p>{{ line }}</p>{% endfor %}</details>{% endif %}
+{% if draft.pdf %}<p><a href="{{ draft.pdf }}">PDF öffnen</a></p>{% endif %}
+{% if draft.sources %}<h2>Quellen</h2><ul>
+{% for line in draft.sources.splitlines() if line.strip() %}<li>{% if https_url(line.strip()) %}<a href="{{ line.strip() }}">{{ line.strip() }}</a>{% else %}{{ line }}{% endif %}</li>{% endfor %}
+</ul>{% endif %}
+</article>
