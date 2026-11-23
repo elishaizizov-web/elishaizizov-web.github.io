@@ -558,9 +558,9 @@ dd{margin:0}
 }
 .hero-portrait img {
   width: 100%;
-  height: 109%;
+  height: 100%;
   object-fit: contain;
-  object-position: center top;
+  object-position: center bottom;
 }
 .hero-action {
   display: flex;
@@ -587,8 +587,6 @@ dd{margin:0}
   .home-theme .hero-copy { padding: 48px 36px 0; }
   .home-theme .hero-copy h1 { font-size: clamp(46px, 5.8vw, 76px); }
   .hero-portrait { grid-column: 2; grid-row: 1/3; height: clamp(430px, 45vw, 560px); }
-  /* The approved cutout is 1169 pixels high. Keep two source pixels per CSS pixel. */
-  .hero-portrait img { height: min(109%, 584px); }
   .hero-action { grid-column: 1; justify-self: start; background: transparent; padding: 0 36px 48px; }
 }
 
@@ -812,7 +810,6 @@ dd{margin:0}
   .hero-portrait img {
     width: 100%;
     height: auto;
-    object-fit: initial;
   }
   .hero-action { grid-column: 1 / -1; }
 }
@@ -876,9 +873,9 @@ dd{margin:0}
     position: absolute;
     inset: 0;
     width: 100%;
-    height: 119%;
+    height: 100%;
     object-fit: contain;
-    object-position: center top;
+    object-position: center bottom;
   }
   .hero-portrait::after {
     content: "";
@@ -999,3 +996,25 @@ dd{margin:0}
 @media (max-width: 365px) {
   .site-footer .footer-inner { grid-template-columns: 1fr; }
 }
+
+
+.community.social-section {
+  display: block;
+  padding-block: clamp(2.75rem, 6vw, 5rem);
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+}
+
+.social-section p {
+  margin-top: .85rem;
+  max-width: 60ch;
+}
+
+.social-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  margin-top: 1rem;
+}
+
+.social-actions .button { margin: 0; }
