@@ -7,5 +7,17 @@
     "deploymentEnabled": {
       "stage-1-brand-website": false
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "lang"
+        }
+      ],
+      "destination": "/api/legacy-language"
+    }
+  ]
 }
