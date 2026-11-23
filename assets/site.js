@@ -10,7 +10,9 @@ if (communityInvite) {
   for (const placeholder of document.querySelectorAll('.pending')) {
     const invite = document.createElement('a');
     const inMenu = placeholder.classList.contains('nav-community');
-    invite.className = inMenu ? 'nav-community' : 'button button-light';
+    const inFooter = placeholder.classList.contains('footer-community');
+    if (inMenu) invite.className = 'nav-community';
+    else if (!inFooter) invite.className = 'button button-light';
     invite.href = communityInvite;
     invite.textContent = placeholder.firstChild.textContent;
     placeholder.replaceWith(invite);
