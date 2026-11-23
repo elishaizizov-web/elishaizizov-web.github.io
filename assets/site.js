@@ -13,6 +13,7 @@ if (communityInvite) {
     const inFooter = placeholder.classList.contains('footer-community');
     if (inMenu) invite.className = 'nav-community';
     else if (!inFooter) invite.className = 'button button-light';
+    if (!inMenu) invite.classList.add('whatsapp-link');
     invite.href = communityInvite;
     invite.textContent = placeholder.firstChild.textContent;
     placeholder.replaceWith(invite);
@@ -248,4 +249,95 @@ if (homeHeader && 'ResizeObserver' in window) {
   new ResizeObserver(() => {
     document.body.style.setProperty('--home-header-height', `${homeHeader.getBoundingClientRect().height}px`);
   }).observe(homeHeader);
+}
+
+const everydayQuestions = document.querySelectorAll('.everyday-questions li');
+if (everydayQuestions.length && 'IntersectionObserver' in window && !fixedMotion) {
+  const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  let observer;
+  function followQuestions() {
+    observer?.disconnect();
+    everydayQuestions.forEach(question => question.classList.remove('in-focus'));
+    if (motionPreference.matches) return;
+    const margin = Math.floor(document.documentElement.clientHeight / 2) - 1;
+    observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('in-focus', entry.isIntersecting);
+      }
+    }, {rootMargin: `-${margin}px 0px`});
+    everydayQuestions.forEach(question => observer.observe(question));
+  }
+  followQuestions();
+  motionPreference.addEventListener('change', followQuestions);
+  window.addEventListener('resize', followQuestions);
+}
+
+const openingPortrait = document.querySelector('.hero-portrait img');
+if (openingPortrait && !fixedMotion) {
+  const story = document.querySelector('.story');
+  const storyPortrait = story?.querySelector('.story-portrait');
+  const reducePortraitMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+  function updatePortraitScale() {
+    frame = 0;
+    const progress = Math.min(1, Math.max(0, window.scrollY / 180));
+    if (storyPortrait) {
+      const storyProgress = Math.min(1, Math.max(0, (.85 - story.getBoundingClientRect().top / innerHeight) / .65));
+      storyPortrait.style.setProperty('--story-scale', (.96 + .04 * storyProgress).toFixed(4));
+    }
+    openingPortrait.style.setProperty('--portrait-scale', (.94 + .06 * progress).toFixed(4));
+  }
+  function queuePortraitUpdate() {
+    if (!frame) frame = requestAnimationFrame(updatePortraitScale);
+  }
+  function syncPortraitMotion() {
+    window.removeEventListener('scroll', queuePortraitUpdate);
+    window.removeEventListener('resize', queuePortraitUpdate);
+    if (!reducePortraitMotion.matches) {
+      window.addEventListener('scroll', queuePortraitUpdate, {passive: true});
+      window.addEventListener('resize', queuePortraitUpdate);
+      updatePortraitScale();
+    }
+  }
+  syncPortraitMotion();
+  reducePortraitMotion.addEventListener('change', syncPortraitMotion);
+}
+
+const bridgeScene = document.querySelector('.bridge-scene');
+if (bridgeScene && !fixedMotion) {
+  const steps = bridgeScene.querySelectorAll('.bridge-steps > li');
+  const narrowRoute = bridgeScene.querySelector('.bridge-route-narrow');
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let scheduled = false;
+  function drawBridge() {
+    scheduled = false;
+    if (motion.matches) return;
+    const top = bridgeScene.getBoundingClientRect().top;
+    const stacked = narrowRoute.getBoundingClientRect().width > 0;
+    const start = window.innerHeight * .85;
+    const end = stacked
+      ? steps[2].getBoundingClientRect().top - top + window.innerHeight * .25
+      : window.innerHeight * .48;
+    const progress = Math.max(0, Math.min(1, (start - top) / end));
+    bridgeScene.style.setProperty('--remaining', (1 - progress).toFixed(4));
+    bridgeScene.dataset.reading = '';
+  }
+  function queueBridge() {
+    if (!scheduled && !motion.matches) {
+      scheduled = true;
+      requestAnimationFrame(drawBridge);
+    }
+  }
+  function syncBridge() {
+    bridgeScene.removeAttribute('data-reading');
+    window.removeEventListener('scroll', queueBridge);
+    if (!motion.matches) {
+      window.addEventListener('scroll', queueBridge, {passive: true});
+      drawBridge();
+    }
+  }
+  window.addEventListener('resize', queueBridge);
+  if ('ResizeObserver' in window) new ResizeObserver(queueBridge).observe(bridgeScene);
+  motion.addEventListener('change', syncBridge);
+  syncBridge();
 }
