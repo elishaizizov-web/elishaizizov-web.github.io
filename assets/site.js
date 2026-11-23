@@ -213,6 +213,18 @@ if ('serviceWorker' in navigator && !localPreview && navigator.serviceWorker.con
 }
 
 if ('IntersectionObserver' in window) {
+  const scrollTargets = document.querySelectorAll('[data-scroll-in]');
+  if (scrollTargets.length && !fixedMotion && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const scrollObserver = new IntersectionObserver((entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add('scroll-in-visible');
+        observer.unobserve(entry.target);
+      }
+    }, {threshold: .15});
+    scrollTargets.forEach(target => scrollObserver.observe(target));
+  }
+
   const storyUnderlines = document.querySelectorAll('.story-underline');
   if (storyUnderlines.length) {
     const underlineObserver = new IntersectionObserver((entries, observer) => {
