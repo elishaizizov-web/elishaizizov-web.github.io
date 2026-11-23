@@ -583,10 +583,6 @@ dd{margin:0}
   border-color: #a0c6e9;
 }
 @media (min-width: 850px) {
-  .home-theme .hero-band.dark {
-    background: radial-gradient(ellipse min(53vw, 820px) 112% at calc(50% + min(34vw, 490px)) 94%,
-      #49caef 0%, #147caf 37%, #0c4175 62%, #082556 100%);
-  }
   .home-theme .hero-band .hero { grid-template-columns: 1.1fr 1fr; }
   .home-theme .hero-copy { padding: 48px 36px 0; }
   .home-theme .hero-copy h1 { font-size: clamp(46px, 5.8vw, 76px); }
