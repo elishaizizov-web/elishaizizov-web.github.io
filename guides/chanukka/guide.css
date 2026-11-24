@@ -45,3 +45,21 @@
   transform: translate(-50%, -50%);
 }
 .chanukka-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.abendwahl {
+  padding: clamp(1rem, 4vw, 2rem);
+  background: var(--guide-wash);
+  color: var(--guide-night);
+  border-radius: 12px;
+}
+.abendwahl label { display: block; font-weight: 600; margin-bottom: .4rem; }
+.abendwahl select {
+  width: 100%; max-width: 25rem; min-height: 48px; padding: .5rem;
+  font: inherit; color: inherit; background: white; border: 1px solid var(--guide-link); border-radius: 6px;
+}
+.abend-lichter { font-weight: 700; }
+.abendwahl .chanukka-diagram { width: min(100%, 17rem); gap: .6rem; }
+.abendwahl .chanukka-light { height: 1.65rem; }
+.abendwahl a, .abend-kalender summary { display: inline-flex; align-items: center; min-height: 44px; }
+.abend-kalender { margin-top: 1rem; }
+.abend-kalender summary { display: list-item; align-content: center; color: var(--guide-link); cursor: pointer; }

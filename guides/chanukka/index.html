@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/assets/site.css">
 <link rel="stylesheet" href="/guides/chanukka/guide.css">
 <script src="/assets/site.js" defer></script>
+<script src="/guides/chanukka/abend.js" defer></script>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
 </head>
@@ -33,12 +34,49 @@
     <aside><nav class="toc chanukka-nav" aria-label="Inhalt">
       <h2>Inhalt</h2>
       <ul>
+        <li><a href="#acht-abende">Dein Abend</a></li>
         <li><a href="#anzuenden">Anzünden</a></li>
         <li><a href="#segenssprueche">Segenssprüche</a></li>
-        <li><a href="#acht-abende">Die acht Abende</a></li>
       </ul>
     </nav></aside>
     <div class="reading">
+  <section id="acht-abende" aria-labelledby="abende-titel">
+    <h2 id="abende-titel">Welchen Abend feierst du?</h2>
+    <p>Die Plätze sind so dargestellt, wie du sie vor dir siehst. Der goldene Platz mit dem Punkt zeigt dir, welches Licht du zuerst anzündest.</p>
+    <div class="abendwahl" hidden>
+      <label for="abend">Abend auswählen</label>
+      <select id="abend"></select>
+      <div aria-live="polite" aria-atomic="true" class="abend-ausgabe">
+        <p class="abend-lichter"></p>
+        <div class="abend-bild"></div>
+        <p class="abend-hinweis"></p>
+      </div>
+      <a href="#segenssprueche">Zu den Segenssprüchen</a>
+    </div>
+    <details class="abend-kalender" open>
+    <summary>Alle acht Abende im Überblick</summary>
+    <table class="chanukka-table">
+      <caption>Chanukka im Dezember 2026</caption>
+      <thead><tr><th scope="col">Abend</th><th scope="col">Datum</th><th scope="col">Lichter</th></tr></thead>
+      <tbody>
+          <tr><th scope="row">1.</th><td><time datetime="2026-12-04">Fr., 4. Dez.</time><br><small>Vor Schabbat</small></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span></span><span class="chanukka-sr">1 Licht ganz rechts</span></td></tr>
+          <tr><th scope="row">2.</th><td><time datetime="2026-12-05">Sa., 5. Dez.</time><br><small>Nach Schabbat</small></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">2 Lichter, das neue links neben den bisherigen</span></td></tr>
+          <tr><th scope="row">3.</th><td><time datetime="2026-12-06">So., 6. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">3 Lichter, das neue links neben den bisherigen</span></td></tr>
+          <tr><th scope="row">4.</th><td><time datetime="2026-12-07">Mo., 7. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">4 Lichter, das neue links neben den bisherigen</span></td></tr>
+          <tr><th scope="row">5.</th><td><time datetime="2026-12-08">Di., 8. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">5 Lichter, das neue links neben den bisherigen</span></td></tr>
+          <tr><th scope="row">6.</th><td><time datetime="2026-12-09">Mi., 9. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">6 Lichter, das neue links neben den bisherigen</span></td></tr>
+          <tr><th scope="row">7.</th><td><time datetime="2026-12-10">Do., 10. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">7 Lichter, das neue links neben den bisherigen</span></td></tr>
+          <tr><th scope="row">8.</th><td><time datetime="2026-12-11">Fr., 11. Dez.</time><br><small>Vor Schabbat</small></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">8 Lichter, das neue links neben den bisherigen</span></td></tr>
+      </tbody>
+    </table>
+    </details>
+    <aside class="chanukka-note" aria-labelledby="schabbat-titel">
+      <h3 id="schabbat-titel">Chanukka und Schabbat</h3>
+      <p><strong>Freitag, 4. und 11. Dezember.</strong> Zünde die Chanukka-Lichter vor den Schabbatkerzen an. Verwende so viel Öl oder so große Kerzen, dass die Lichter bis mindestens eine halbe Stunde nach Einbruch der Nacht brennen.</p>
+      <p><strong>Samstag, 5. Dezember.</strong> Zünde die Chanukkia erst nach Schabbatausgang an.</p>
+    </aside>
+  </section>
+
   <section id="anzuenden" aria-labelledby="anzuenden-titel">
     <h2 id="anzuenden-titel">So zündest du die Chanukkia an</h2>
     <ol class="chanukka-steps">
@@ -75,29 +113,7 @@
     </div>
   </section>
 
-  <section id="acht-abende" aria-labelledby="abende-titel">
-    <h2 id="abende-titel">Die acht Abende</h2>
-    <p>Die Plätze sind so dargestellt, wie du sie vor dir siehst. Der goldene Platz mit dem Punkt zeigt dir, welches Licht du zuerst anzündest.</p>
-    <table class="chanukka-table">
-      <caption>Chanukka im Dezember 2026</caption>
-      <thead><tr><th scope="col">Abend</th><th scope="col">Datum</th><th scope="col">Lichter</th></tr></thead>
-      <tbody>
-          <tr><th scope="row">1.</th><td><time datetime="2026-12-04">Fr., 4. Dez.</time><br><small>Vor Schabbat</small></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span></span><span class="chanukka-sr">1 Licht ganz rechts</span></td></tr>
-          <tr><th scope="row">2.</th><td><time datetime="2026-12-05">Sa., 5. Dez.</time><br><small>Nach Schabbat</small></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">2 Lichter, das neue links neben den bisherigen</span></td></tr>
-          <tr><th scope="row">3.</th><td><time datetime="2026-12-06">So., 6. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">3 Lichter, das neue links neben den bisherigen</span></td></tr>
-          <tr><th scope="row">4.</th><td><time datetime="2026-12-07">Mo., 7. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">4 Lichter, das neue links neben den bisherigen</span></td></tr>
-          <tr><th scope="row">5.</th><td><time datetime="2026-12-08">Di., 8. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">5 Lichter, das neue links neben den bisherigen</span></td></tr>
-          <tr><th scope="row">6.</th><td><time datetime="2026-12-09">Mi., 9. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">6 Lichter, das neue links neben den bisherigen</span></td></tr>
-          <tr><th scope="row">7.</th><td><time datetime="2026-12-10">Do., 10. Dez.</time></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light"></span><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">7 Lichter, das neue links neben den bisherigen</span></td></tr>
-          <tr><th scope="row">8.</th><td><time datetime="2026-12-11">Fr., 11. Dez.</time><br><small>Vor Schabbat</small></td><td><span class="chanukka-diagram" aria-hidden="true"><span class="chanukka-light is-new"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span><span class="chanukka-light is-lit"></span></span><span class="chanukka-sr">8 Lichter, das neue links neben den bisherigen</span></td></tr>
-      </tbody>
-    </table>
-    <aside class="chanukka-note" aria-labelledby="schabbat-titel">
-      <h3 id="schabbat-titel">Chanukka und Schabbat</h3>
-      <p><strong>Freitag, 4. und 11. Dezember.</strong> Zünde die Chanukka-Lichter vor den Schabbatkerzen an. Verwende so viel Öl oder so große Kerzen, dass die Lichter bis mindestens eine halbe Stunde nach Einbruch der Nacht brennen.</p>
-      <p><strong>Samstag, 5. Dezember.</strong> Zünde die Chanukkia erst nach Schabbatausgang an.</p>
-    </aside>
-  </section>
+
 
     </div>
   </div>
