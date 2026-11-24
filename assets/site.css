@@ -1108,3 +1108,24 @@ dd{margin:0}
     transform-origin: right bottom;
   }
 }
+
+.zeit-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  padding-block: clamp(2.25rem, 6vw, 6rem);
+}
+.zeit-guide h1 { margin-block: .45em .2em; }
+.zeit-guide p { max-width: 44ch; margin-block: 1rem; }
+.zeit-guide small { display: block; margin-top: .6rem; }
+.zeit-guide img { width: min(100%, 21rem); height: auto; }
+@media (min-width: 760px) {
+  .zeit-guide { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+}
+
+.zeit-guide .wochenplan { background: #f7f4ec; color: #102747; padding: clamp(1.25rem, 4vw, 2.5rem); border-top: 2px solid #b49a63; }
+.wochenplan small { margin: 0; }
+.wochenplan h2 { margin: .65rem 0; }
+.wochenplan ul { padding: 0; margin: 0; list-style: none; }
+.wochenplan li { padding: .85rem 0; border-bottom: 1px solid #c9c2b3; }
