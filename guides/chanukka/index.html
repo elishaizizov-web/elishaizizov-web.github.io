@@ -19,22 +19,26 @@
 <body class="guide-theme chanukka-theme">
 <a class="skip" href="#inhalt">Zum Inhalt</a>
 <header class="top"><div class="header-inner">
-<a class="brand" href="/" aria-label="Startseite"><img src="/assets/brand-mark-night.svg" alt="" width="27" height="27"><span>Rabbiner Elishai Zizov<small class="chanukka-strap">Jüdisches Wissen einfach erklärt</small></span></a>
+<a class="brand" href="/" aria-label="Startseite"><img src="/assets/brand-mark-night.svg" alt="" width="27" height="27"><span>Rabbiner Elishai Zizov</span></a>
 <nav aria-label="Hauptnavigation"><a href="/#guides">Guides</a><a href="/contact.html">Kontakt</a><span class="nav-community pending dev-only">WhatsApp<small>Einladungslink ausstehend</small></span></nav>
 </div></header>
 
-<main id="inhalt" class="wrap chanukka-guide">
-  <header class="chanukka-intro">
+<main id="inhalt" class="wrap guide-page chanukka-guide">
+  <header class="page-intro guide-intro">
     <a href="/#guides">Guides für den Alltag</a>
     <h1>Chanukka zu Hause</h1>
-    <p class="chanukka-lead">Wie zündest du die Chanukkia an? Hier siehst du, welches Licht zuerst brennt und welche Segenssprüche du davor sagst.</p>
-    <nav class="chanukka-nav" aria-label="Im Chanukka-Guide">
-      <a href="#anzuenden">Anzünden</a>
-      <a href="#acht-abende">Die acht Abende</a>
-      <a href="#segenssprueche">Segenssprüche</a>
-    </nav>
+    <p class="promise">Wie zündest du die Chanukkia an? Hier siehst du, welches Licht zuerst brennt und welche Segenssprüche du davor sagst.</p>
   </header>
-
+  <div class="guide-layout">
+    <aside><nav class="toc chanukka-nav" aria-label="Inhalt">
+      <h2>Inhalt</h2>
+      <ul>
+        <li><a href="#anzuenden">Anzünden</a></li>
+        <li><a href="#segenssprueche">Segenssprüche</a></li>
+        <li><a href="#acht-abende">Die acht Abende</a></li>
+      </ul>
+    </nav></aside>
+    <div class="reading">
   <section id="anzuenden" aria-labelledby="anzuenden-titel">
     <h2 id="anzuenden-titel">So zündest du die Chanukkia an</h2>
     <ol class="chanukka-steps">
@@ -42,8 +46,33 @@
       <li>Zünde den Schamasch an, das zusätzliche Licht, mit dem du die anderen anzündest. Der Schamasch hat einen eigenen Platz und wird bei den acht Chanukka-Lichtern nicht mitgezählt.</li>
       <li>Sprich die <a href="#segenssprueche">Segenssprüche</a>. Zünde dann zuerst das neue Licht an und gehe von dort nach rechts.</li>
     </ol>
-    <p>Je nach Brauch zündet man bei Sonnenuntergang oder bei Einbruch der Nacht. Plane mindestens eine halbe Stunde Brenndauer ein. Für Freitag gilt die Regel unten.</p>
+    <p>Je nach Brauch zündet man bei Sonnenuntergang oder bei Einbruch der Nacht. Plane mindestens eine halbe Stunde Brenndauer ein. Für Freitag gelten die Hinweise unter <a href="#schabbat-titel">Chanukka und Schabbat</a>.</p>
     <p>Viele stellen die Chanukkia gut sichtbar ans Fenster. So erinnern die Lichter auch Menschen draußen an das Wunder.</p>
+  </section>
+
+  <section id="segenssprueche" aria-labelledby="brachot-titel">
+    <h2 id="brachot-titel">Die Segenssprüche</h2>
+    <p>Sprich die Brachot vor dem Anzünden der Chanukka-Lichter. Am ersten Abend sind es alle drei, danach die ersten beiden. Falls die dritte Bracha am ersten Abend ausgelassen wurde, kann sie beim Anzünden an einem späteren Abend nachgeholt werden.</p>
+    <div class="chanukka-blessings">
+      <article>
+        <h3>1. Lehadlik Ner Chanukka</h3>
+        <p class="chanukka-hebrew" lang="he" dir="rtl">בָּרוּךְ אַתָּה אֲדֹנָי אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם, אֲשֶׁר קִדְּשָׁנוּ בְּמִצְוֹתָיו וְצִוָּנוּ לְהַדְלִיק נֵר חֲנֻכָּה.</p>
+        <p class="chanukka-reading">Baruch Ata Adonaj, Elohenu Melech Haolam, Ascher Kideschanu Bemizwotaw Weziwanu Lehadlik Ner Chanukka.</p>
+        <p>Wir danken G-tt für das Gebot, die Chanukka-Lichter anzuzünden.</p>
+      </article>
+      <article>
+        <h3>2. Sche'assa Nissim</h3>
+        <p class="chanukka-hebrew" lang="he" dir="rtl">בָּרוּךְ אַתָּה אֲדֹנָי אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם, שֶׁעָשָׂה נִסִּים לַאֲבוֹתֵינוּ בַּיָּמִים הָהֵם בַּזְּמַן הַזֶּה.</p>
+        <p class="chanukka-reading">Baruch Ata Adonaj, Elohenu Melech Haolam, Sche'assa Nissim La'awotenu Bajamim Hahem Basman Hase.</p>
+        <p>Wir danken G-tt für die Wunder, die er damals zu dieser Zeit für unsere Vorfahren getan hat.</p>
+      </article>
+      <article>
+        <h3>3. Schehechejanu</h3>
+        <p class="chanukka-hebrew" lang="he" dir="rtl">בָּרוּךְ אַתָּה אֲדֹנָי אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם, שֶׁהֶחֱיָנוּ וְקִיְּמָנוּ וְהִגִּיעָנוּ לַזְּמַן הַזֶּה.</p>
+        <p class="chanukka-reading">Baruch Ata Adonaj, Elohenu Melech Haolam, Schehechejanu Wekijemanu Wehigi'anu Lasman Hase.</p>
+        <p>Wir danken G-tt dafür, dass wir diesen Moment erleben dürfen.</p>
+      </article>
+    </div>
   </section>
 
   <section id="acht-abende" aria-labelledby="abende-titel">
@@ -70,31 +99,8 @@
     </aside>
   </section>
 
-  <section id="segenssprueche" aria-labelledby="brachot-titel">
-    <h2 id="brachot-titel">Die Segenssprüche</h2>
-    <p>Sprich die Brachot vor dem Anzünden der Chanukka-Lichter. Am ersten Abend sind es alle drei, danach die ersten beiden. Falls die dritte Bracha am ersten Abend ausgelassen wurde, kann sie beim Anzünden an einem späteren Abend nachgeholt werden.</p>
-    <div class="chanukka-blessings">
-      <article>
-        <h3>1. Lehadlik Ner Chanukka</h3>
-        <p class="chanukka-hebrew" lang="he" dir="rtl">בָּרוּךְ אַתָּה אֲדֹנָי אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם, אֲשֶׁר קִדְּשָׁנוּ בְּמִצְוֹתָיו וְצִוָּנוּ לְהַדְלִיק נֵר חֲנֻכָּה.</p>
-        <p class="chanukka-reading">Baruch Ata Adonaj, Elohenu Melech Haolam, Ascher Kideschanu Bemizwotaw Weziwanu Lehadlik Ner Chanukka.</p>
-        <p>Wir danken G-tt für das Gebot, die Chanukka-Lichter anzuzünden.</p>
-      </article>
-      <article>
-        <h3>2. Sche'assa Nissim</h3>
-        <p class="chanukka-hebrew" lang="he" dir="rtl">בָּרוּךְ אַתָּה אֲדֹנָי אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם, שֶׁעָשָׂה נִסִּים לַאֲבוֹתֵינוּ בַּיָּמִים הָהֵם בַּזְּמַן הַזֶּה.</p>
-        <p class="chanukka-reading">Baruch Ata Adonaj, Elohenu Melech Haolam, Sche'assa Nissim La'awotenu Bajamim Hahem Basman Hase.</p>
-        <p>Wir danken G-tt für die Wunder, die er damals zu dieser Zeit für unsere Vorfahren getan hat.</p>
-      </article>
-      <article>
-        <h3>3. Schehechejanu</h3>
-        <p class="chanukka-hebrew" lang="he" dir="rtl">בָּרוּךְ אַתָּה אֲדֹנָי אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם, שֶׁהֶחֱיָנוּ וְקִיְּמָנוּ וְהִגִּיעָנוּ לַזְּמַן הַזֶּה.</p>
-        <p class="chanukka-reading">Baruch Ata Adonaj, Elohenu Melech Haolam, Schehechejanu Wekijemanu Wehigi'anu Lasman Hase.</p>
-        <p>Wir danken G-tt dafür, dass wir diesen Moment erleben dürfen.</p>
-      </article>
     </div>
-    <p class="chanukka-sources">Quellen und Wortlaut im <a href="https://www.sefaria.org/Shulchan_Arukh%2C_Orach_Chayim.670-684?lang=bi">Schulchan Aruch, Orach Chajim 671–681</a> und im <a href="https://onlinesiddur.com/nerot/edut/index.html">Siddur Edot HaMisrach</a>.</p>
-  </section>
+  </div>
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
