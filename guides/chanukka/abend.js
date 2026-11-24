@@ -13,7 +13,7 @@ function showNight() {
   const first = count === 1 ? 'Beginne ganz rechts.' : 'Beginne beim neuen Licht links und zünde nach rechts weiter.';
   chooser.querySelector('.abend-hinweis').textContent = [
     first,
-    count === 1 ? 'Sprich vorher alle drei Segenssprüche.' : 'Sprich vorher die ersten beiden Segenssprüche.',
+    count === 1 ? 'Sprich vorher alle drei Segenssprüche.' : 'Sprich vorher die ersten beiden Segenssprüche. Zündest du heute an diesem Chanukka zum ersten Mal an und hast Schehechejanu an diesem Chanukka noch nicht gesagt, sprich auch Schehechejanu.',
     timing === 'Vor Schabbat' ? 'Heute vor den Schabbatkerzen anzünden.' : '',
     timing === 'Nach Schabbat' ? 'Heute erst nach Schabbatausgang anzünden.' : ''
   ].filter(Boolean).join(' ');
