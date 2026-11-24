@@ -81,3 +81,17 @@
   .chanukkia { width:min(100%,13rem); }
 }
 @media(prefers-reduced-motion:reduce) { .pause-lights { display:none; } }
+
+.brachot-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem 1.25rem; margin-top:1rem; }
+.chanukka-guide .brachot-download {
+  box-sizing:border-box; justify-content:center; gap:.65rem; min-height:48px; max-width:100%;
+  padding:.65rem 1rem; border-radius:2rem; background:var(--guide-night); color:white;
+  text-decoration:none; line-height:1.35;
+}
+.chanukka-guide .guide-intro .brachot-download { background:white; color:var(--guide-night); }
+.brachot-download svg { flex:none; }
+.brachot-download small { display:inline-block; margin-left:.25em; font-size:.75em; }
+.brachot-download:hover span { text-decoration:underline; }
+@media(max-width:480px) {
+  .brachot-actions { align-items:flex-start; flex-direction:column; }
+}
