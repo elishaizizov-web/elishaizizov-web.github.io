@@ -1,0 +1,74 @@
+.chanukka-theme {
+  --guide-night: #302e2b;
+  background: var(--paper);
+}
+
+.chanukka-strap { display: block; font-size: .78rem; font-weight: 400; color: #e5d7bf; margin-top: .2rem; }
+
+.chanukka-guide {
+  width: min(100% - 2rem, 50rem);
+  padding-block: clamp(2rem, 6vw, 5rem);
+}
+
+.chanukka-intro {
+  padding: clamp(1.1rem, 4vw, 2.5rem);
+  border-top: 3px solid #a57525;
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule);
+}
+.chanukka-guide h1 {
+  font-size: clamp(2.65rem, 8vw, 5.7rem);
+  margin-block: .25em .3em;
+}
+.chanukka-lead { font-size: clamp(1.1rem, 2.8vw, 1.35rem); max-width: 44ch; }
+.chanukka-nav { flex-wrap: wrap; column-gap: 1.25rem; row-gap: 0; margin-top: .6rem; }
+.chanukka-nav a { font-weight: 600; }
+
+.chanukka-guide section { margin-top: clamp(2.5rem, 7vw, 4.5rem); }
+.chanukka-guide h2 { margin-bottom: .6em; font-size: clamp(2rem, 5.7vw, 3.45rem); }
+.chanukka-guide h3 { margin-bottom: .55em; }
+.chanukka-steps { padding-left: 1.45rem; }
+.chanukka-steps li { padding-left: .2rem; margin-bottom: .75rem; }
+
+.chanukka-table { border-collapse: collapse; width: 100%; margin-top: 1.4rem; text-align: left; }
+.chanukka-table caption { text-align: left; font-weight: 600; padding-bottom: .45rem; }
+.chanukka-table th, .chanukka-table td { border-bottom: 1px solid var(--rule); padding: .55rem .25rem; }
+.chanukka-table thead { background: var(--panel); }
+.chanukka-table small { color: var(--accent); font-weight: 600; }
+
+.chanukka-diagram {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(3px, 1vw, 8px);
+  min-width: 7.5rem;
+  width: min(100%, 12rem);
+  padding: .25rem 0;
+}
+.chanukka-light {
+  position: relative;
+  height: .9rem;
+  border-radius: 4px 4px 2px 2px;
+  border: 1px solid var(--rule);
+}
+.chanukka-light.is-lit { background: var(--accent); border-color: var(--accent); }
+.chanukka-light.is-new { background: #c78b29; border-color: #80561c; }
+.chanukka-light.is-new::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: .24rem;
+  height: .24rem;
+  border-radius: 50%;
+  background: #302517;
+  transform: translate(-50%, -50%);
+}
+.chanukka-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.chanukka-note, .chanukka-blessings article { background: var(--panel); padding: clamp(1rem, 3vw, 1.6rem); }
+.chanukka-note { margin-top: 1.3rem; border-left: 3px solid #a57525; }
+.chanukka-blessings { display: grid; gap: .85rem; margin-top: 1.25rem; }
+.chanukka-hebrew { font: 1.5rem/1.85 Arial, sans-serif; text-align: right; }
+.chanukka-reading { font-weight: 600; }
+.chanukka-sources { margin-top: 1.5rem; font-size: .9rem; }
