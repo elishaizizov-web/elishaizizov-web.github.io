@@ -63,3 +63,21 @@
 .abendwahl a, .abend-kalender summary { display: inline-flex; align-items: center; min-height: 44px; }
 .abend-kalender { margin-top: 1rem; }
 .abend-kalender summary { display: list-item; align-content: center; color: var(--guide-link); cursor: pointer; }
+
+.chanukka-guide .guide-intro { display:grid; grid-template-columns:minmax(0, 3fr) minmax(0, 2fr); align-items:center; gap:1rem; }
+.brachot-jump, .brachot-download { display:inline-flex; align-items:center; min-height:44px; font-weight:600; }
+.chanukkia { width:min(100%, 21rem); justify-self:center; text-align:center; }
+.chanukkia svg { display:block; width:100%; height:auto; }
+.pause-lights { background:transparent; color:inherit; border:0; text-decoration:underline; font:inherit; font-size:.85rem; min-height:44px; cursor:pointer; }
+.brachot-download { color:var(--guide-link); }
+.brachot-format { margin:1rem 0; }
+.brachot-format label { font-weight:600; margin-right:.5rem; }
+.brachot-format select { min-height:44px; padding:.4rem; font:inherit; color:var(--guide-night); background:white; border:1px solid var(--rule); }
+.chanukka-blessings article { max-width:65ch; }
+.chanukka-blessings .chanukka-hebrew { background:var(--guide-wash); padding:.75rem 1rem; border-radius:.5rem; }
+.chanukka-blessings p[hidden], .pause-lights[hidden] { display:none; }
+@media(max-width:720px) {
+  .chanukka-guide .guide-intro { grid-template-columns:minmax(0,1fr); }
+  .chanukkia { width:min(100%,13rem); }
+}
+@media(prefers-reduced-motion:reduce) { .pause-lights { display:none; } }
